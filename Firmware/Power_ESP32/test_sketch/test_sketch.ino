@@ -9,19 +9,33 @@
 float batteryVoltage;
 
 enum State {
-  INIT,
   FULL,
   MID,
   LOW,
   CRIT
 };
 
-State state = INIT;
+State state = NONE;
 
 void enterState(State s) {
   state = s;
-  Serial.print("Entering state: ");
-  Serial.println(s);
+  switch (state){
+    case FULL:
+      // entering full
+      break;
+
+    case MID:
+      // entering mid
+      break;
+
+    case LOW:
+      // entering low
+      break;
+
+    case CRIT:
+      // entering crit
+      break;
+  }
 }
 
 void doFull(){
@@ -42,17 +56,15 @@ void doCrit(){
 }
 
 void setup() {
+  // init board
   Serial.begin(115200);
-  enterState(INIT);
+  // take adc
+  // determine state
+  enterState(placeholder);
 }
 
 void loop() {
   switch (state) {
-    case INIT:
-      // Do setup work
-      enterState(FULL);
-      break;
-
     case FULL:
       doFull();
       if (batteryVoltage < MID_BOUNDARY) enterState(MID);
