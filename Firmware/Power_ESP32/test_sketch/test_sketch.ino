@@ -104,9 +104,9 @@ void setup() {
 
   // determine state from battery voltage
   float v_batt = readBattVoltage();
-  if (v_batt >= V_FULL_BOUNDARY) enterState(FULL);
-  else if (v_batt >= V_MID_BOUNDARY) enterState(MID);
-  else if (v_batt >= V_LOW_BOUNDARY) enterState(LOW);
+  if (v_batt >= V_MID_BOUNDARY) enterState(FULL);
+  else if (v_batt >= V_LOW_BOUNDARY) enterState(MID);
+  else if (v_batt >= V_CRIT_BOUNDARY) enterState(LOW);
   else enterState(CRIT);
 }
 
