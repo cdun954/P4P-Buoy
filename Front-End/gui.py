@@ -1,5 +1,6 @@
 import sys, random, string
 from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.uic import loadUi
 import paho.mqtt.client as mqtt
 import certifi
@@ -15,6 +16,11 @@ TOPIC_TELEM_PI  = "pi/test"
 TOPIC_CMD_ESP   = "esp/cmd"
 TOPIC_CMD_PI    = "pi/cmd"
 
+# ===== CAMERA CONFIG =====
+PI_IP = "100.69.169.69" # STATIC IP of the Raspberry Pi
+PORT = 5000
+CAMERA_STREAM_URL = f"http://{PI_IP}:{PORT}/video_feed"
+
 
 def _rand_id(prefix="gui-"):
     return prefix + "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
@@ -29,10 +35,7 @@ class GUI(QtWidgets.QMainWindow):
         super(GUI, self).__init__()
         loadUi("Front-End/interface.ui", self)
 
-        self.labelEsp = getattr(self, "recvesp_label", None)
-        self.labelPi  = getattr(self, "recvpi_label",  None)
-        self.btnSendEsp = getattr(self, "sendesp_button", None)
-        self.btnSendPi  = getattr(self, "sendpi_button",  None)
+        self.setupUi()
 
         # Wire buttons (if present)
         if self.btnSendEsp:
@@ -44,7 +47,7 @@ class GUI(QtWidgets.QMainWindow):
                 lambda: self.publish(TOPIC_CMD_PI, "hello from GUI")
             )
 
-        # Connect signals → UI slots
+        # Connect signals --> UI slots
         self.mqtt_msg.connect(self.on_mqtt_msg_ui)
         self.mqtt_status.connect(self.on_mqtt_status_ui)
 
@@ -52,7 +55,40 @@ class GUI(QtWidgets.QMainWindow):
         self._build_mqtt()
         self.show()
 
-    # ---------- MQTT setup ----------
+    #=============================================#
+    #                 GUI SETUP                   #
+    #=============================================#
+    def setupUi(self):
+        #------------- CONTROL TAB ---------------#
+        # Control Buttons
+
+        # Status Labels
+
+        # Power Labels
+
+        # Sensor Labels
+
+        #------------- CAMERA TAB ----------------#
+        # Camera Display
+        self.cameraView = getattr(self, "cam_view", None)
+        self.cameraView.setUrl(QtCore.QUrl(CAMERA_STREAM_URL))
+        # Camera Button
+        self.btnToggleCam = getattr(self, "cam_btn", None)
+
+        #------------ AUTONOMY TAB ---------------#
+        # TODO:
+
+        #------------- TESTING TAB ---------------#
+        # Send Buttons
+        self.btnSendEsp = getattr(self, "sendesp_btn", None)
+        self.btnSendPi  = getattr(self, "sendpi_btn",  None)
+        # Recv Labels
+        self.labelEsp = getattr(self, "recvesp_txt", None)
+        self.labelPi  = getattr(self, "recvpi_txt",  None)
+
+    #=============================================#
+    #                 MQTT SETUP                  #
+    #=============================================#
     def _build_mqtt(self):
         # Use loop_start() to run network loop in its own thread
         self.mqtt = mqtt.Client(
