@@ -12,7 +12,7 @@ const int mqtt_port = 8883;
 const char* mqtt_user = "P4P-Buoy";       // your HiveMQ username
 const char* mqtt_pass = "P4P108buoy";     // your HiveMQ password
 
-// Root CA cert (Let’s Encrypt ISRG Root X1)
+// Root CA cert
 static const char ca_cert[] PROGMEM = R"EOF(
 -----BEGIN CERTIFICATE-----
 MIIFazCCA1OgAwIBAgIRAIIQz7DSQONZRGPgu2OCiwAwDQYJKoZIhvcNAQELBQAw
