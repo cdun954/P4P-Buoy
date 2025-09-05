@@ -1,0 +1,408 @@
+Removed Pin From Net: NetName=Pi_Shutdown Pin=ESP-J2-5
+Removed Pin From Net: NetName=5V Pin=ESP_sense-6
+Removed Pin From Net: NetName=4G_5V Pin=FC_sense-1
+Removed Pin From Net: NetName=5V Pin=Power1-1
+Removed Pin From Net: NetName=5V Pin=Power1-2
+Removed Pin From Net: NetName=GND Pin=Power1-5
+Removed Pin From Net: NetName=GND Pin=Power1-6
+Removed Pin From Net: NetName=Telem_5V Pin=R7-2
+Removed Pin From Net: NetName=Net4G_2 Pin=R8-1
+Removed Pin From Net: NetName=4G_5V Pin=R8-2
+Removed Pin From Net: NetName=NetPi_2 Pin=R9-1
+Removed Pin From Net: NetName=Pi_5V Pin=R9-2
+Removed Pin From Net: NetName=NetFC_2 Pin=R10-1
+Removed Pin From Net: NetName=FC_5V Pin=R10-2
+Removed Member From Class: ClassName=P4P_PCB Member=Power1
+Removed Member From Class: ClassName=P4P_PCB Member=R9
+Removed Member From Class: ClassName=P4P_PCB Member=R10
+Change Component Footprint: Designator=R1 Old Footprint=FP-MRS25-MFG New Footprint=RESC2012X60N
+Change Component Footprint: Designator=R2 Old Footprint=FP-MRS25-MFG New Footprint=RESC2012X60N
+Change Component Footprint: Designator=R3 Old Footprint=FP-MRS25-MFG New Footprint=RESC2012X60N
+Change Component Footprint: Designator=R7 Old Footprint=FP-MRS25-MFG New Footprint=RESC2012X60N
+Change Component Footprint: Designator=R8 Old Footprint=FP-MRS25-MFG New Footprint=RESC2012X60N
+Change Component Comment : Designator=R1 Old Comment=MRS25000C1000FRP00 New Comment=CR0805AJ/-000EAS
+Change Component Comment : Designator=R2 Old Comment=MRS25000C1000FRP00 New Comment=CR0805AJ/-000EAS
+Change Component Comment : Designator=R3 Old Comment=MRS25000C1000FRP00 New Comment=CR0805AJ/-000EAS
+Change Component Comment : Designator=R7 Old Comment=MRS25000C1000FRP00 New Comment=CR0805AJ/-000EAS
+Change Component Comment : Designator=R8 Old Comment=MRS25000C1000FRP00 New Comment=CR0805AJ/-000EAS
+Change Component Designator: OldDesignator=4G_sense NewDesignator=4G_sensor
+Change Component Designator: OldDesignator=ESP_sense NewDesignator=ESP_sensor
+Change Component Designator: OldDesignator=FC_sense NewDesignator=FC_sensor
+Change Component Designator: OldDesignator=Pi_sense NewDesignator=Pi_sensor
+Change Managed Component Library Link : Designator=R1 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID= Old ItemGUID=FF8D5945-A7C6-4FC4-B67B-3D13760D23B1 New ItemGUID= Old RevisionGUID=4ABB9293-178D-4C4E-B9C9-54E8BEC031F9 New RevisionGUID=
+Change Managed Component Library Link : Designator=R2 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID= Old ItemGUID=FF8D5945-A7C6-4FC4-B67B-3D13760D23B1 New ItemGUID= Old RevisionGUID=4ABB9293-178D-4C4E-B9C9-54E8BEC031F9 New RevisionGUID=
+Change Managed Component Library Link : Designator=R3 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID= Old ItemGUID=FF8D5945-A7C6-4FC4-B67B-3D13760D23B1 New ItemGUID= Old RevisionGUID=4ABB9293-178D-4C4E-B9C9-54E8BEC031F9 New RevisionGUID=
+Change Managed Component Library Link : Designator=R7 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID= Old ItemGUID=FF8D5945-A7C6-4FC4-B67B-3D13760D23B1 New ItemGUID= Old RevisionGUID=4ABB9293-178D-4C4E-B9C9-54E8BEC031F9 New RevisionGUID=
+Change Managed Component Library Link : Designator=R8 Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID= Old ItemGUID=FF8D5945-A7C6-4FC4-B67B-3D13760D23B1 New ItemGUID= Old RevisionGUID=4ABB9293-178D-4C4E-B9C9-54E8BEC031F9 New RevisionGUID=
+Change component parameters: Designator = "R1" ("R1"); Footprint = "FP-MRS25-MFG"; UniqueID = "\MJIMJKXD" ("\MJIMJKXD")
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Change component parameters: Designator = "R2" ("R2"); Footprint = "FP-MRS25-MFG"; UniqueID = "\BZNOYWSW" ("\BZNOYWSW")
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Change component parameters: Designator = "R3" ("R3"); Footprint = "FP-MRS25-MFG"; UniqueID = "\HBVUUCLS" ("\HBVUUCLS")
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Change component parameters: Designator = "R7" ("R7"); Footprint = "FP-MRS25-MFG"; UniqueID = "\ALQVCAYT" ("\ALQVCAYT")
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Change component parameters: Designator = "R8" ("R8"); Footprint = "FP-MRS25-MFG"; UniqueID = "\EKRVXBIF" ("\EKRVXBIF")
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=4G_sense(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=4G_short(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Battery(AMASS_XT60-M)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/XT60-M/AMASS/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "AMASS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "XT60-M"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "Package"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/XT60-M/AMASS/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=Buck_In(691214110002)
+Add component (AddParameter): Name = "Color"; Value = "Blue, Green"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Brass, Tin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current"; Value = "10A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "10A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "8.7mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Material"; Value = "Nylon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Pitch"; Value = "3.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "7.4mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "105°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "NexarPartId"; Value = "18818288"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Levels"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Pins"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions Per Level"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Rows"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "3.5052mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Plating"; Value = "Brass, Steel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "REACH SVHC"; Value = "Unknown"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Stripping Length"; Value = "-6mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Screw"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "300V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "300V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "7.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Max)"; Value = "24AWG"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Min)"; Value = "16AWG"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire/Cable Gauge"; Value = "24AWG"; VariantName = "[No Variations]"
+Added Component: Designator=Buck_Out(691214110002)
+Add component (AddParameter): Name = "Color"; Value = "Blue, Green"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Brass"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Brass, Tin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current"; Value = "10A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "10A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "8.7mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Material"; Value = "Nylon"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Pitch"; Value = "3.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "7.4mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "105°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "NexarPartId"; Value = "18818288"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Levels"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Pins"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions Per Level"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Rows"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Box"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "3.5052mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Plating"; Value = "Brass, Steel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "REACH SVHC"; Value = "Unknown"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Stripping Length"; Value = "-6mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Screw"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "300V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "300V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "7.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Max)"; Value = "24AWG"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire Gauge (Min)"; Value = "16AWG"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wire/Cable Gauge"; Value = "24AWG"; VariantName = "[No Variations]"
+Added Component: Designator=ESP_sense(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=ESP_short(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=FC_sense(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=FC_short(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Motor1_ESP(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Motor1_FC(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Motor1IN(HDR1X2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Motor1OUT(HDR1X2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Motor2_ESP(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Motor2_FC(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Motor2IN(HDR1X2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Motor2OUT(HDR1X2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Pi_sense(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Pi_short(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=R4(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R5(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R6(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R9R?(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=Solar_sense(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Solar_sensor(HDR1X6)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Solar_short(RAD-0.2)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageDescription"; Value = "Radial Cap, Thru-Hole; 2 Leads; 0.2 in Pin Spacing"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "PackageReference"; Value = "RAD-0.2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "24-Mar-1999"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=4G_5V Pin=4G_short-2
+Added Pin To Net: NetName=GND Pin=Battery-N
+Added Pin To Net: NetName=GND Pin=Buck_In-2
+Added Pin To Net: NetName=5V Pin=Buck_Out-1
+Added Pin To Net: NetName=GND Pin=Buck_Out-2
+Added Pin To Net: NetName=Pi_Shutdown Pin=ESP-J3-2
+Added Pin To Net: NetName=5V Pin=ESP_sense-1
+Added Pin To Net: NetName=5V Pin=ESP_short-1
+Added Pin To Net: NetName=ESP_5V Pin=ESP_short-2
+Added Pin To Net: NetName=FC_5V Pin=FC_sensor-1
+Added Pin To Net: NetName=FC_5V Pin=FC_short-2
+Added Pin To Net: NetName=GND Pin=Motor1IN-2
+Added Pin To Net: NetName=GND Pin=Motor1OUT-2
+Added Pin To Net: NetName=GND Pin=Motor2IN-2
+Added Pin To Net: NetName=GND Pin=Motor2OUT-2
+Added Pin To Net: NetName=Pi_5V Pin=Pi_short-2
+Added Pin To Net: NetName=Telem_5V Pin=R4-2
+Added Pin To Net: NetName=Net4G_2 Pin=R5-1
+Added Pin To Net: NetName=4G_5V Pin=R5-2
+Added Pin To Net: NetName=NetPi_2 Pin=R6-1
+Added Pin To Net: NetName=Pi_5V Pin=R6-2
+Added Pin To Net: NetName=NetFC_2 Pin=R7-1
+Added Pin To Net: NetName=FC_5V Pin=R7-2
+Added Pin To Net: NetName=GND Pin=R9R?-1
+Added Pin To Net: NetName=GND Pin=Solar_sensor-2
+Added Pin To Net: NetName=4G_jump Pin=4G_sense-1
+Added Pin To Net: NetName=4G_jump Pin=4G_short-1
+Added Pin To Net: NetName=4G_jump Pin=Modem_Switch-4
+Added Net: Name=4G_jump
+Added Pin To Net: NetName=4G_sense Pin=4G_sense-2
+Added Pin To Net: NetName=4G_sense Pin=4G_sensor-6
+Added Net: Name=4G_sense
+Added Pin To Net: NetName=Battery_ADC Pin=R8-1
+Added Pin To Net: NetName=Battery_ADC Pin=R9R?-2
+Added Net: Name=Battery_ADC
+Added Pin To Net: NetName=Battery Pin=Battery-P
+Added Pin To Net: NetName=Battery Pin=Buck_In-1
+Added Pin To Net: NetName=Battery Pin=R8-2
+Added Net: Name=Battery
+Added Pin To Net: NetName=ESP_sense Pin=ESP_sense-2
+Added Pin To Net: NetName=ESP_sense Pin=ESP_sensor-6
+Added Net: Name=ESP_sense
+Added Pin To Net: NetName=FC_jump Pin=FC_sense-1
+Added Pin To Net: NetName=FC_jump Pin=FC_short-1
+Added Pin To Net: NetName=FC_jump Pin=FC_Switch-4
+Added Net: Name=FC_jump
+Added Pin To Net: NetName=FC_sense Pin=FC_sense-2
+Added Pin To Net: NetName=FC_sense Pin=FC_sensor-6
+Added Net: Name=FC_sense
+Added Pin To Net: NetName=Motor1_ESP Pin=ESP-J2-7
+Added Pin To Net: NetName=Motor1_ESP Pin=Motor1_ESP-1
+Added Net: Name=Motor1_ESP
+Added Pin To Net: NetName=Motor1_IN Pin=Motor1_FC-1
+Added Pin To Net: NetName=Motor1_IN Pin=Motor1IN-1
+Added Net: Name=Motor1_IN
+Added Pin To Net: NetName=Motor1_OUT Pin=Motor1_ESP-2
+Added Pin To Net: NetName=Motor1_OUT Pin=Motor1_FC-2
+Added Pin To Net: NetName=Motor1_OUT Pin=Motor1OUT-1
+Added Net: Name=Motor1_OUT
+Added Pin To Net: NetName=Motor2_ESP Pin=ESP-J2-8
+Added Pin To Net: NetName=Motor2_ESP Pin=Motor2_ESP-1
+Added Net: Name=Motor2_ESP
+Added Pin To Net: NetName=Motor2_IN Pin=Motor2_FC-1
+Added Pin To Net: NetName=Motor2_IN Pin=Motor2IN-1
+Added Net: Name=Motor2_IN
+Added Pin To Net: NetName=Motor2_OUT Pin=Motor2_ESP-2
+Added Pin To Net: NetName=Motor2_OUT Pin=Motor2_FC-2
+Added Pin To Net: NetName=Motor2_OUT Pin=Motor2OUT-1
+Added Net: Name=Motor2_OUT
+Added Pin To Net: NetName=NetR4_1 Pin=R4-1
+Added Pin To Net: NetName=NetR4_1 Pin=Telem-2
+Added Net: Name=NetR4_1
+Added Pin To Net: NetName=Pi_jump Pin=Pi_sense-1
+Added Pin To Net: NetName=Pi_jump Pin=Pi_short-1
+Added Pin To Net: NetName=Pi_jump Pin=Pi_Switch-4
+Added Net: Name=Pi_jump
+Added Pin To Net: NetName=Pi_sense Pin=Pi_sense-2
+Added Pin To Net: NetName=Pi_sense Pin=Pi_sensor-6
+Added Net: Name=Pi_sense
+Added Pin To Net: NetName=Solar_ADC Pin=ESP-J2-5
+Added Pin To Net: NetName=Solar_ADC Pin=Solar_sensor-4
+Added Net: Name=Solar_ADC
+Added Pin To Net: NetName=Solar_IN Pin=Solar_sense-1
+Added Pin To Net: NetName=Solar_IN Pin=Solar_short-1
+Added Net: Name=Solar_IN
+Added Pin To Net: NetName=Solar_OUT Pin=Solar_sensor-1
+Added Pin To Net: NetName=Solar_OUT Pin=Solar_short-2
+Added Net: Name=Solar_OUT
+Added Pin To Net: NetName=Solar_sense Pin=Solar_sense-2
+Added Pin To Net: NetName=Solar_sense Pin=Solar_sensor-6
+Added Net: Name=Solar_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_sensor Header 6
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_short
+Added Member To Class: ClassName=P4P_PCB Member=Component Battery XT60-M
+Added Member To Class: ClassName=P4P_PCB Member=Component Buck_In 691214110002
+Added Member To Class: ClassName=P4P_PCB Member=Component Buck_Out 691214110002
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_sensor Header 6
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_short
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP ESP32-DEVKITC-32D
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_sensor Header 6
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_short
+Added Member To Class: ClassName=P4P_PCB Member=Component Motor1_ESP
+Added Member To Class: ClassName=P4P_PCB Member=Component Motor1_FC
+Added Member To Class: ClassName=P4P_PCB Member=Component Motor1IN Header 2
+Added Member To Class: ClassName=P4P_PCB Member=Component Motor1OUT Header 2
+Added Member To Class: ClassName=P4P_PCB Member=Component Motor2_ESP
+Added Member To Class: ClassName=P4P_PCB Member=Component Motor2_FC
+Added Member To Class: ClassName=P4P_PCB Member=Component Motor2IN Header 2
+Added Member To Class: ClassName=P4P_PCB Member=Component Motor2OUT Header 2
+Added Member To Class: ClassName=P4P_PCB Member=Component Nano ARDUINO_NANO
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_sensor Header 6
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_short
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component R4 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R5 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R6 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R9R? CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component Solar_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component Solar_sensor Header 6
+Added Member To Class: ClassName=P4P_PCB Member=Component Solar_short

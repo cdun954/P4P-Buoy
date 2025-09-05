@@ -1,0 +1,178 @@
+Added Component: Designator=J1(JST_BM06B-GHS-TBT(LF)(SN)(N))
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "JST Sales"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "BM06B-GHS-TBT(LF)(SN)(N)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J2(JST_BM06B-GHS-TBT(LF)(SN)(N))
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "JST Sales"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "BM06B-GHS-TBT(LF)(SN)(N)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J3(GCT_USB1061-XX-X-X_REVA)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/USB1061-GF-L-A/Global+Connector+Technology/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Global Connector Technology"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "USB1061-GF-L-A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/USB1061-GF-L-A/Global+Connector+Technology/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J3(JST_BM06B-GHS-TBT(LF)(SN)(N))
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "JST Sales"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "BM06B-GHS-TBT(LF)(SN)(N)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J4(JST_BM06B-GHS-TBT(LF)(SN)(N))
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "JST Sales"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "BM06B-GHS-TBT(LF)(SN)(N)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J5(JST_BM06B-GHS-TBT(LF)(SN)(N))
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "JST Sales"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "BM06B-GHS-TBT(LF)(SN)(N)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/BM06B-GHS-TBT(LF)(SN)(N)/JST/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=K1(RELAY_G3VM-61VY3)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "G3VM-61VY3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=K2(RELAY_G3VM-61VY3)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "G3VM-61VY3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=K3(RELAY_G3VM-61VY3)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "G3VM-61VY3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Add Component: Footprint Not Found HDR1X4
+Add Component: Footprint Not Found HDR1X10
+Add Component: Footprint Not Found HDR1X2
+Added Component: Designator=U1(MODULE_RASPBERRY_PI_ZERO_2_W)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/RASPBERRY%20PI%20ZERO%202%20W/Raspberry+Pi/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Raspberry Pi"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "RASPBERRY PI ZERO 2 W"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/RASPBERRY%20PI%20ZERO%202%20W/Raspberry+Pi/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=U2(MODULE_ARDUINO_NANO)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/Arduino%20Nano/Arduino/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Arduino"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "Arduino Nano"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "Non-Standard Arduino"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/Arduino%20Nano/Arduino/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=U3(MODULE_ESP32-DEVKITC-32D)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Espressif Systems"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "ESP32-DEVKITC-32D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/ESP32-DEVKITC-32D/Espressif+Systems/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=5V Pin=J1-1
+Added Pin To Net: NetName=5V Pin=J1-2
+Added Pin To Net: NetName=I_sense Pin=J1-3
+Added Pin To Net: NetName=V_sense Pin=J1-4
+Added Pin To Net: NetName=GND Pin=J1-5
+Added Pin To Net: NetName=GND Pin=J1-6
+Added Pin To Net: NetName=FC_5V Pin=J2-1
+Added Pin To Net: NetName=FC_5V Pin=J2-2
+Added Pin To Net: NetName=I_sense Pin=J2-3
+Added Pin To Net: NetName=V_sense Pin=J2-4
+Added Pin To Net: NetName=GND Pin=J2-5
+Added Pin To Net: NetName=GND Pin=J2-6
+Added Pin To Net: NetName=4G_5V Pin=J3-1
+Added Pin To Net: NetName=ESP_Rx Pin=J3-2
+Added Pin To Net: NetName=ESP_Tx Pin=J3-3
+Added Pin To Net: NetName=GND Pin=J3-4
+Added Pin To Net: NetName=GND Pin=J3-5
+Added Pin To Net: NetName=GND Pin=J3-6
+Added Pin To Net: NetName=Pi_Rx Pin=J4-2
+Added Pin To Net: NetName=Pi_Tx Pin=J4-3
+Added Pin To Net: NetName=GND Pin=J4-5
+Added Pin To Net: NetName=GND Pin=J4-6
+Added Pin To Net: NetName=Telem_5V Pin=J5-1
+Added Pin To Net: NetName=A_Rx Pin=J5-2
+Added Pin To Net: NetName=A_Tx Pin=J5-3
+Added Pin To Net: NetName=GND Pin=J5-5
+Added Pin To Net: NetName=GND Pin=J5-6
+Added Pin To Net: NetName=GND Pin=K1-1
+Added Pin To Net: NetName=Modem_High Pin=K1-2
+Added Pin To Net: NetName=5V Pin=K1-3
+Added Pin To Net: NetName=4G_5V Pin=K1-4
+Added Pin To Net: NetName=GND Pin=K2-1
+Added Pin To Net: NetName=Pi_High Pin=K2-2
+Added Pin To Net: NetName=5V Pin=K2-3
+Added Pin To Net: NetName=Pi_5V Pin=K2-4
+Added Pin To Net: NetName=GND Pin=K3-1
+Added Pin To Net: NetName=FC_High Pin=K3-2
+Added Pin To Net: NetName=5V Pin=K3-3
+Added Pin To Net: NetName=FC_5V Pin=K3-4
+Add Pin To Net: Unknown Pin: Pin P2-1
+Add Pin To Net: Unknown Pin: Pin P2-2
+Add Pin To Net: Unknown Pin: Pin P2-3
+Add Pin To Net: Unknown Pin: Pin P2-4
+Add Pin To Net: Unknown Pin: Pin P3-1
+Add Pin To Net: Unknown Pin: Pin P3-2
+Add Pin To Net: Unknown Pin: Pin P3-3
+Add Pin To Net: Unknown Pin: Pin P3-4
+Add Pin To Net: Unknown Pin: Pin P3-5
+Add Pin To Net: Unknown Pin: Pin P3-6
+Add Pin To Net: Unknown Pin: Pin P3-7
+Add Pin To Net: Unknown Pin: Pin P3-8
+Add Pin To Net: Unknown Pin: Pin P3-9
+Add Pin To Net: Unknown Pin: Pin P3-10
+Add Pin To Net: Unknown Pin: Pin P4-1
+Add Pin To Net: Unknown Pin: Pin P4-2
+Added Pin To Net: NetName=Pi_5V Pin=U1-2
+Added Pin To Net: NetName=GND Pin=U1-6
+Added Pin To Net: NetName=Pi_Tx Pin=U1-8
+Added Pin To Net: NetName=Pi_Rx Pin=U1-10
+Added Pin To Net: NetName=Pi_Shutdown Pin=U1-35
+Added Pin To Net: NetName=A_Tx Pin=U2-1
+Added Pin To Net: NetName=A_Rx Pin=U2-2
+Added Pin To Net: NetName=GND Pin=U2-4
+Added Pin To Net: NetName=Sonar_TX Pin=U2-10
+Added Pin To Net: NetName=Sonar_RX Pin=U2-11
+Added Pin To Net: NetName=Telem_5V Pin=U2-30
+Added Pin To Net: NetName=Pi_Shutdown Pin=U3-J2-5
+Added Pin To Net: NetName=I_sense Pin=U3-J2-7
+Added Pin To Net: NetName=V_sense Pin=U3-J2-8
+Added Pin To Net: NetName=Switch_FC Pin=U3-J2-9
+Added Pin To Net: NetName=Switch_Pi Pin=U3-J2-10
+Added Pin To Net: NetName=Switch_Modem Pin=U3-J2-11
+Added Pin To Net: NetName=GND Pin=U3-J2-14
+Added Pin To Net: NetName=5V Pin=U3-J2-19
+Added Pin To Net: NetName=ESP_Tx Pin=U3-J3-4
+Added Pin To Net: NetName=ESP_Rx Pin=U3-J3-5
+Added Member To Class: ClassName=P4P_PCB Member=Component J1 BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component J2 BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component J3 USB1061-XX-X-X_REVA
+Added Member To Class: ClassName=P4P_PCB Member=Component J3 BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component J4 BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component J5 BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component K1 G3VM-61VY3
+Added Member To Class: ClassName=P4P_PCB Member=Component K2 G3VM-61VY3
+Added Member To Class: ClassName=P4P_PCB Member=Component K3 G3VM-61VY3
+Add Class Member: Failed to add class member : Component P2 Header 4
+Add Class Member: Failed to add class member : Component P3 Header 10
+Add Class Member: Failed to add class member : Component P4 Header 2
+Added Member To Class: ClassName=P4P_PCB Member=Component U1 RASPBERRY_PI_ZERO_2_W
+Added Member To Class: ClassName=P4P_PCB Member=Component U2 ARDUINO_NANO
+Added Member To Class: ClassName=P4P_PCB Member=Component U3 ESP32-DEVKITC-32D

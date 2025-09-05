@@ -1,0 +1,33 @@
+Removed Pin From Net: NetName=Switch_Modem Pin=ESP-J2-12
+Removed Pin From Net: NetName=Switch_FC Pin=ESP-J2-15
+Added Pin To Net: NetName=Switch_FC Pin=ESP-J2-12
+Added Pin To Net: NetName=Switch_Modem Pin=ESP-J2-15
+Add Class Member: Failed to add class member : Component 4G_D 150040SS73220
+Add Class Member: Failed to add class member : Component 4G_sense
+Add Class Member: Failed to add class member : Component 4G_short
+Add Class Member: Failed to add class member : Component Balance1 Header 5
+Add Class Member: Failed to add class member : Component Balance2 Header 5
+Add Class Member: Failed to add class member : Component ESP_sense
+Add Class Member: Failed to add class member : Component ESP_short
+Add Class Member: Failed to add class member : Component ESP_T BM06B-GHS-TBT(LF)(SN)(N)
+Add Class Member: Failed to add class member : Component FC_D 150040SS73220
+Add Class Member: Failed to add class member : Component FC_Power BM06B-GHS-TBT(LF)(SN)(N)
+Add Class Member: Failed to add class member : Component FC_sense
+Add Class Member: Failed to add class member : Component FC_short
+Add Class Member: Failed to add class member : Component FC_Switch G3VM-61VY3
+Add Class Member: Failed to add class member : Component Ground Header 2
+Add Class Member: Failed to add class member : Component Modem_Power USB1061-XX-X-X_REVA
+Add Class Member: Failed to add class member : Component Modem_Switch G3VM-61VY3
+Add Class Member: Failed to add class member : Component Motor1_ESP
+Add Class Member: Failed to add class member : Component Motor1_FC
+Add Class Member: Failed to add class member : Component Motor1OUT Header 2
+Add Class Member: Failed to add class member : Component Motor2_ESP
+Add Class Member: Failed to add class member : Component Motor2_FC
+Add Class Member: Failed to add class member : Component Motor2OUT Header 2
+Add Class Member: Failed to add class member : Component Nano_T BM06B-GHS-TBT(LF)(SN)(N)
+Add Class Member: Failed to add class member : Component Pi_sense
+Add Class Member: Failed to add class member : Component Pi_short
+Add Class Member: Failed to add class member : Component Pi_Switch G3VM-61VY3
+Add Class Member: Failed to add class member : Component Pi_T BM06B-GHS-TBT(LF)(SN)(N)
+Add Class Member: Failed to add class member : Component RPI_D 150040SS73220
+Add Class Member: Failed to add class member : Component Telem_D 150040SS73220

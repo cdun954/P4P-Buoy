@@ -1,0 +1,12 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [Peripheral_Board.PrjPcb]
+   Generated File[Peripheral_PCB.TXT]
+   Generated File[Peripheral_PCB.LDP]
+   Generated File[Peripheral_PCB.DRR]
+
+
+Files Generated   : 3
+Documents Printed : 0
+
+Finished Output Generation At 1:24:11 PM On 5/09/2025

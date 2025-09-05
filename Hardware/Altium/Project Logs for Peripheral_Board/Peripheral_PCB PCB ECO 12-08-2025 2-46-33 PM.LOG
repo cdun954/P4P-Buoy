@@ -1,0 +1,4 @@
+Change Component Designator: OldDesignator=J3 NewDesignator=J4
+Change Component Designator: OldDesignator=J4 NewDesignator=J5
+Change Component Designator: OldDesignator=J5 NewDesignator=J6
+Added Member To Class: ClassName=P4P_PCB Member=Component J6 BM06B-GHS-TBT(LF)(SN)(N)

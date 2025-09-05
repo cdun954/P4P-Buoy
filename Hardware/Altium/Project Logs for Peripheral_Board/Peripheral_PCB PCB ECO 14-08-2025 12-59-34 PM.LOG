@@ -1,0 +1,26 @@
+Removed Pin From Net: NetName=4G_5V Pin=J7-1
+Removed Pin From Net: NetName=4G_5V_sense Pin=J7-2
+Removed Pin From Net: NetName=Pi_5V Pin=J8-1
+Removed Pin From Net: NetName=Pi_5V_sense Pin=J8-2
+Removed Pin From Net: NetName=4G_5V Pin=J9-1
+Removed Pin From Net: NetName=FC_5V_sense Pin=J9-2
+Removed Pin From Net: NetName=ESP_5V Pin=J10-1
+Removed Pin From Net: NetName=5V Pin=J10-2
+Removed Member From Class: ClassName=P4P_PCB Member=J7
+Removed Member From Class: ClassName=P4P_PCB Member=J8
+Removed Member From Class: ClassName=P4P_PCB Member=J9
+Removed Member From Class: ClassName=P4P_PCB Member=J10
+Change Component Designator: OldDesignator=FC_S NewDesignator=FC_Switch
+Change Component Designator: OldDesignator=M_S NewDesignator=Modem_Switch
+Change Component Designator: OldDesignator=Pi_S NewDesignator=Pi_Switch
+Added Pin To Net: NetName=4G_5V Pin=4G_sense-1
+Added Pin To Net: NetName=4G_5V_sense Pin=4G_sense-6
+Added Pin To Net: NetName=ESP_5V Pin=ESP_sense-1
+Added Pin To Net: NetName=5V Pin=ESP_sense-6
+Added Pin To Net: NetName=4G_5V Pin=FC_sense-1
+Added Pin To Net: NetName=FC_5V_sense Pin=FC_sense-6
+Added Pin To Net: NetName=Pi_5V Pin=Pi_sense-1
+Added Pin To Net: NetName=Pi_5V_sense Pin=Pi_sense-6
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP ESP32-DEVKITC-32D
+Added Member To Class: ClassName=P4P_PCB Member=Component Nano ARDUINO_NANO
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi BM06B-GHS-TBT(LF)(SN)(N)

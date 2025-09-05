@@ -1,0 +1,5 @@
+Change Component Designator: OldDesignator=ESP NewDesignator=ESP_T
+Change Component Designator: OldDesignator=Nano NewDesignator=Nano_T
+Change Component Designator: OldDesignator=Pi NewDesignator=Pi_T
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_T BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component Nano_T BM06B-GHS-TBT(LF)(SN)(N)

@@ -1,0 +1,47 @@
+Removed Pin From Net: NetName=4G_5V Pin=4G_S-1
+Removed Pin From Net: NetName=GND Pin=4G_S-2
+Removed Pin From Net: NetName=4G_ADC Pin=4G_S-3
+Removed Pin From Net: NetName=4G_sense Pin=4G_S-6
+Removed Pin From Net: NetName=ESP_5V Pin=ESP_S-1
+Removed Pin From Net: NetName=GND Pin=ESP_S-2
+Removed Pin From Net: NetName=ESP_ADC Pin=ESP_S-3
+Removed Pin From Net: NetName=ESP_sense Pin=ESP_S-6
+Removed Pin From Net: NetName=FC_5V Pin=FC_S-1
+Removed Pin From Net: NetName=GND Pin=FC_S-2
+Removed Pin From Net: NetName=FC_ADC Pin=FC_S-3
+Removed Pin From Net: NetName=FC_sense Pin=FC_S-6
+Removed Pin From Net: NetName=Pi_5V Pin=RPI_S-1
+Removed Pin From Net: NetName=GND Pin=RPI_S-2
+Removed Pin From Net: NetName=Pi_ADC Pin=RPI_S-3
+Removed Pin From Net: NetName=Pi_sense Pin=RPI_S-6
+Change Component Footprint: Designator=4G_S Old Footprint=HDR1X6 New Footprint=HDR1X8
+Change Component Footprint: Designator=ESP_S Old Footprint=HDR1X6 New Footprint=HDR1X8
+Change Component Footprint: Designator=FC_S Old Footprint=HDR1X6 New Footprint=HDR1X8
+Change Component Footprint: Designator=RPI_S Old Footprint=HDR1X6 New Footprint=HDR1X8
+Change Component Comment : Designator=4G_S Old Comment=Header 6 New Comment=Header 8
+Change Component Comment : Designator=ESP_S Old Comment=Header 6 New Comment=Header 8
+Change Component Comment : Designator=FC_S Old Comment=Header 6 New Comment=Header 8
+Change Component Comment : Designator=RPI_S Old Comment=Header 6 New Comment=Header 8
+Added Pin To Net: NetName=4G_5V Pin=4G_S-2
+Added Pin To Net: NetName=GND Pin=4G_S-3
+Added Pin To Net: NetName=4G_ADC Pin=4G_S-4
+Added Pin To Net: NetName=4G_sense Pin=4G_S-7
+Added Pin To Net: NetName=ESP_5V Pin=ESP_S-2
+Added Pin To Net: NetName=GND Pin=ESP_S-3
+Added Pin To Net: NetName=ESP_ADC Pin=ESP_S-4
+Added Pin To Net: NetName=ESP_sense Pin=ESP_S-7
+Added Pin To Net: NetName=FC_5V Pin=FC_S-2
+Added Pin To Net: NetName=GND Pin=FC_S-3
+Added Pin To Net: NetName=FC_ADC Pin=FC_S-4
+Added Pin To Net: NetName=FC_sense Pin=FC_S-7
+Added Pin To Net: NetName=Pi_5V Pin=RPI_S-2
+Added Pin To Net: NetName=GND Pin=RPI_S-3
+Added Pin To Net: NetName=Pi_ADC Pin=RPI_S-4
+Added Pin To Net: NetName=Pi_sense Pin=RPI_S-7
+Add Class Member: Failed to add class member : Component 4G_sense
+Add Class Member: Failed to add class member : Component Balance1 Header 5
+Add Class Member: Failed to add class member : Component Balance2 Header 5
+Add Class Member: Failed to add class member : Component ESP_sense
+Add Class Member: Failed to add class member : Component ESP_T BM06B-GHS-TBT(LF)(SN)(N)
+Add Class Member: Failed to add class member : Component FC_sense
+Add Class Member: Failed to add class member : Component Nano_T BM06B-GHS-TBT(LF)(SN)(N)

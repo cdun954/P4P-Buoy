@@ -1,0 +1,42 @@
+Removed Pin From Net: NetName=Battery_ADC Pin=ESP-J2-3
+Removed Pin From Net: NetName=ESP_ADC Pin=ESP-J2-4
+Removed Pin From Net: NetName=Pi_ADC Pin=ESP-J2-5
+Change Component Designator: OldDesignator=1 NewDesignator=Balance1
+Change Component Designator: OldDesignator=2 NewDesignator=Balance2
+Change Component Designator: OldDesignator=4G NewDesignator=4G_D
+Change Component Designator: OldDesignator=4G_R NewDesignator=Modem_Switch
+Change Component Designator: OldDesignator=4G_s NewDesignator=4G_sense
+Change Component Designator: OldDesignator=4G_sc NewDesignator=4G_short
+Change Component Designator: OldDesignator=ESP NewDesignator=ESP_T
+Change Component Designator: OldDesignator=ESP_s NewDesignator=ESP_sense
+Change Component Designator: OldDesignator=ESP_sc NewDesignator=ESP_short
+Change Component Designator: OldDesignator=FC NewDesignator=FC_D
+Change Component Designator: OldDesignator=FC_P NewDesignator=FC_Power
+Change Component Designator: OldDesignator=FC_R NewDesignator=FC_Switch
+Change Component Designator: OldDesignator=FC_s NewDesignator=FC_sense
+Change Component Designator: OldDesignator=FC_sc NewDesignator=FC_short
+Change Component Designator: OldDesignator=GND NewDesignator=Ground
+Change Component Designator: OldDesignator=M1E NewDesignator=Motor1_ESP
+Change Component Designator: OldDesignator=M1FC NewDesignator=Motor1_FC
+Change Component Designator: OldDesignator=M1O NewDesignator=Motor1OUT
+Change Component Designator: OldDesignator=M2E NewDesignator=Motor2_ESP
+Change Component Designator: OldDesignator=M2FC NewDesignator=Motor2_FC
+Change Component Designator: OldDesignator=M2O NewDesignator=Motor2OUT
+Change Component Designator: OldDesignator=Modem NewDesignator=Modem_Power
+Change Component Designator: OldDesignator=Nano NewDesignator=Nano_T
+Change Component Designator: OldDesignator=P_R NewDesignator=Pi_Switch
+Change Component Designator: OldDesignator=Pi NewDesignator=Pi_T
+Change Component Designator: OldDesignator=Pi_s NewDesignator=Pi_sense
+Change Component Designator: OldDesignator=Pi_sc NewDesignator=Pi_short
+Change Component Designator: OldDesignator=R NewDesignator=RPI_D
+Change Component Designator: OldDesignator=T NewDesignator=Telem_D
+Added Pin To Net: NetName=Pi_ADC Pin=ESP-J2-3
+Added Pin To Net: NetName=Battery_ADC Pin=ESP-J2-4
+Added Pin To Net: NetName=ESP_ADC Pin=ESP-J2-5
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component Balance1 Header 5
+Added Member To Class: ClassName=P4P_PCB Member=Component Balance2 Header 5
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_T BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component Nano_T BM06B-GHS-TBT(LF)(SN)(N)

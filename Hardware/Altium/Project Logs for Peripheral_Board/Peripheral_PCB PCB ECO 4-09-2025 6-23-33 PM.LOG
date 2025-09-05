@@ -1,0 +1,14 @@
+Removed Pin From Net: NetName=Switch_FC Pin=ESP-J2-9
+Removed Pin From Net: NetName=Switch_Pi Pin=ESP-J2-10
+Removed Pin From Net: NetName=Switch_Modem Pin=ESP-J2-11
+Removed Pin From Net: NetName=Motor1_ESP Pin=ESP-J3-11
+Removed Pin From Net: NetName=Motor2_ESP Pin=ESP-J3-12
+Added Pin To Net: NetName=Motor1_ESP Pin=ESP-J2-10
+Added Pin To Net: NetName=Motor2_ESP Pin=ESP-J2-11
+Added Pin To Net: NetName=Switch_FC Pin=ESP-J3-10
+Added Pin To Net: NetName=Switch_Pi Pin=ESP-J3-11
+Added Pin To Net: NetName=Switch_Modem Pin=ESP-J3-12
+Add Class Member: Failed to add class member : Component Balance1 Header 5
+Add Class Member: Failed to add class member : Component Balance2 Header 5
+Add Class Member: Failed to add class member : Component ESP_T BM06B-GHS-TBT(LF)(SN)(N)
+Add Class Member: Failed to add class member : Component Nano_T BM06B-GHS-TBT(LF)(SN)(N)

@@ -1,0 +1,12 @@
+Change Component Description : Designator=OP Old Description=Microchip Op Amp, 1MHz CMOS, Rail to Rail, 3 V, 5 V, 5-Pin SOT-23 New Description=Microchip Op Amp, 1MHz CMOS, Rail to Rail, 3 V, 5 V, 5-Pin SOT-23 | Microchip Technology Inc. MCP6001T-I/OT
+Change Component Description : Designator=R1 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R2 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R3 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R4 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R5 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R6 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R7 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R8 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R9 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP ESP32-DEVKITC-32D
+Added Member To Class: ClassName=P4P_PCB Member=Component Nano ARDUINO_NANO

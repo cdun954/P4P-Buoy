@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=GND Pin=4G_D-1
+Removed Pin From Net: NetName=GND Pin=FC_D-1
+Removed Pin From Net: NetName=GND Pin=R_D-1
+Removed Pin From Net: NetName=GND Pin=Telem_D-1
+Removed Member From Class: ClassName=P4P_PCB Member=4G_D
+Removed Member From Class: ClassName=P4P_PCB Member=FC_D
+Removed Member From Class: ClassName=P4P_PCB Member=R_D
+Removed Member From Class: ClassName=P4P_PCB Member=Telem_D8
+Removed Member From Class: ClassName=P4P_PCB Member=Telem_D

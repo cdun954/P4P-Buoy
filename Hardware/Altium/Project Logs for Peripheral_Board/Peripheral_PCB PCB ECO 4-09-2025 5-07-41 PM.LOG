@@ -1,0 +1,300 @@
+Removed Pin From Net: NetName=4G_5V Pin=4G_sensor-1
+Removed Pin From Net: NetName=GND Pin=4G_sensor-2
+Removed Pin From Net: NetName=4G_ADC Pin=4G_sensor-4
+Removed Pin From Net: NetName=4G_sense Pin=4G_sensor-6
+Removed Pin From Net: NetName=ESP_5V Pin=ESP_sensor-1
+Removed Pin From Net: NetName=GND Pin=ESP_sensor-2
+Removed Pin From Net: NetName=ESP_ADC Pin=ESP_sensor-4
+Removed Pin From Net: NetName=ESP_sense Pin=ESP_sensor-6
+Removed Pin From Net: NetName=FC_5V Pin=FC_sensor-1
+Removed Pin From Net: NetName=GND Pin=FC_sensor-2
+Removed Pin From Net: NetName=FC_ADC Pin=FC_sensor-4
+Removed Pin From Net: NetName=FC_sense Pin=FC_sensor-6
+Removed Pin From Net: NetName=Pi_5V Pin=Pi_sensor-1
+Removed Pin From Net: NetName=GND Pin=Pi_sensor-2
+Removed Pin From Net: NetName=Pi_ADC Pin=Pi_sensor-4
+Removed Pin From Net: NetName=Pi_sense Pin=Pi_sensor-6
+Removed Pin From Net: NetName=B_Divider Pin=R8-1
+Removed Pin From Net: NetName=B11 Pin=R8-2
+Removed Pin From Net: NetName=GND Pin=R9-1
+Removed Pin From Net: NetName=B_Divider Pin=R9-2
+Removed Member From Class: ClassName=P4P_PCB Member=4G_sensor
+Removed Member From Class: ClassName=P4P_PCB Member=ESP_sensor
+Removed Member From Class: ClassName=P4P_PCB Member=FC_sensor
+Removed Member From Class: ClassName=P4P_PCB Member=Pi_sensor
+Change Component Description : Designator=OP Old Description=Microchip Op Amp, 1MHz CMOS, Rail to Rail, 3 V, 5 V, 5-Pin SOT-23 New Description=Microchip Op Amp, 1MHz CMOS, Rail to Rail, 3 V, 5 V, 5-Pin SOT-23 | Microchip Technology Inc. MCP6001T-I/OT
+Change Component Description : Designator=R1 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R2 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R3 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R4 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R5 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R6 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R7 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R8 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R9 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Added Component: Designator=OP1(SOT95P270X145-5N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "MCP6001T-I/OT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOT-23 Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=OP2(SOT95P270X145-5N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "MCP6001T-I/OT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOT-23 Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=OP3(SOT95P270X145-5N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "MCP6001T-I/OT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOT-23 Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=OP4(SOT95P270X145-5N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "MCP6001T-I/OT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOT-23 Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R10(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R11(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R12(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R13(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R14(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R15(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R16(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R17(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R18(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R19(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R20(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R21(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R22(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R23(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R24(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R25(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R26(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R27(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R28(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R29(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=4G_ADC Pin=OP1-1
+Added Pin To Net: NetName=GND Pin=OP1-2
+Added Pin To Net: NetName=5V Pin=OP1-5
+Added Pin To Net: NetName=Pi_ADC Pin=OP2-1
+Added Pin To Net: NetName=GND Pin=OP2-2
+Added Pin To Net: NetName=5V Pin=OP2-5
+Added Pin To Net: NetName=FC_ADC Pin=OP3-1
+Added Pin To Net: NetName=GND Pin=OP3-2
+Added Pin To Net: NetName=5V Pin=OP3-5
+Added Pin To Net: NetName=ESP_ADC Pin=OP4-1
+Added Pin To Net: NetName=GND Pin=OP4-2
+Added Pin To Net: NetName=5V Pin=OP4-5
+Added Pin To Net: NetName=B11 Pin=R8-1
+Added Pin To Net: NetName=B_Divider Pin=R8-2
+Added Pin To Net: NetName=B_Divider Pin=R9-1
+Added Pin To Net: NetName=GND Pin=R9-2
+Added Pin To Net: NetName=4G_sense Pin=R10-1
+Added Pin To Net: NetName=4G_5V Pin=R10-2
+Added Pin To Net: NetName=4G_sense Pin=R11-2
+Added Pin To Net: NetName=4G_5V Pin=R12-2
+Added Pin To Net: NetName=4G_ADC Pin=R13-1
+Added Pin To Net: NetName=GND Pin=R14-1
+Added Pin To Net: NetName=Pi_sense Pin=R15-1
+Added Pin To Net: NetName=Pi_5V Pin=R15-2
+Added Pin To Net: NetName=Pi_sense Pin=R16-2
+Added Pin To Net: NetName=Pi_5V Pin=R17-2
+Added Pin To Net: NetName=Pi_ADC Pin=R18-1
+Added Pin To Net: NetName=GND Pin=R19-1
+Added Pin To Net: NetName=FC_sense Pin=R20-1
+Added Pin To Net: NetName=FC_5V Pin=R20-2
+Added Pin To Net: NetName=FC_sense Pin=R21-2
+Added Pin To Net: NetName=FC_5V Pin=R22-2
+Added Pin To Net: NetName=FC_ADC Pin=R23-1
+Added Pin To Net: NetName=GND Pin=R24-1
+Added Pin To Net: NetName=ESP_sense Pin=R25-1
+Added Pin To Net: NetName=ESP_5V Pin=R25-2
+Added Pin To Net: NetName=ESP_sense Pin=R26-2
+Added Pin To Net: NetName=ESP_5V Pin=R27-2
+Added Pin To Net: NetName=ESP_ADC Pin=R28-1
+Added Pin To Net: NetName=GND Pin=R29-1
+Added Pin To Net: NetName=NetOP1_3 Pin=OP1-3
+Added Pin To Net: NetName=NetOP1_3 Pin=R11-1
+Added Pin To Net: NetName=NetOP1_3 Pin=R13-2
+Added Net: Name=NetOP1_3
+Added Pin To Net: NetName=NetOP1_4 Pin=OP1-4
+Added Pin To Net: NetName=NetOP1_4 Pin=R12-1
+Added Pin To Net: NetName=NetOP1_4 Pin=R14-2
+Added Net: Name=NetOP1_4
+Added Pin To Net: NetName=NetOP2_3 Pin=OP2-3
+Added Pin To Net: NetName=NetOP2_3 Pin=R16-1
+Added Pin To Net: NetName=NetOP2_3 Pin=R18-2
+Added Net: Name=NetOP2_3
+Added Pin To Net: NetName=NetOP2_4 Pin=OP2-4
+Added Pin To Net: NetName=NetOP2_4 Pin=R17-1
+Added Pin To Net: NetName=NetOP2_4 Pin=R19-2
+Added Net: Name=NetOP2_4
+Added Pin To Net: NetName=NetOP3_3 Pin=OP3-3
+Added Pin To Net: NetName=NetOP3_3 Pin=R21-1
+Added Pin To Net: NetName=NetOP3_3 Pin=R23-2
+Added Net: Name=NetOP3_3
+Added Pin To Net: NetName=NetOP3_4 Pin=OP3-4
+Added Pin To Net: NetName=NetOP3_4 Pin=R22-1
+Added Pin To Net: NetName=NetOP3_4 Pin=R24-2
+Added Net: Name=NetOP3_4
+Added Pin To Net: NetName=NetOP4_3 Pin=OP4-3
+Added Pin To Net: NetName=NetOP4_3 Pin=R26-1
+Added Pin To Net: NetName=NetOP4_3 Pin=R28-2
+Added Net: Name=NetOP4_3
+Added Pin To Net: NetName=NetOP4_4 Pin=OP4-4
+Added Pin To Net: NetName=NetOP4_4 Pin=R27-1
+Added Pin To Net: NetName=NetOP4_4 Pin=R29-2
+Added Net: Name=NetOP4_4
+Add Class Member: Failed to add class member : Component Balance1 Header 5
+Add Class Member: Failed to add class member : Component Balance2 Header 5
+Added Member To Class: ClassName=P4P_PCB Member=Component OP1 MCP6001T-I/OT
+Added Member To Class: ClassName=P4P_PCB Member=Component OP2 MCP6001T-I/OT
+Added Member To Class: ClassName=P4P_PCB Member=Component OP3 MCP6001T-I/OT
+Added Member To Class: ClassName=P4P_PCB Member=Component OP4 MCP6001T-I/OT
+Added Member To Class: ClassName=P4P_PCB Member=Component R10 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R11 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R12 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R13 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R14 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R15 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R16 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R17 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R18 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R19 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R20 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R21 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R22 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R23 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R24 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R25 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R26 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R27 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R28 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R29 CR0805AJ/-000EAS

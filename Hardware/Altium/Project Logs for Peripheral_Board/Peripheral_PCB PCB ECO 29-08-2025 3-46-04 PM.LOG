@@ -1,0 +1,10 @@
+Change Component Designator: OldDesignator= NewDesignator=4G_D
+Change Component Designator: OldDesignator= NewDesignator=FC_D
+Change Component Designator: OldDesignator= NewDesignator=Telem_D
+Change Component Designator: OldDesignator=R NewDesignator=R_D
+Change Net Name : Old Net Name=Net4G_2 New Net Name=Net4G_D_2
+Change Net Name : Old Net Name=NetFC_2 New Net Name=NetFC_D_2
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_D 150040SS73220
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP ESP32-DEVKITC-32D
+Added Member To Class: ClassName=P4P_PCB Member=Component Nano ARDUINO_NANO
+Added Member To Class: ClassName=P4P_PCB Member=Component Telem_D 150040SS73220

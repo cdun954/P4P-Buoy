@@ -1,0 +1,17 @@
+Removed Pin From Net: NetName=4G_ADC Pin=ESP-J2-3
+Removed Pin From Net: NetName=Pi_ADC Pin=ESP-J2-4
+Removed Pin From Net: NetName=FC_ADC Pin=ESP-J2-5
+Removed Pin From Net: NetName=ESP_ADC Pin=ESP-J2-6
+Removed Pin From Net: NetName=Battery_ADC Pin=ESP-J2-7
+Added Pin To Net: NetName=Battery_ADC Pin=ESP-J2-3
+Added Pin To Net: NetName=ESP_ADC Pin=ESP-J2-4
+Added Pin To Net: NetName=Pi_ADC Pin=ESP-J2-5
+Added Pin To Net: NetName=FC_ADC Pin=ESP-J2-6
+Added Pin To Net: NetName=4G_ADC Pin=ESP-J2-7
+Add Class Member: Failed to add class member : Component 4G_sense
+Add Class Member: Failed to add class member : Component Balance1 Header 5
+Add Class Member: Failed to add class member : Component Balance2 Header 5
+Add Class Member: Failed to add class member : Component ESP_sense
+Add Class Member: Failed to add class member : Component ESP_T BM06B-GHS-TBT(LF)(SN)(N)
+Add Class Member: Failed to add class member : Component FC_sense
+Add Class Member: Failed to add class member : Component Nano_T BM06B-GHS-TBT(LF)(SN)(N)
