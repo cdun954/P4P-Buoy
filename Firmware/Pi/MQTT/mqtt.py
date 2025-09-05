@@ -1,9 +1,28 @@
-#!/usr/bin/env python3
 import time
 import signal
 import sys
 import certifi
 import paho.mqtt.client as mqtt
+
+'''
+Must listen on "pi/cmd" for commands from GUI
+- "ping" -> respond with "pong"
+- "cam" -> toggle camera (not implemented)
+- "proxy" -> toggle proxy mode (not implemented)
+
+Must publish to "pi/telem" for data to the GUI
+- 
+- 
+- 
+- 
+- 
+
+Must run on startup of the Pi
+'''
+
+
+
+
 
 # ==== Broker config ====
 BROKER_HOST = "f1bd5a3c43044a3a816321410ca20435.s1.eu.hivemq.cloud"
@@ -13,7 +32,7 @@ PASSWORD    = "P4P108buoy"
 
 # ==== Topics ====
 TOPIC_SUB = "pi/cmd"
-TOPIC_PUB = "pi/test"
+TOPIC_PUB = "pi/telem"
 
 running = True
 
@@ -62,23 +81,8 @@ def main():
     client.connect_async(BROKER_HOST, BROKER_PORT, keepalive=30)
     client.loop_start()
 
-    t_last = 0
-    counter = 0
-    try:
-        while running:
-            now = time.time()
-            if now - t_last >= 2.0:
-                t_last = now
-                counter += 1
-                msg = f"pi alive #{counter}"
-                # publish non-blocking
-                client.publish(TOPIC_PUB, msg, qos=0, retain=False)
-                print(f"[MQTT] -> {TOPIC_PUB}: {msg}")
-            time.sleep(0.05)
-    finally:
-        print("[MQTT] shutting down…")
-        client.loop_stop()
-        client.disconnect()
+    # do stuff here:
+    
 
 if __name__ == "__main__":
     main()
