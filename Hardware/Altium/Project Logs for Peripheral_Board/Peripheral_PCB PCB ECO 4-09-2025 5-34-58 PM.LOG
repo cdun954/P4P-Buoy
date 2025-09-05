@@ -1,0 +1,14 @@
+Added Component: Designator=R29(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=R29-1
+Added Pin To Net: NetName=NetOP4_4 Pin=R29-2
+Add Class Member: Failed to add class member : Component Balance1 Header 5
+Add Class Member: Failed to add class member : Component Balance2 Header 5
+Add Class Member: Failed to add class member : Component ESP_T BM06B-GHS-TBT(LF)(SN)(N)
+Add Class Member: Failed to add class member : Component Nano_T BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component R29 CR0805AJ/-000EAS

@@ -1,0 +1,213 @@
+Removed Pin From Net: NetName=GND Pin=Battery-N
+Removed Pin From Net: NetName=Battery Pin=Battery-P
+Removed Pin From Net: NetName=Telem_5V Pin=Debug-4
+Removed Pin From Net: NetName=4G_5V Pin=Debug-5
+Removed Pin From Net: NetName=Pi_5V Pin=Debug-6
+Removed Pin From Net: NetName=FC_5V Pin=Debug-7
+Removed Pin From Net: NetName=Sonar_TX Pin=Debug-10
+Remove Pin from Net: Failed to remove Pin
+Removed Pin From Net: NetName=Battery_ADC Pin=R8-1
+Removed Pin From Net: NetName=Battery_ADC Pin=R9R?-2
+Removed Pin From Net: NetName=GND Pin=Solar_sensor-2
+Removed Member From Class: ClassName=P4P_PCB Member=Battery
+Removed Member From Class: ClassName=P4P_PCB Member=Solar_sense
+Removed Member From Class: ClassName=P4P_PCB Member=Solar_sensor
+Removed Member From Class: ClassName=P4P_PCB Member=Solar_short
+Change Component Footprint: Designator=Buck_In Old Footprint=691214110002 New Footprint=TE_1776275-2
+Change Component Footprint: Designator=Buck_Out Old Footprint=691214110002 New Footprint=TE_1776275-2
+Change Component Footprint: Designator=4G Old Footprint=FP-6_544-5255_01-4-MFG New Footprint=WL-SMCC_0402_L1W0.5H0.25
+Change Component Footprint: Designator=FC Old Footprint=FP-6_544-5255_01-4-MFG New Footprint=WL-SMCC_0402_L1W0.5H0.25
+Change Component Footprint: Designator=Telem Old Footprint=FP-6_544-5255_01-4-MFG New Footprint=WL-SMCC_0402_L1W0.5H0.25
+Change Component Footprint: Designator=Debug Old Footprint=HDR1X10 New Footprint=HDR1X4
+Change Component Comment : Designator=Buck_In Old Comment=691214110002 New Comment=1776275-2
+Change Component Comment : Designator=Buck_Out Old Comment=691214110002 New Comment=1776275-2
+Change Component Comment : Designator=Debug Old Comment=Header 10 New Comment=Header 4
+Change Component Comment : Designator=4G Old Comment=TLHR4400 New Comment=150040SS73220
+Change Component Comment : Designator=FC Old Comment=TLHR4400 New Comment=150040SS73220
+Change Component Comment : Designator=Telem Old Comment=TLHR4400 New Comment=150040SS73220
+Change Component Designator: OldDesignator=R9R? NewDesignator=R9
+Change Managed Component Library Link : Designator=4G Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=71E19BCE-AB44-4B0D-AF06-DEDB49F6783D New ItemGUID=939386D0-6007-4CEA-83BF-322A917D2C59 Old RevisionGUID=929358E5-5785-47A3-A8DB-81DE668FB9C0 New RevisionGUID=E3CEE9A9-6051-4E7A-9CEE-394EC7D048B4
+Change Managed Component Library Link : Designator=FC Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=71E19BCE-AB44-4B0D-AF06-DEDB49F6783D New ItemGUID=939386D0-6007-4CEA-83BF-322A917D2C59 Old RevisionGUID=929358E5-5785-47A3-A8DB-81DE668FB9C0 New RevisionGUID=E3CEE9A9-6051-4E7A-9CEE-394EC7D048B4
+Change Managed Component Library Link : Designator=Telem Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 Old ItemGUID=71E19BCE-AB44-4B0D-AF06-DEDB49F6783D New ItemGUID=939386D0-6007-4CEA-83BF-322A917D2C59 Old RevisionGUID=929358E5-5785-47A3-A8DB-81DE668FB9C0 New RevisionGUID=E3CEE9A9-6051-4E7A-9CEE-394EC7D048B4
+Change Managed Component Library Link : Designator=Buck_In Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID= Old ItemGUID=57BBA258-B4B2-4518-AA87-22EF9E9D5922 New ItemGUID= Old RevisionGUID=62586F46-661B-4C5B-B5D8-AFD4E09DC471 New RevisionGUID=
+Change Managed Component Library Link : Designator=Buck_Out Old VaultGUID=B7D15EC3-160A-466F-A46C-7801FE6295A7 New VaultGUID= Old ItemGUID=57BBA258-B4B2-4518-AA87-22EF9E9D5922 New ItemGUID= Old RevisionGUID=62586F46-661B-4C5B-B5D8-AFD4E09DC471 New RevisionGUID=
+Change component parameters: Designator = "4G" ("4G"); Footprint = "FP-6_544-5255_01-4-MFG"; UniqueID = "\NJQNZABD" ("\NJQNZABD")
+Change component parameters (AddParameter): Name = "Case/Package"; Value = "0402"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Color"; Value = "Red"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Dominant Wavelength"; Value = "630nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Forward Current"; Value = "40mA"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Forward Voltage"; Value = "2V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Height"; Value = "250µm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Length"; Value = "1mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Luminous Intensity"; Value = "90mcd"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Junction Temperature (Tj)"; Value = "115°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Reverse Voltage (DC)"; Value = "5V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Peak Wavelength"; Value = "645nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power Dissipation"; Value = "48mW"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reverse Voltage"; Value = "5V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Viewing Angle"; Value = "120°"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wavelength"; Value = "630nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Width"; Value = "500µm"; VariantName = "[No Variations]"
+Change component parameters: Designator = "Buck_In" ("Buck_IN"); Footprint = "691214110002"; UniqueID = "\ZENWLRIA" ("\ZENWLRIA")
+Change component parameters (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/1776275-2/TE+Connectivity+AMP+Connectors/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "TE Connectivity"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "1776275-2"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/1776275-2/TE+Connectivity+AMP+Connectors/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Change component parameters: Designator = "Buck_Out" ("Buck_OUT"); Footprint = "691214110002"; UniqueID = "\YXDUIBZX" ("\YXDUIBZX")
+Change component parameters (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/1776275-2/TE+Connectivity+AMP+Connectors/view-part/?ref=eda"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MF"; Value = "TE Connectivity"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "MP"; Value = "1776275-2"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/1776275-2/TE+Connectivity+AMP+Connectors/view-part/?ref=snap"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Change component parameters: Designator = "FC" ("FC"); Footprint = "FP-6_544-5255_01-4-MFG"; UniqueID = "\BVYKXJYK" ("\BVYKXJYK")
+Change component parameters (AddParameter): Name = "Case/Package"; Value = "0402"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Color"; Value = "Red"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Dominant Wavelength"; Value = "630nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Forward Current"; Value = "40mA"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Forward Voltage"; Value = "2V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Height"; Value = "250µm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Length"; Value = "1mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Luminous Intensity"; Value = "90mcd"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Junction Temperature (Tj)"; Value = "115°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Reverse Voltage (DC)"; Value = "5V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Peak Wavelength"; Value = "645nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power Dissipation"; Value = "48mW"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reverse Voltage"; Value = "5V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Viewing Angle"; Value = "120°"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wavelength"; Value = "630nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Width"; Value = "500µm"; VariantName = "[No Variations]"
+Change component parameters: Designator = "Telem" ("Telem"); Footprint = "FP-6_544-5255_01-4-MFG"; UniqueID = "\JJQAHRQK" ("\JJQAHRQK")
+Change component parameters (AddParameter): Name = "Case/Package"; Value = "0402"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Color"; Value = "Red"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Dominant Wavelength"; Value = "630nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Forward Current"; Value = "40mA"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Forward Voltage"; Value = "2V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Height"; Value = "250µm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Length"; Value = "1mm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Luminous Intensity"; Value = "90mcd"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Junction Temperature (Tj)"; Value = "115°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Max Reverse Voltage (DC)"; Value = "5V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Peak Wavelength"; Value = "645nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Power Dissipation"; Value = "48mW"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Reverse Voltage"; Value = "5V"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Viewing Angle"; Value = "120°"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Wavelength"; Value = "630nm"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Width"; Value = "500µm"; VariantName = "[No Variations]"
+Added Component: Designator=Balance1(HDR1X5)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Balance2(HDR1X5)
+Add component (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Component: Designator=Battery1(JST_B5B-XH-A)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/B5B-XH-A/JST+Sales+America+Inc./view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "JST Sales"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "B5B-XH-A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/B5B-XH-A/JST+Sales+America+Inc./view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=Battery2(JST_B5B-XH-A)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/B5B-XH-A/JST+Sales+America+Inc./view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "JST Sales"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "B5B-XH-A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/B5B-XH-A/JST+Sales+America+Inc./view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=OP(SOT95P270X145-5N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "MCP6001T-I/OT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOT-23 Microchip"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/MCP6001T-I/OT/Microchip/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R(WL-SMCC_0402_L1W0.5H0.25)
+Add component (AddParameter): Name = "Case/Package"; Value = "0402"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Color"; Value = "Red"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Dominant Wavelength"; Value = "630nm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Forward Current"; Value = "40mA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Forward Voltage"; Value = "2V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "250µm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Length"; Value = "1mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Luminous Intensity"; Value = "90mcd"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Junction Temperature (Tj)"; Value = "115°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Reverse Voltage (DC)"; Value = "5V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Peak Wavelength"; Value = "645nm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Power Dissipation"; Value = "48mW"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Reverse Voltage"; Value = "5V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Viewing Angle"; Value = "120°"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Wavelength"; Value = "630nm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Width"; Value = "500µm"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=Balance1-5
+Added Pin To Net: NetName=GND Pin=Balance2-5
+Added Pin To Net: NetName=GND Pin=Battery1-5
+Added Pin To Net: NetName=GND Pin=Battery2-5
+Added Pin To Net: NetName=Sonar_TX Pin=Debug-4
+Added Pin To Net: NetName=Battery_ADC Pin=OP-1
+Added Pin To Net: NetName=GND Pin=OP-2
+Added Pin To Net: NetName=Battery_ADC Pin=OP-4
+Added Pin To Net: NetName=5V Pin=OP-5
+Added Pin To Net: NetName=GND Pin=R-1
+Added Pin To Net: NetName=B11 Pin=Balance1-4
+Added Pin To Net: NetName=B11 Pin=Battery1-4
+Added Net: Name=B11
+Added Pin To Net: NetName=B12 Pin=Balance1-3
+Added Pin To Net: NetName=B12 Pin=Battery1-3
+Added Net: Name=B12
+Added Pin To Net: NetName=B13 Pin=Balance1-2
+Added Pin To Net: NetName=B13 Pin=Battery1-2
+Added Net: Name=B13
+Added Pin To Net: NetName=B14 Pin=Balance1-1
+Added Pin To Net: NetName=B14 Pin=Battery1-1
+Added Net: Name=B14
+Added Pin To Net: NetName=B21 Pin=Balance2-4
+Added Pin To Net: NetName=B21 Pin=Battery2-4
+Added Net: Name=B21
+Added Pin To Net: NetName=B22 Pin=Balance2-3
+Added Pin To Net: NetName=B22 Pin=Battery2-3
+Added Net: Name=B22
+Added Pin To Net: NetName=B23 Pin=Balance2-2
+Added Pin To Net: NetName=B23 Pin=Battery2-2
+Added Net: Name=B23
+Added Pin To Net: NetName=B24 Pin=Balance2-1
+Added Pin To Net: NetName=B24 Pin=Battery2-1
+Added Net: Name=B24
+Added Pin To Net: NetName=B_Divider Pin=OP-3
+Added Pin To Net: NetName=B_Divider Pin=R8-1
+Added Pin To Net: NetName=B_Divider Pin=R9-2
+Added Net: Name=B_Divider
+Added Pin To Net: NetName=NetR6_1 Pin=R-2
+Added Pin To Net: NetName=NetR6_1 Pin=R6-1
+Added Net: Name=NetR6_1
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component Balance1 Header 5
+Added Member To Class: ClassName=P4P_PCB Member=Component Balance2 Header 5
+Added Member To Class: ClassName=P4P_PCB Member=Component Battery1 B5B-XH-A
+Added Member To Class: ClassName=P4P_PCB Member=Component Battery2 B5B-XH-A
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP ESP32-DEVKITC-32D
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component Nano ARDUINO_NANO
+Added Member To Class: ClassName=P4P_PCB Member=Component OP MCP6001T-I/OT
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_sense
+Added Member To Class: ClassName=P4P_PCB Member=Component R 150040SS73220

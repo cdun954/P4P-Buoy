@@ -1,0 +1,4 @@
+Change Component Designator: OldDesignator=FC_D? NewDesignator=FC_D
+Change Net Name : Old Net Name=NetFC_D?_2 New Net Name=NetFC_D_2
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_D 150040SS73220
+Added Member To Class: ClassName=P4P_PCB Member=Component Telem_D 150040SS73220

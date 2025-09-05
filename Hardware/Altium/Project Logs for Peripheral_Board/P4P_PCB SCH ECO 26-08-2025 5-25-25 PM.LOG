@@ -1,0 +1,8 @@
+Remove Pin=Buck_IN-1 From Net=Battery
+Remove Pin=Buck_OUT-1 From Net=5V
+Remove Pin=Debug-1 From Net=Switch_Modem
+Remove Pin=Debug-2 From Net=Switch_Pi
+Remove Pin=Debug-3 From Net=Switch_FC
+Remove Pin=Debug-4 From Net=Sonar_TX
+Remove Pin=OP-5 From Net=5V
+Change Component Designator: OldDesignator=R9 NewDesignator=R9R?
