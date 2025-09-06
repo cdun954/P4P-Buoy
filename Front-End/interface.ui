@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>480</height>
+    <height>421</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="controlTab">
        <attribute name="title">
@@ -50,42 +50,35 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pi_terminal_btn">
-              <property name="text">
-               <string>Pi Terminal</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButton_6">
+             <widget class="QPushButton" name="rc_btn">
               <property name="text">
                <string>RC Override</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="update_btn">
               <property name="text">
                <string>Update</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_3">
+             <widget class="QPushButton" name="rtl_btn">
               <property name="text">
                <string>RTL</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_4">
+             <widget class="QPushButton" name="stop_btn">
               <property name="text">
                <string>STOP</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_5">
+             <widget class="QPushButton" name="resume_btn">
               <property name="text">
                <string>RESUME</string>
               </property>
@@ -217,9 +210,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_23">
+             <widget class="QLabel" name="updatetime_txt">
               <property name="text">
-               <string>[TIME GOES HERE]</string>
+               <string>--:--:--</string>
               </property>
              </widget>
             </item>
@@ -268,6 +261,41 @@
                <widget class="QLabel" name="label_16">
                 <property name="text">
                  <string>Modem Current</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="battv_txt">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="espa_txt">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="pia_txt">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLabel" name="fca_txt">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLabel" name="modema_txt">
+                <property name="text">
+                 <string>-</string>
                 </property>
                </widget>
               </item>

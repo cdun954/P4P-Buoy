@@ -9,8 +9,8 @@ const char* password = "ieroom12345";
 // HiveMQ Cloud details
 const char* mqtt_server = "f1bd5a3c43044a3a816321410ca20435.s1.eu.hivemq.cloud";
 const int mqtt_port = 8883;
-const char* mqtt_user = "P4P-Buoy";       // your HiveMQ username
-const char* mqtt_pass = "P4P108buoy";     // your HiveMQ password
+const char* mqtt_user = "P4P-Buoy";  
+const char* mqtt_pass = "P4P108buoy";  
 
 // Root CA cert
 static const char ca_cert[] PROGMEM = R"EOF(

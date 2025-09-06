@@ -11,13 +11,13 @@ BROKER_PORT = 8883
 USERNAME    = "P4P-Buoy"
 PASSWORD    = "P4P108buoy"
 
-TOPIC_TELEM_ESP = "esp/test"
-TOPIC_TELEM_PI  = "pi/test"
+TOPIC_TELEM_ESP = "esp/telem"
+TOPIC_TELEM_PI  = "pi/telem"
 TOPIC_CMD_ESP   = "esp/cmd"
 TOPIC_CMD_PI    = "pi/cmd"
 
 # ===== CAMERA CONFIG =====
-PI_IP = "100.69.169.69" # STATIC IP of the Raspberry Pi
+PI_IP = "100.69.169.69" # STATIC IP of the Pi
 PORT = 5000
 CAMERA_STREAM_URL = f"http://{PI_IP}:{PORT}/video_feed"
 
@@ -36,23 +36,9 @@ class GUI(QtWidgets.QMainWindow):
         loadUi("Front-End/interface.ui", self)
 
         self.setupUi()
+        self.setupMQTT()
+        self.setupButtons()
 
-        # Wire buttons (if present)
-        if self.btnSendEsp:
-            self.btnSendEsp.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_ESP, "hello from GUI")
-            )
-        if self.btnSendPi:
-            self.btnSendPi.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "hello from GUI")
-            )
-
-        # Connect signals --> UI slots
-        self.mqtt_msg.connect(self.on_mqtt_msg_ui)
-        self.mqtt_status.connect(self.on_mqtt_status_ui)
-
-        # Start MQTT
-        self._build_mqtt()
         self.show()
 
     #=============================================#
@@ -61,12 +47,28 @@ class GUI(QtWidgets.QMainWindow):
     def setupUi(self):
         #------------- CONTROL TAB ---------------#
         # Control Buttons
+        self.btnMavproxy = getattr(self, "mavproxy_btn", None)
+        self.btnRcOverride = getattr(self, "rc_btn", None)
+        self.btnUpdate = getattr(self, "update_btn", None)
+        self.btnRtl = getattr(self, "rtl_btn", None)
+        self.btnStop = getattr(self, "stop_btn", None)
+        self.btnResume = getattr(self, "resume_btn", None)
 
         # Status Labels
+        #TODO:
 
         # Power Labels
+        self.labelBattV = getattr(self, "battv_txt", None)
+        self.labelEspA = getattr(self, "espa_txt", None)
+        self.labelPiA = getattr(self, "pia_txt", None)
+        self.labelFCA = getattr(self, "fca_txt", None)
+        self.labelModemA = getattr(self, "modema_txt", None)
 
         # Sensor Labels
+        #TODO:
+
+        # Update Time Label
+        self.labelUpdateTime = getattr(self, "updatetime_txt", None)
 
         #------------- CAMERA TAB ----------------#
         # Camera Display
@@ -76,7 +78,7 @@ class GUI(QtWidgets.QMainWindow):
         self.btnToggleCam = getattr(self, "cam_btn", None)
 
         #------------ AUTONOMY TAB ---------------#
-        # TODO:
+        #TODO:
 
         #------------- TESTING TAB ---------------#
         # Send Buttons
@@ -86,11 +88,69 @@ class GUI(QtWidgets.QMainWindow):
         self.labelEsp = getattr(self, "recvesp_txt", None)
         self.labelPi  = getattr(self, "recvpi_txt",  None)
 
+    def setupButtons(self):
+        #------------- CONTROL TAB ---------------#
+        if self.btnMavproxy:
+            self.btnMavproxy.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_PI, "toggle_mavproxy")
+            )
+
+        if self.btnRcOverride:
+            self.btnRcOverride.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_PI, "toggle_rc_override")
+            )
+        
+        if self.btnUpdate:
+            self.btnUpdate.clicked.connect(
+                lambda: (self.publish(TOPIC_CMD_PI, "update_status"), 
+                          self.publish(TOPIC_CMD_ESP, "update_status"))
+            )
+
+        if self.btnRtl:
+            self.btnRtl.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_PI, "rtl")
+            )
+        
+        if self.btnStop:
+            self.btnStop.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_PI, "stop")
+            )
+
+        if self.btnResume:
+            self.btnResume.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_PI, "resume")
+            )
+
+        #------------- CAMERA TAB ----------------#
+        if self.btnToggleCam:
+            self.btnToggleCam.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_PI, "toggle_cam")
+            )
+
+        #------------ AUTONOMY TAB ---------------#
+        #TODO:
+
+        #------------- TESTING TAB ---------------#
+        if self.btnSendEsp:
+            self.btnSendEsp.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_ESP, "hello from GUI")
+            )
+        if self.btnSendPi:
+            self.btnSendPi.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_PI, "hello from GUI")
+            )
+
     #=============================================#
     #                 MQTT SETUP                  #
     #=============================================#
+    def setupMQTT(self):
+        # Connect signals --> UI slots
+        self.mqtt_msg.connect(self.on_mqtt_msg_ui)
+        self.mqtt_status.connect(self.on_mqtt_status_ui)
+
+        self._build_mqtt()
+
     def _build_mqtt(self):
-        # Use loop_start() to run network loop in its own thread
         self.mqtt = mqtt.Client(
             client_id=_rand_id("dashboard-"),
             clean_session=True,
