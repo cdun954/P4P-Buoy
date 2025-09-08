@@ -11,8 +11,8 @@ USERNAME    = "P4P-Buoy"
 PASSWORD    = "P4P108buoy"
 
 # ==== Topics ====  
-TOPIC_SUB = "pi/cmd"
-TOPIC_PUB = "pi/telem"
+TOPIC_CMD = "boat/pi/cmd"
+TOPIC_TELEM = "boat/pi/telem"
 
 running = True
 
@@ -51,12 +51,12 @@ DISPATCH = {
 # ---------- MQTT callbacks ----------
 def on_connect(client, userdata, flags, rc):
     print(f"[MQTT] connected rc={rc}")
-    client.subscribe([(TOPIC_SUB, 0)])
+    client.subscribe([(TOPIC_CMD, 0)])
 
 def on_message(client, userdata, msg):
     payload = msg.payload.decode(errors="replace")
     print(f"[MQTT] {msg.topic} -> {payload}")
-    if msg.topic != TOPIC_SUB:
+    if msg.topic != TOPIC_CMD:
         return
     cmd, args = parse_cmd(payload)
     handler = DISPATCH.get(cmd)
@@ -87,6 +87,7 @@ def build_client():
 
 def _stop(*_):
     global running
+    # graceful shutdown here
     running = False
 
 signal.signal(signal.SIGINT, _stop)

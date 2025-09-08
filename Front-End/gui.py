@@ -14,7 +14,7 @@ PASSWORD    = "P4P108buoy"
 TOPIC_TELEM_ESP = "esp/telem"
 TOPIC_TELEM_PI  = "pi/telem"
 TOPIC_CMD_ESP   = "esp/cmd"
-TOPIC_CMD_PI    = "pi/cmd"
+TOPIC_CMD_PI    = "boat/pi/cmd"
 
 # ===== CAMERA CONFIG =====
 PI_IP = "100.69.169.69" # STATIC IP of the Pi

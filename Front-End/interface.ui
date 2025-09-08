@@ -110,62 +110,6 @@
             </item>
             <item>
              <layout class="QFormLayout" name="formLayout_4">
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>ESP State</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>ESP Wi-Fi</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Pi</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>Pi Wi-Fi</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>Pi State</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>FC</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="label_21">
-                <property name="text">
-                 <string>Modem</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="label_24">
-                <property name="text">
-                 <string>Wi-Fi RSSI</string>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_27">
                 <property name="text">
@@ -180,10 +124,45 @@
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="QLabel" name="pi_wifi_txt">
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_6">
                 <property name="text">
-                 <string>connected?</string>
+                 <string>ESP State</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Pi</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Pi State</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>FC</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_21">
+                <property name="text">
+                 <string>Modem</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_24">
+                <property name="text">
+                 <string>Wi-Fi RSSI</string>
                 </property>
                </widget>
               </item>
