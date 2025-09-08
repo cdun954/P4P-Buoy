@@ -2,9 +2,26 @@
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
 
+""" 
+main.ino
+
+Power management controller
+Features:
+- Manages power states based on battery voltage
+- Handles MQTT commands from GCS
+- Controls relays for power distribution
+- Monitors current and voltage via ADC
+- FSM with states: FULL, MID, LOW, CRIT
+"""
+
 /*==============================
           CONSTANTS
 ===============================*/ 
+// ======== MAVLink ==========
+// TODO:
+
+// ======== PI GPIO ==========
+#define PI_SHUTDOWN_PIN  4??
 
 // ======== Relays ==========
 #define RELAY_PI_PIN     23
@@ -74,23 +91,94 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 -----END CERTIFICATE-----
 )EOF";
 
-const char* MQTT_TOPIC_SUB = "esp/cmd";
-const char* MQTT_TOPIC_PUB = "esp/telem";
+const char* MQTT_TOPIC_CMD   = "buoy/esp/cmd";
+const char* MQTT_TOPIC_TELEM = "buoy/esp/telem";
 
 /*==============================
             GLOBALS
 ===============================*/
-enum State {
-  FULL,
-  MID,
-  LOW,
-  CRIT
-};
-State state;
-
+// WiFi and MQTT clients
 WiFiClientSecure wifiClient;
 PubSubClient client(wifiClient);
 String clientId;
+
+// Relay status'
+bool relayPiStatus    = false;
+bool relayModemStatus = false;
+bool relayFCStatus    = false;
+
+// State
+enum State { IDLE, FULL, MID, LOW, CRIT };
+State state = IDLE;
+State prevState = IDLE;
+
+/*==============================
+      FUNCTION DECLARATIONS
+===============================*/
+// MQTT/WiFi
+void setupWiFi();
+void setupMQTT();
+void mqttEnsureConnected();
+void mqttCallback(char* topic, byte* payload, unsigned int len);
+bool sendMsg(const char* topic, const char* msg);
+
+// FSM
+const char* getStateName(State s);
+void enterState(State s);
+void doFull();
+void doMid();
+void doLow();
+void doIdle();
+
+// ADC
+float readBattVoltage();
+float readADCCurrent(int pin);
+
+/*==============================
+          MQTT COMMANDS
+===============================*/
+void cmdUpdate() {
+  // force update status
+  // read adc and send telemetry
+  float v_batt = readBattVoltage();
+  float i_pi   = readADCCurrent(ADC_I_PI_PIN);
+  float i_fc   = readADCCurrent(ADC_I_FC_PIN);
+  float i_modem= readADCCurrent(ADC_I_MODEM_PIN);
+  float i_esp  = readADCCurrent(ADC_I_ESP_PIN);
+  const char* state_str = getStateName(state);
+  bool relay_pi    = relayPiStatus;
+  bool relay_modem = relayModemStatus;
+  bool relay_fc    = relayFCStatus;
+
+  // timestamp
+  // gps?
+
+  // package into json
+  // send via mqtt MQTT_TOPIC_TELEM
+}
+
+void cmdPause() {
+  // pause all operations
+  // enter idle state
+  prevState = state;
+  enterState(IDLE);
+}
+
+void cmdResume() {
+  // resume operations
+  enterState(prevState);
+}
+
+struct Cmd {
+  const char* name;
+  void (*func)();
+};
+
+Cmd commands[] = {
+  {"update", cmdUpdate},
+  {"pause", cmdPause},
+  {"resume", cmdResume}
+};
 
 /*==============================
       MQTT/WIFI FUNCTIONS
@@ -121,16 +209,13 @@ void mqttCallback(char* topic, byte* payload, unsigned int len) {
   len = min(len, (unsigned int)(sizeof(msg)-1));
   memcpy(msg, payload, len);
   msg[len] = '\0';
-  handleMsg(topic, msg);
-}
-
-void handleMsg(const char* topic, const char* msg) {
-  if (strcmp(topic, MQTT_TOPIC_SUB) == 0) {
-    // example command handle
-    if (strcmp(msg, "update_status") == 0) {
-      sendMsg(MQTT_TOPIC_PUB, "status:OK");
+  if (strcmp(topic, MQTT_TOPIC_CMD) == 0) {
+    for (auto &cmd : DISPATCH) {
+      if (strcmp(msg, cmd.name) == 0) {
+        cmd.fn();
+        return;
+      }
     }
-    // add more here
   }
 }
 
@@ -157,8 +242,63 @@ float readADCCurrent(int pin){
 }
 
 /*==============================
+          RELAY FUNCTIONS
+===============================*/
+
+// need to ensure they are held in case of low power mode (ie deep sleep)
+
+void relayModemOn(){
+  digitalWrite(RELAY_MODEM_PIN, HIGH);
+  relayModemStatus = true;
+}
+
+void relayModemOff(){
+  digitalWrite(RELAY_MODEM_PIN, LOW);
+  relayModemStatus = false;
+}
+
+void relayPiOn(){
+  digitalWrite(RELAY_PI_PIN, HIGH);
+  relayPiStatus = true;
+}
+
+void relayPiOff(){
+  digitalWrite(RELAY_PI_PIN, LOW);
+  digitalWrite(PI_SHUTDOWN_PIN, HIGH);
+  delay(1000);    
+  relayPiStatus = false;
+}
+
+void relayFCOn(){
+  digitalWrite(RELAY_FC_PIN, HIGH);
+  relayFCStatus = true;
+  // wait for boot, then arm
+  delay(5000);
+  // armFC();
+}
+
+void relayFCOff(){
+  // disarm first, then wait
+  // disarmFC();
+  delay(2000);
+  digitalWrite(RELAY_FC_PIN, LOW);
+  relayFCStatus = false;
+}
+
+/*==============================
           FSM FUNCTIONS
 ===============================*/
+const char* getStateName(State s) {
+  switch (s) {
+    case IDLE: return "IDLE";
+    case FULL: return "FULL";
+    case MID:  return "MID";
+    case LOW:  return "LOW";
+    case CRIT: return "CRIT";
+    default:   return "UNKNOWN";
+  }
+}
+
 void enterState(State s) {
   state = s;
   switch (state){
@@ -186,6 +326,10 @@ void enterState(State s) {
       // arm FC
       // force RTL
       break;
+    case IDLE:
+      // entering idle
+      // everything on?
+      break;
   }
 }
 
@@ -206,6 +350,11 @@ void doLow(){
   // go back to sleep
 }
 
+void doIdle(){
+  // idle behaviour here
+  // entered from user command (pause)
+  // everything on?
+}
 
 
 /*==============================
@@ -215,11 +364,6 @@ void setup() {
   // init adc
   analogReadResolution(ADC_RES); // 12-bit
   analogSetAttenuation(ADC_11db); // Full-scale ~3.3–3.6 V
-  
-  // init rest of system
-  Serial.begin(115200);
-  setupWiFi();
-  setupMQTT();
 
   // determine state from battery voltage
   float v_batt = readBattVoltage();
@@ -227,6 +371,11 @@ void setup() {
   else if (v_batt >= V_LOW_BOUNDARY) enterState(MID);
   else if (v_batt >= V_CRIT_BOUNDARY) enterState(LOW);
   else enterState(CRIT);
+
+  // init rest of system
+  Serial.begin(115200);
+  setupWiFi();
+  setupMQTT();
 }
 
 /*==============================
@@ -251,6 +400,10 @@ void loop() {
       doLow();
       if (v_batt >= V_LOW_BOUNDARY + V_HYSTERESIS) enterState(MID);
       if (v_batt < V_CRIT_BOUNDARY) enterState(CRIT);
+      break;
+
+    case IDLE:
+      doIdle();
       break;
   }
 }

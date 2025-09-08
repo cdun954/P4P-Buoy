@@ -5,16 +5,31 @@ from PyQt5.uic import loadUi
 import paho.mqtt.client as mqtt
 import certifi
 
+"""
+gui.py 
+
+The PyQt5 GUI application for the P4P Buoy project.
+Features:
+- Full GUI with tabs for Control, Camera, Autonomy, and Testing
+- Communicates with the Raspberry Pi and ESP32 via MQTT
+- Displays live camera feed from the Pi
+- Displays telemetry data and system status
+- Displays autonomy status and visualisation
+"""
+
+# ==== PYQT5 SETUP =====
+UI_FILE = "GUI/gui.ui"
+
 # ===== MQTT CONFIG =====
 BROKER_HOST = "f1bd5a3c43044a3a816321410ca20435.s1.eu.hivemq.cloud"
 BROKER_PORT = 8883 
 USERNAME    = "P4P-Buoy"
 PASSWORD    = "P4P108buoy"
 
-TOPIC_TELEM_ESP = "esp/telem"
-TOPIC_TELEM_PI  = "pi/telem"
-TOPIC_CMD_ESP   = "esp/cmd"
-TOPIC_CMD_PI    = "boat/pi/cmd"
+TOPIC_TELEM_ESP = "buoy/esp/telem"
+TOPIC_TELEM_PI  = "buoy/pi/telem"
+TOPIC_CMD_ESP   = "buoy/esp/cmd"
+TOPIC_CMD_PI    = "buoy/pi/cmd"
 
 # ===== CAMERA CONFIG =====
 PI_IP = "100.69.169.69" # STATIC IP of the Pi
@@ -33,7 +48,7 @@ class GUI(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(GUI, self).__init__()
-        loadUi("Front-End/interface.ui", self)
+        loadUi(UI_FILE, self)
 
         self.setupUi()
         self.setupMQTT()
