@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=Motor1_ESP Pin=ESP-J2-9
+Removed Pin From Net: NetName=Motor2_ESP Pin=ESP-J2-10
+Added Pin To Net: NetName=Motor2_ESP Pin=ESP-J2-9
+Added Pin To Net: NetName=Motor1_ESP Pin=ESP-J2-10

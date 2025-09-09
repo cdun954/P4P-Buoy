@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=Telem_5V Pin=Sonar-1
+Removed Pin From Net: NetName=Sonar_RX Pin=Sonar-3
+Added Pin To Net: NetName=Sonar_RX Pin=Sonar-1
+Added Pin To Net: NetName=Telem_5V Pin=Sonar-3
+Added Member To Class: ClassName=P4P_PCB Member=Component M1_FC

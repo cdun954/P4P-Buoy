@@ -1,0 +1,3 @@
+Change Component Designator: OldDesignator=FC_Relay NewDesignator=FC_Sw
+Change Component Designator: OldDesignator=M_Relay NewDesignator=M_Sw
+Change Component Designator: OldDesignator=P_Relay NewDesignator=P_Sw

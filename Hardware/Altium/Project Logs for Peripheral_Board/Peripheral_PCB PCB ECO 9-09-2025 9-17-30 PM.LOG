@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=Sonar_RX Pin=Sonar-2
+Removed Pin From Net: NetName=Sonar_TX Pin=Sonar-3
+Added Pin To Net: NetName=Sonar_TX Pin=Sonar-2
+Added Pin To Net: NetName=Sonar_RX Pin=Sonar-3

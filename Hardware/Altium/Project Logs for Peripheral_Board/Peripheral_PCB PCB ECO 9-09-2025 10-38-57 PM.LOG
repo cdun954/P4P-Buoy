@@ -1,0 +1,3 @@
+Change Component Designator: OldDesignator=FC_Switch NewDesignator=FC_Relay
+Change Component Designator: OldDesignator=Modem_Switch NewDesignator=M_Relay
+Change Component Designator: OldDesignator=Pi_Switch NewDesignator=P_Relay

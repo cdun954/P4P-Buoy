@@ -1,0 +1,117 @@
+Removed Pin From Net: NetName=GND Pin=4G_R-1
+Removed Pin From Net: NetName=Modem_High Pin=4G_R-2
+Removed Pin From Net: NetName=4G_5V Pin=4G_S-2
+Removed Pin From Net: NetName=GND Pin=4G_S-3
+Removed Pin From Net: NetName=4G_ADC Pin=4G_S-4
+Removed Pin From Net: NetName=4G_sense Pin=4G_S-7
+Removed Pin From Net: NetName=ESP_5V Pin=ESP_S-2
+Removed Pin From Net: NetName=GND Pin=ESP_S-3
+Removed Pin From Net: NetName=ESP_ADC Pin=ESP_S-4
+Removed Pin From Net: NetName=ESP_sense Pin=ESP_S-7
+Removed Pin From Net: NetName=GND Pin=FC_R-1
+Removed Pin From Net: NetName=FC_High Pin=FC_R-2
+Removed Pin From Net: NetName=FC_5V Pin=FC_S-2
+Removed Pin From Net: NetName=GND Pin=FC_S-3
+Removed Pin From Net: NetName=FC_ADC Pin=FC_S-4
+Removed Pin From Net: NetName=FC_sense Pin=FC_S-7
+Removed Pin From Net: NetName=4G_5V Pin=Modem-1
+Removed Pin From Net: NetName=GND Pin=Modem-4
+Removed Pin From Net: NetName=GND Pin=P_R-1
+Removed Pin From Net: NetName=Pi_High Pin=P_R-2
+Removed Pin From Net: NetName=Pi_5V Pin=RPI_S-2
+Removed Pin From Net: NetName=GND Pin=RPI_S-3
+Removed Pin From Net: NetName=Pi_ADC Pin=RPI_S-4
+Removed Pin From Net: NetName=Pi_sense Pin=RPI_S-7
+Change Component Footprint: Designator=4G_S Old Footprint=HDR1X8 New Footprint=HDR1X6H
+Change Component Footprint: Designator=ESP_S Old Footprint=HDR1X8 New Footprint=HDR1X6H
+Change Component Footprint: Designator=FC_S Old Footprint=HDR1X8 New Footprint=HDR1X6H
+Change Component Footprint: Designator=RPI_S Old Footprint=HDR1X8 New Footprint=HDR1X6H
+Change Component Comment : Designator=4G_S Old Comment=Header 8 New Comment=Header 6H
+Change Component Comment : Designator=ESP_S Old Comment=Header 8 New Comment=Header 6H
+Change Component Comment : Designator=FC_S Old Comment=Header 8 New Comment=Header 6H
+Change Component Comment : Designator=RPI_S Old Comment=Header 8 New Comment=Header 6H
+Change Component Designator: OldDesignator=1 NewDesignator=Bal_1
+Change Component Designator: OldDesignator=2 NewDesignator=Bal_2
+Change Component Designator: OldDesignator=4G NewDesignator=4G_D
+Change Component Designator: OldDesignator=4G_R NewDesignator=Modem_Switch
+Change Component Designator: OldDesignator=4G_s NewDesignator=4G_sen
+Change Component Designator: OldDesignator=Battery1 NewDesignator=Bat_1
+Change Component Designator: OldDesignator=Battery2 NewDesignator=Bat_2
+Change Component Designator: OldDesignator=ESP NewDesignator=ESP_T
+Change Component Designator: OldDesignator=ESP_s NewDesignator=ESP_sen
+Change Component Designator: OldDesignator=FC NewDesignator=FC_D
+Change Component Designator: OldDesignator=FC_R NewDesignator=FC_Switch
+Change Component Designator: OldDesignator=FC_s NewDesignator=FC_sen
+Change Component Designator: OldDesignator=GND NewDesignator=Ground
+Change Component Designator: OldDesignator=M1E NewDesignator=M1_E
+Change Component Designator: OldDesignator=M1FC NewDesignator=M1_FC
+Change Component Designator: OldDesignator=M1O NewDesignator=M1_O
+Change Component Designator: OldDesignator=M2E NewDesignator=M2_E
+Change Component Designator: OldDesignator=M2FC NewDesignator=M2_FC
+Change Component Designator: OldDesignator=M2O NewDesignator=M2_O
+Change Component Designator: OldDesignator=MotorIN NewDesignator=M_IN
+Change Component Designator: OldDesignator=Nano NewDesignator=Nano_T
+Change Component Designator: OldDesignator=P_R NewDesignator=Pi_Switch
+Change Component Designator: OldDesignator=Pi NewDesignator=Pi_T
+Change Component Designator: OldDesignator=Pi_s NewDesignator=Pi_sen
+Change Component Designator: OldDesignator=R NewDesignator=RPI_D
+Change Component Designator: OldDesignator=T NewDesignator=Telem_D
+Added Component: Designator=4G(OST_USB-A1HSW6)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "{'manufacturer': u'On Shore Technology Inc.'}"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "USB-A1HSW6"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=4G-4
+Added Pin To Net: NetName=4G_5V Pin=4G_S-1
+Added Pin To Net: NetName=GND Pin=4G_S-2
+Added Pin To Net: NetName=4G_ADC Pin=4G_S-3
+Added Pin To Net: NetName=4G_sense Pin=4G_S-6
+Added Pin To Net: NetName=ESP_5V Pin=ESP_S-1
+Added Pin To Net: NetName=GND Pin=ESP_S-2
+Added Pin To Net: NetName=ESP_ADC Pin=ESP_S-3
+Added Pin To Net: NetName=ESP_sense Pin=ESP_S-6
+Added Pin To Net: NetName=FC_5V Pin=FC_S-1
+Added Pin To Net: NetName=GND Pin=FC_S-2
+Added Pin To Net: NetName=FC_ADC Pin=FC_S-3
+Added Pin To Net: NetName=FC_sense Pin=FC_S-6
+Added Pin To Net: NetName=FC_High Pin=FC_Switch-1
+Added Pin To Net: NetName=GND Pin=FC_Switch-2
+Added Pin To Net: NetName=Modem_High Pin=Modem_Switch-1
+Added Pin To Net: NetName=GND Pin=Modem_Switch-2
+Added Pin To Net: NetName=Pi_High Pin=Pi_Switch-1
+Added Pin To Net: NetName=GND Pin=Pi_Switch-2
+Added Pin To Net: NetName=Pi_5V Pin=RPI_S-1
+Added Pin To Net: NetName=GND Pin=RPI_S-2
+Added Pin To Net: NetName=Pi_ADC Pin=RPI_S-3
+Added Pin To Net: NetName=Pi_sense Pin=RPI_S-6
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_D 150040SS73220
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_sc
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_sen
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G USB-A1HSW6
+Added Member To Class: ClassName=P4P_PCB Member=Component Bal_1 Header 5
+Added Member To Class: ClassName=P4P_PCB Member=Component Bal_2 Header 5
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_sc
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_sen
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_T BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_D 150040SS73220
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_P BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_sc
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_sen
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_Switch G3VM-61VY3
+Added Member To Class: ClassName=P4P_PCB Member=Component Ground Header 2
+Added Member To Class: ClassName=P4P_PCB Member=Component M1_E
+Added Member To Class: ClassName=P4P_PCB Member=Component M1_FC
+Added Member To Class: ClassName=P4P_PCB Member=Component M1_O Header 2
+Added Member To Class: ClassName=P4P_PCB Member=Component M2_E
+Added Member To Class: ClassName=P4P_PCB Member=Component M2_FC
+Added Member To Class: ClassName=P4P_PCB Member=Component M2_O Header 2
+Added Member To Class: ClassName=P4P_PCB Member=Component Modem_Switch G3VM-61VY3
+Added Member To Class: ClassName=P4P_PCB Member=Component Nano_T BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_sc
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_sen
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_Switch G3VM-61VY3
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_T BM06B-GHS-TBT(LF)(SN)(N)
+Added Member To Class: ClassName=P4P_PCB Member=Component RPI_D 150040SS73220
+Added Member To Class: ClassName=P4P_PCB Member=Component Telem_D 150040SS73220

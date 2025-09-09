@@ -1,0 +1,46 @@
+Added Component: Designator=4G_D(LED_SM0603UYC)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/SM0603UYC/Bivar/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bivar"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SM0603UYC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0603 Bivar"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SM0603UYC/Bivar/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=FC_D(LED_SM0603UYC)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/SM0603UYC/Bivar/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bivar"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SM0603UYC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0603 Bivar"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SM0603UYC/Bivar/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=Pi_D(LED_SM0603UYC)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/SM0603UYC/Bivar/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bivar"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SM0603UYC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0603 Bivar"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SM0603UYC/Bivar/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=T_D(LED_SM0603UYC)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/SM0603UYC/Bivar/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bivar"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SM0603UYC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0603 Bivar"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SM0603UYC/Bivar/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=4G_D-C
+Added Pin To Net: NetName=GND Pin=FC_D-C
+Added Pin To Net: NetName=GND Pin=Pi_D-C
+Added Pin To Net: NetName=NetR4_1 Pin=T_D-A
+Added Pin To Net: NetName=GND Pin=T_D-C
+Added Pin To Net: NetName=Net4G_D_A Pin=4G_D-A
+Added Pin To Net: NetName=Net4G_D_A Pin=R5-1
+Added Net: Name=Net4G_D_A
+Added Pin To Net: NetName=NetFC_D_A Pin=FC_D-A
+Added Pin To Net: NetName=NetFC_D_A Pin=R7-1
+Added Net: Name=NetFC_D_A
+Added Pin To Net: NetName=NetPi_D_A Pin=Pi_D-A
+Added Pin To Net: NetName=NetPi_D_A Pin=R6-1
+Added Net: Name=NetPi_D_A
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_D SM0603UYC
+Added Member To Class: ClassName=P4P_PCB Member=Component FC_D SM0603UYC
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_D SM0603UYC
+Added Member To Class: ClassName=P4P_PCB Member=Component T_D SM0603UYC
