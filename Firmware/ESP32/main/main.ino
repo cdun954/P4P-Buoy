@@ -1,6 +1,8 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
+#include <HardwareSerial.h>
+#include <MAVLink.h>
 
 """ 
 main.ino
@@ -18,10 +20,17 @@ Features:
           CONSTANTS
 ===============================*/ 
 // ======== MAVLink ==========
-// TODO:
+#define FC_RX_PIN 16    // ESP32 RX2 (GPIO16)  <- FC TX
+#define FC_TX_PIN 17    // ESP32 TX2 (GPIO17)  -> FC
+#define FC_BAUD   57600
+
+static uint8_t g_sysid  = 245;
+static uint8_t g_compid = MAV_COMP_ID_ONBOARD_COMPUTER;
+static uint8_t tgt_sys  = 1;
+static uint8_t tgt_comp = MAV_COMP_ID_AUTOPILOT1;
 
 // ======== PI GPIO ==========
-#define PI_SHUTDOWN_PIN  4??
+#define PI_SHUTDOWN_PIN  4
 
 // ======== Relays ==========
 #define RELAY_PI_PIN     23
@@ -102,6 +111,11 @@ WiFiClientSecure wifiClient;
 PubSubClient client(wifiClient);
 String clientId;
 
+// MAVLink
+HardwareSerial FC(2);
+static mavlink_message_t rx_msg;
+static mavlink_status_t  rx_status;
+
 // Relay status'
 bool relayPiStatus    = false;
 bool relayModemStatus = false;
@@ -112,8 +126,9 @@ enum State { IDLE, FULL, MID, LOW, CRIT };
 State state = IDLE;
 State prevState = IDLE;
 
+
 /*==============================
-      FUNCTION DECLARATIONS
+      FORWARD DECLARATIONS
 ===============================*/
 // MQTT/WiFi
 void setupWiFi();
@@ -121,6 +136,15 @@ void setupMQTT();
 void mqttEnsureConnected();
 void mqttCallback(char* topic, byte* payload, unsigned int len);
 bool sendMsg(const char* topic, const char* msg);
+
+// MQTT commands
+void cmdUpdate();
+void cmdPause();
+void cmdResume();
+void cmdForceRTL();
+void cmdArmFC();
+void cmdDisarmFC();
+
 
 // FSM
 const char* getStateName(State s);
@@ -134,21 +158,39 @@ void doIdle();
 float readBattVoltage();
 float readADCCurrent(int pin);
 
+// Relays
+void relayModemOn();
+void relayModemOff();
+void relayPiOn();
+void relayPiOff();
+void relayFCOn();
+void relayFCOff();
+
+// FC / MAVLink
+void armFC();
+void disarmFC();
+void forceRTL();
+const char* getFCGPS();
+static void mav_send(const mavlink_message_t &m);
+static void mav_cmd_long(uint16_t command,
+                         float p1,float p2,float p3,float p4,
+                         float p5,float p6,float p7);
+
 /*==============================
           MQTT COMMANDS
 ===============================*/
 void cmdUpdate() {
   // force update status
   // read adc and send telemetry
-  float v_batt = readBattVoltage();
-  float i_pi   = readADCCurrent(ADC_I_PI_PIN);
-  float i_fc   = readADCCurrent(ADC_I_FC_PIN);
-  float i_modem= readADCCurrent(ADC_I_MODEM_PIN);
-  float i_esp  = readADCCurrent(ADC_I_ESP_PIN);
-  const char* state_str = getStateName(state);
-  bool relay_pi    = relayPiStatus;
-  bool relay_modem = relayModemStatus;
-  bool relay_fc    = relayFCStatus;
+  float v_batt          = readBattVoltage();
+  float i_pi            = readADCCurrent(ADC_I_PI_PIN);
+  float i_fc            = readADCCurrent(ADC_I_FC_PIN);
+  float i_modem         = readADCCurrent(ADC_I_MODEM_PIN);
+  float i_esp           = readADCCurrent(ADC_I_ESP_PIN);
+  const char* state     = getStateName(state);
+  bool relay_pi         = relayPiStatus;
+  bool relay_modem      = relayModemStatus;
+  bool relay_fc         = relayFCStatus;
 
   // timestamp
   // gps?
@@ -169,6 +211,12 @@ void cmdResume() {
   enterState(prevState);
 }
 
+void cmdForceRTL() {
+  // probably need to ensure FC is on and other things
+  forceRTL();
+}
+
+
 struct Cmd {
   const char* name;
   void (*func)();
@@ -177,7 +225,10 @@ struct Cmd {
 Cmd commands[] = {
   {"update", cmdUpdate},
   {"pause", cmdPause},
-  {"resume", cmdResume}
+  {"resume", cmdResume},
+  {"rtl", cmdForceRTL},
+  {"arm", cmdArmFC},
+  {"disarm", cmdDisarmFC}
 };
 
 /*==============================
@@ -199,7 +250,7 @@ void setupMQTT() {
 void mqttEnsureConnected() {
   while (!client.connected()) {
     if (client.connect(clientId.c_str(), MQTT_USER, MQTT_PASS)) {
-      client.subscribe(MQTT_TOPIC_SUB);
+      client.subscribe(MQTT_TOPIC_CMD);
     } else { delay(2000); }
   }
 }
@@ -210,7 +261,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int len) {
   memcpy(msg, payload, len);
   msg[len] = '\0';
   if (strcmp(topic, MQTT_TOPIC_CMD) == 0) {
-    for (auto &cmd : DISPATCH) {
+    for (auto &cmd : commands) {
       if (strcmp(msg, cmd.name) == 0) {
         cmd.fn();
         return;
@@ -274,16 +325,94 @@ void relayFCOn(){
   relayFCStatus = true;
   // wait for boot, then arm
   delay(5000);
-  // armFC();
+  armFC();
 }
 
 void relayFCOff(){
   // disarm first, then wait
-  // disarmFC();
+  disarmFC();
   delay(2000);
   digitalWrite(RELAY_FC_PIN, LOW);
   relayFCStatus = false;
 }
+
+/*==============================
+      FC/MAVLink FUNCTIONS
+===============================*/
+void armFC() {
+  mav_cmd_long(MAV_CMD_COMPONENT_ARM_DISARM, 1.0f);
+  Serial.println(F("[MAV] ARM sent"));
+}
+
+void disarmFC() {
+  mav_cmd_long(MAV_CMD_COMPONENT_ARM_DISARM, 0.0f);
+  Serial.println(F("[MAV] DISARM sent"));
+}
+
+void forceRTL() {
+  mavlink_message_t m;
+  const uint8_t  base_mode   = MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
+  const uint32_t custom_mode = 8; // Rover Smart RTL
+  mavlink_msg_set_mode_pack(g_sysid, g_compid, &m, tgt_sys, base_mode, custom_mode);
+  mav_send(m);
+  Serial.println(F("[MAV] RTL sent"));
+}
+
+float* getFCGPS() {
+  static float res[4] = {NAN, NAN, NAN, NAN};  // {lat, lon, alt, hdg}
+
+  while (FC.available()) {
+    const uint8_t c = FC.read();
+    if (mavlink_parse_char(MAVLINK_COMM_0, c, &rx_msg, &rx_status)) {
+      switch (rx_msg.msgid) {
+
+        case MAVLINK_MSG_ID_GLOBAL_POSITION_INT: {
+          mavlink_global_position_int_t g;
+          mavlink_msg_global_position_int_decode(&rx_msg, &g);
+          res[0] = g.lat / 1e7;
+          res[1] = g.lon / 1e7;
+          res[2] = g.alt / 1000.0f;                            // m AMSL
+          res[3] = (g.hdg == UINT16_MAX) ? NAN : (g.hdg / 100.0f);
+          return res;
+        }
+
+        case MAVLINK_MSG_ID_GPS_RAW_INT: {
+          mavlink_gps_raw_int_t r;
+          mavlink_msg_gps_raw_int_decode(&rx_msg, &r);
+          if (r.fix_type >= 2) {
+            res[0] = r.lat / 1e7;
+            res[1] = r.lon / 1e7;
+            res[2] = r.alt / 1000.0f;
+            res[3] = NAN; // heading not provided
+            return res;
+          }
+        } break;
+
+        default:
+          break;
+      }
+    }
+  }
+  return res; // unchanged {NAN,NAN,NAN,NAN} if nothing seen
+}
+
+static void mav_send(const mavlink_message_t &m) {
+  uint8_t buf[MAVLINK_MAX_PACKET_LEN];
+  const uint16_t n = mavlink_msg_to_send_buffer(buf, &m);
+  FC.write(buf, n);
+}
+
+static void mav_cmd_long(uint16_t command,
+                         float p1=0,float p2=0,float p3=0,float p4=0,
+                         float p5=0,float p6=0,float p7=0) {
+  mavlink_message_t m;
+  mavlink_msg_command_long_pack(
+    g_sysid, g_compid, &m,
+    tgt_sys, tgt_comp, command, 0,
+    p1,p2,p3,p4,p5,p6,p7);
+  mav_send(m);
+}
+
 
 /*==============================
           FSM FUNCTIONS
@@ -374,6 +503,7 @@ void setup() {
 
   // init rest of system
   Serial.begin(115200);
+  FC.begin(FC_BAUD, SERIAL_8N1, FC_RX_PIN, FC_TX_PIN);
   setupWiFi();
   setupMQTT();
 }
