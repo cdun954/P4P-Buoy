@@ -1,0 +1,32 @@
+Removed Pin From Net: NetName=ESP_5V Pin=ESP_S-1
+Removed Pin From Net: NetName=ESP_ADC Pin=ESP_S-3
+Removed Pin From Net: NetName=ESP_sense Pin=ESP_S-6
+Removed Pin From Net: NetName=Pi_5V Pin=RPI_S-1
+Removed Pin From Net: NetName=Pi_ADC Pin=RPI_S-3
+Removed Pin From Net: NetName=Pi_sense Pin=RPI_S-6
+Removed Member From Class: ClassName=P4P_PCB Member=RPI_S
+Change Component Designator: OldDesignator=ESP_S NewDesignator=Pi_S
+Change Component Designator: OldDesignator=RPI_S NewDesignator=ESP_S
+Change Component Description : Designator=4G_D Old Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle New Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle | Bivar Inc. SM0603UYC
+Change Component Description : Designator=FC_D Old Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle New Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle | Bivar Inc. SM0603UYC
+Change Component Description : Designator=Pi_D Old Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle New Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle | Bivar Inc. SM0603UYC
+Change Component Description : Designator=T_D Old Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle New Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle | Bivar Inc. SM0603UYC
+Change Component Description : Designator=OP Old Description=Microchip Op Amp, 1MHz CMOS, Rail to Rail, 3 V, 5 V, 5-Pin SOT-23 New Description=Microchip Op Amp, 1MHz CMOS, Rail to Rail, 3 V, 5 V, 5-Pin SOT-23 | Microchip Technology Inc. MCP6001T-I/OT
+Change Component Description : Designator=R1 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R2 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R3 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R4 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R5 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R6 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R7 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R8 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R9 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Added Pin To Net: NetName=ESP_5V Pin=ESP_S-1
+Added Pin To Net: NetName=ESP_ADC Pin=ESP_S-3
+Added Pin To Net: NetName=ESP_sense Pin=ESP_S-6
+Added Pin To Net: NetName=Pi_5V Pin=Pi_S-1
+Added Pin To Net: NetName=Pi_ADC Pin=Pi_S-3
+Added Pin To Net: NetName=Pi_sense Pin=Pi_S-6
+Added Member To Class: ClassName=P4P_PCB Member=Component Bal_1 Header 5
+Added Member To Class: ClassName=P4P_PCB Member=Component Bat_2 B5B-XH-A
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_S Header 6H

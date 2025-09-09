@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=Pi_Shutdown Pin=RPI-35
+Change Component Designator: OldDesignator=Pi_s NewDesignator=Pi_sen
+Added Pin To Net: NetName=Pi_5V Pin=RPI-4
+Added Pin To Net: NetName=Pi_Shutdown Pin=RPI-7
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_S Header 6H
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_sen
