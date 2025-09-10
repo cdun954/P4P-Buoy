@@ -37,6 +37,18 @@ static uint8_t tgt_comp = MAV_COMP_ID_AUTOPILOT1;
 #define RELAY_MODEM_PIN  22
 #define RELAY_FC_PIN     21
 
+// ======= Times ==========
+const int TIME_FULL = 10000;   // 10 sec
+const int TIME_MID  = 60000;   // 60 sec
+const int TIME_LOW  = 600000;   // 10 min
+const int TIME_CRIT = 30000;    // 30 sec
+const int TIME_FC_BOOT = 5000; // 5 sec
+const int TIME_LOAD = 2000;    // 2 sec
+const int TIME_GPS  = 300000;  // 5 min
+const int TIME_IDLE = 60000;   // 60 sec
+const int TIME_PI_SHUTDOWN = 5000; // 5 sec
+
+
 // ======== ADC ==========
 #define ADC_I_PI_PIN     36
 #define ADC_I_FC_PIN     39
@@ -126,6 +138,8 @@ enum State { IDLE, FULL, MID, LOW, CRIT };
 State state = IDLE;
 State prevState = IDLE;
 
+// Timing
+unsigned long tFull, tMid, tLow, tIdle, tCrit, tGPS = 0;
 
 /*==============================
       FORWARD DECLARATIONS
@@ -142,23 +156,22 @@ void cmdUpdate();
 void cmdPause();
 void cmdResume();
 void cmdForceRTL();
-void cmdArmFC();
-void cmdDisarmFC();
 
 
 // FSM
-const char* getStateName(State s);
 void enterState(State s);
 void doFull();
 void doMid();
 void doLow();
 void doIdle();
+const char* getStateName(State s);
 
 // ADC
 float readBattVoltage();
 float readADCCurrent(int pin);
 
-// Relays
+// Relays / Pins
+void setupPins();
 void relayModemOn();
 void relayModemOff();
 void relayPiOn();
@@ -167,10 +180,10 @@ void relayFCOn();
 void relayFCOff();
 
 // FC / MAVLink
-void armFC();
-void disarmFC();
-void forceRTL();
-const char* getFCGPS();
+void mavArmFC();
+void mavDisarmFC();
+void mavForceRTL();
+float* getFCGPS();
 static void mav_send(const mavlink_message_t &m);
 static void mav_cmd_long(uint16_t command,
                          float p1,float p2,float p3,float p4,
@@ -192,11 +205,11 @@ void cmdUpdate() {
   bool relay_modem      = relayModemStatus;
   bool relay_fc         = relayFCStatus;
 
-  // timestamp
-  // gps?
 
   // package into json
   // send via mqtt MQTT_TOPIC_TELEM
+  char msg[512];
+  // TODO:
 }
 
 void cmdPause() {
@@ -213,9 +226,12 @@ void cmdResume() {
 
 void cmdForceRTL() {
   // probably need to ensure FC is on and other things
-  forceRTL();
+  if (!relayFCStatus) {
+    relayFCOn();
+    mavArmFC();
+  }
+  mavForceRTL();
 }
-
 
 struct Cmd {
   const char* name;
@@ -226,9 +242,7 @@ Cmd commands[] = {
   {"update", cmdUpdate},
   {"pause", cmdPause},
   {"resume", cmdResume},
-  {"rtl", cmdForceRTL},
-  {"arm", cmdArmFC},
-  {"disarm", cmdDisarmFC}
+  {"rtl", cmdForceRTL}
 };
 
 /*==============================
@@ -263,7 +277,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int len) {
   if (strcmp(topic, MQTT_TOPIC_CMD) == 0) {
     for (auto &cmd : commands) {
       if (strcmp(msg, cmd.name) == 0) {
-        cmd.fn();
+        cmd.func();
         return;
       }
     }
@@ -297,6 +311,13 @@ float readADCCurrent(int pin){
 ===============================*/
 
 // need to ensure they are held in case of low power mode (ie deep sleep)
+void setupPins(){
+  pinMode(RELAY_PI_PIN, OUTPUT);
+  pinMode(RELAY_MODEM_PIN, OUTPUT);
+  pinMode(RELAY_FC_PIN, OUTPUT);
+  pinMode(PI_SHUTDOWN_PIN, OUTPUT);
+}
+
 
 void relayModemOn(){
   digitalWrite(RELAY_MODEM_PIN, HIGH);
@@ -314,24 +335,22 @@ void relayPiOn(){
 }
 
 void relayPiOff(){
-  digitalWrite(RELAY_PI_PIN, LOW);
   digitalWrite(PI_SHUTDOWN_PIN, HIGH);
-  delay(1000);    
+  delay(TIME_PI_SHUTDOWN);
+  digitalWrite(RELAY_PI_PIN, LOW);
   relayPiStatus = false;
 }
 
 void relayFCOn(){
   digitalWrite(RELAY_FC_PIN, HIGH);
   relayFCStatus = true;
-  // wait for boot, then arm
-  delay(5000);
-  armFC();
+  // wait for boot
+  delay(TIME_FC_BOOT);
 }
 
 void relayFCOff(){
   // disarm first, then wait
-  disarmFC();
-  delay(2000);
+  mavDisarmFC();
   digitalWrite(RELAY_FC_PIN, LOW);
   relayFCStatus = false;
 }
@@ -339,17 +358,19 @@ void relayFCOff(){
 /*==============================
       FC/MAVLink FUNCTIONS
 ===============================*/
-void armFC() {
+void mavArmFC() {
   mav_cmd_long(MAV_CMD_COMPONENT_ARM_DISARM, 1.0f);
+  delay(TIME_LOAD);
   Serial.println(F("[MAV] ARM sent"));
 }
 
-void disarmFC() {
+void mavDisarmFC() {
   mav_cmd_long(MAV_CMD_COMPONENT_ARM_DISARM, 0.0f);
+  delay(TIME_LOAD);
   Serial.println(F("[MAV] DISARM sent"));
 }
 
-void forceRTL() {
+void mavForceRTL() {
   mavlink_message_t m;
   const uint8_t  base_mode   = MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
   const uint32_t custom_mode = 8; // Rover Smart RTL
@@ -434,18 +455,27 @@ void enterState(State s) {
     case FULL:
       // entering full
       // ensure all systems on
+      relayPiOn();
+      relayFCOn();
+      relayModemOn();
       break;
 
     case MID:
       // entering mid
       // ensure all on except for FC
       // must disarm and force fc shutdown first
+      relayPiOn();
+      relayModemOn();
+      relayFCOff();
       break;
 
     case LOW:
       // entering low
       // ensure all off 
       // need to let pi know to shutdown
+      relayFCOff();
+      relayModemOff();
+      relayPiOff();
       break;
 
     case CRIT:
@@ -454,28 +484,47 @@ void enterState(State s) {
       // turn FC on
       // arm FC
       // force RTL
+      relayModemOff();
+      relayPiOff();
+      relayFCOn();
+      // mqtt telem update??
+      mavArmFC();
+      mavForceRTL();
       break;
     case IDLE:
       // entering idle
       // everything on?
+      // unsure
       break;
   }
 }
 
 void doFull(){
-  // full behaviour here
   // pretty much just monitor and report
+  mqttEnsureConnected();
+  client.loop();
+  cmdUpdate();
 }
 
 void doMid(){
-  // mid behaviour here
+  mqttEnsureConnected();
+  client.loop();
   // pretty much just monitor and report
+  // update gps every so often
+  cmdUpdate();
+  if (millis() - tGPS >= TIME_GPS) {
+    relayFCOn(); // ensure FC is on
+    sendGPS();
+    relayFCOff(); // turn FC off again
+    tGPS = millis();
+  }
 }
 
 void doLow(){
-  // low behaviour here
+  // everything is off
   // deep sleep for period of time
   // wake up, check voltage and report
+  // keep modem on for 10 or so minutes to allow for commands
   // go back to sleep
 }
 
@@ -483,6 +532,7 @@ void doIdle(){
   // idle behaviour here
   // entered from user command (pause)
   // everything on?
+  cmdUpdate();
 }
 
 
@@ -495,17 +545,22 @@ void setup() {
   analogSetAttenuation(ADC_11db); // Full-scale ~3.3–3.6 V
 
   // determine state from battery voltage
+  State s = IDLE; // default
   float v_batt = readBattVoltage();
-  if (v_batt >= V_MID_BOUNDARY) enterState(FULL);
-  else if (v_batt >= V_LOW_BOUNDARY) enterState(MID);
-  else if (v_batt >= V_CRIT_BOUNDARY) enterState(LOW);
-  else enterState(CRIT);
+  if (v_batt >= V_MID_BOUNDARY) s = FULL;
+  else if (v_batt >= V_LOW_BOUNDARY) s = MID;
+  else if (v_batt >= V_CRIT_BOUNDARY) s = LOW;
+  else s = CRIT;
 
   // init rest of system
   Serial.begin(115200);
   FC.begin(FC_BAUD, SERIAL_8N1, FC_RX_PIN, FC_TX_PIN);
+  setupPins();
+  
   setupWiFi();
   setupMQTT();
+
+  enterState(s);
 }
 
 /*==============================
@@ -516,24 +571,38 @@ void loop() {
 
   switch (state) {
     case FULL:
-      doFull();
+      if (millis() - tFull >= TIME_FULL){
+        doFull(); tFull = millis();
+      }
       if (v_batt < V_MID_BOUNDARY) enterState(MID);
       break;
 
     case MID:
-      doMid();
+      if (millis() - tMid >= TIME_MID){
+        doMid(); tMid = millis();
+      }
       if (v_batt >= V_MID_BOUNDARY + V_HYSTERESIS) enterState(FULL);
       if (v_batt < V_LOW_BOUNDARY) enterState(LOW);
       break;
 
     case LOW:
-      doLow();
+      if (millis() - tLow >= TIME_LOW){
+        doLow(); tLow = millis();
+      }
       if (v_batt >= V_LOW_BOUNDARY + V_HYSTERESIS) enterState(MID);
       if (v_batt < V_CRIT_BOUNDARY) enterState(CRIT);
       break;
+    
+    case CRIT:
+      if (millis() - tCrit >= TIME_LOW){
+        doCrit(); tCrit = millis();
+      }
+      break;
 
     case IDLE:
-      doIdle();
+      if (millis() - tIdle >= TIME_IDLE){
+        doIdle(); tIdle = millis();
+      }
       break;
   }
 }
