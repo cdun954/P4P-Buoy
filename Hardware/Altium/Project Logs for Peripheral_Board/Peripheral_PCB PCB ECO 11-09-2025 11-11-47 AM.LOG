@@ -1,0 +1,47 @@
+Removed Pin From Net: NetName=A_Tx Pin=Nano-1
+Change Component Description : Designator=4G_D Old Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle New Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle | Bivar Inc. SM0603UYC
+Change Component Description : Designator=FC_D Old Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle New Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle | Bivar Inc. SM0603UYC
+Change Component Description : Designator=Pi_D Old Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle New Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle | Bivar Inc. SM0603UYC
+Change Component Description : Designator=T_D Old Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle New Description=LED SMD 0603 Ultra Yellow 593nm 70mcd Water Clear Lens 130 Deg Viewing Angle | Bivar Inc. SM0603UYC
+Change Component Description : Designator=OP Old Description=Microchip Op Amp, 1MHz CMOS, Rail to Rail, 3 V, 5 V, 5-Pin SOT-23 New Description=Microchip Op Amp, 1MHz CMOS, Rail to Rail, 3 V, 5 V, 5-Pin SOT-23 | Microchip Technology Inc. MCP6001T-I/OT
+Change Component Description : Designator=R1 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R2 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R3 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R4 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R5 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R6 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R7 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R8 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Change Component Description : Designator=R9 Old Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur New Description=Resistor, AS 0805 0R Jumper 125mW, AEC-Q, Anti-Sulfur | Bourns CR0805AJ/-000EAS
+Added Component: Designator=R10(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=R11(RESC2012X60N)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "CR0805AJ/-000EAS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Bourns"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/CR0805AJ/-000EAS/Bourns/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=A_Tx Pin=R10-2
+Added Pin To Net: NetName=A_Tx Pin=R11-1
+Added Pin To Net: NetName=GND Pin=R11-2
+Added Pin To Net: NetName=A_Txs Pin=Nano-1
+Added Pin To Net: NetName=A_Txs Pin=R10-1
+Added Net: Name=A_Txs
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_D SM0603UYC
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_S Header 6H
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_sc
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_S Header 6H
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP ESP32-DEVKITC-32D
+Added Member To Class: ClassName=P4P_PCB Member=Component M_Sw G3VM-61VY3
+Added Member To Class: ClassName=P4P_PCB Member=Component P_Sw G3VM-61VY3
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_S Header 6H
+Added Member To Class: ClassName=P4P_PCB Member=Component R10 CR0805AJ/-000EAS
+Added Member To Class: ClassName=P4P_PCB Member=Component R11 CR0805AJ/-000EAS
+Added Rule: Name=Schematic Supply Nets
+Added Rule: Name=Schematic Supply Nets_1
