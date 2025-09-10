@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=4G_ADC Pin=ESP-J2-6
+Removed Pin From Net: NetName=FC_ADC Pin=ESP-J2-7
+Added Pin To Net: NetName=FC_ADC Pin=ESP-J2-6
+Added Pin To Net: NetName=4G_ADC Pin=ESP-J2-7
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_S Header 6H

@@ -1,0 +1,10 @@
+Removed Pin From Net: NetName=Sonar_RX Pin=Sonar-1
+Removed Pin From Net: NetName=Telem_5V Pin=Sonar-3
+Added Pin To Net: NetName=Telem_5V Pin=Sonar-1
+Added Pin To Net: NetName=Sonar_RX Pin=Sonar-3
+Added Member To Class: ClassName=P4P_PCB Member=Component 4G_S Header 6H
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_sc
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP_S Header 6H
+Added Member To Class: ClassName=P4P_PCB Member=Component ESP ESP32-DEVKITC-32D
+Added Member To Class: ClassName=P4P_PCB Member=Component M_Sw G3VM-61VY3
+Added Member To Class: ClassName=P4P_PCB Member=Component Pi_S Header 6H
