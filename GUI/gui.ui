@@ -71,7 +71,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="stop_btn">
+             <widget class="QPushButton" name="pause_btn">
               <property name="text">
                <string>STOP</string>
               </property>
@@ -120,7 +120,7 @@
               <item row="0" column="1">
                <widget class="QLabel" name="mavproxy_txt">
                 <property name="text">
-                 <string>active?</string>
+                 <string>-</string>
                 </property>
                </widget>
               </item>
@@ -138,24 +138,59 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_11">
+              <item row="1" column="1">
+               <widget class="QLabel" name="espstate_txt">
                 <property name="text">
-                 <string>Pi State</string>
+                 <string>-</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_12">
+              <item row="2" column="1">
+               <widget class="QLabel" name="relaypi_txt">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLabel" name="relayfc_txt">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLabel" name="relaymodem_txt_2">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLabel" name="pistate_txt">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_7">
                 <property name="text">
                  <string>FC</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="label_21">
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_69">
                 <property name="text">
                  <string>Modem</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Pi State</string>
                 </property>
                </widget>
               </item>
@@ -163,6 +198,13 @@
                <widget class="QLabel" name="label_24">
                 <property name="text">
                  <string>Wi-Fi RSSI</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLabel" name="label_28">
+                <property name="text">
+                 <string>-</string>
                 </property>
                </widget>
               </item>
@@ -177,6 +219,19 @@
                <size>
                 <width>20</width>
                 <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
                </size>
               </property>
              </spacer>

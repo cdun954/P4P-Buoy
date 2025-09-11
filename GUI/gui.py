@@ -4,6 +4,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.uic import loadUi
 import paho.mqtt.client as mqtt
 import certifi
+import json
 
 """
 gui.py 
@@ -66,11 +67,18 @@ class GUI(QtWidgets.QMainWindow):
         self.btnRcOverride = getattr(self, "rc_btn", None)
         self.btnUpdate = getattr(self, "update_btn", None)
         self.btnRtl = getattr(self, "rtl_btn", None)
-        self.btnStop = getattr(self, "stop_btn", None)
+        self.btnPause = getattr(self, "pause_btn", None)
         self.btnResume = getattr(self, "resume_btn", None)
 
         # Status Labels
         #TODO:
+        self.labelEspState = getattr(self, "espstate_txt", None)
+        self.labelPiState = getattr(self, "pistate_txt", None)
+        self.labelMavproxy = getattr(self, "mavproxy_txt", None)
+        self.labelRelayFC = getattr(self, "relayfc_txt", None)
+        self.labelRelayPi = getattr(self, "relaypi_txt", None)
+        self.labelRelayModem = getattr(self, "relaymodem_txt", None)  
+        # couple more?  
 
         # Power Labels
         self.labelBattV = getattr(self, "battv_txt", None)
@@ -117,23 +125,25 @@ class GUI(QtWidgets.QMainWindow):
         
         if self.btnUpdate:
             self.btnUpdate.clicked.connect(
-                lambda: (self.publish(TOPIC_CMD_PI, "update_status"), 
-                          self.publish(TOPIC_CMD_ESP, "update_status"))
+                lambda: (self.publish(TOPIC_CMD_PI, "update"), 
+                          self.publish(TOPIC_CMD_ESP, "update"))
             )
 
         if self.btnRtl:
             self.btnRtl.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "rtl")
+                lambda: self.publish(TOPIC_CMD_ESP, "rtl")
             )
         
-        if self.btnStop:
-            self.btnStop.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "stop")
+        if self.btnPause:
+            self.btnPause.clicked.connect(
+                lambda: (self.publish(TOPIC_CMD_PI, "pause"),
+                          self.publish(TOPIC_CMD_ESP, "pause"))
             )
 
         if self.btnResume:
             self.btnResume.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "resume")
+                lambda: (self.publish(TOPIC_CMD_PI, "resume"),
+                          self.publish(TOPIC_CMD_ESP, "resume"))
             )
 
         #------------- CAMERA TAB ----------------#
@@ -154,6 +164,49 @@ class GUI(QtWidgets.QMainWindow):
             self.btnSendPi.clicked.connect(
                 lambda: self.publish(TOPIC_CMD_PI, "hello from GUI")
             )
+
+    #=============================================#
+    #                 RECV MQTT                   #
+    #=============================================#
+    # helpers
+    def _fmt_num(self, val, ndp=2, unit=""):
+        try:
+            s = f"{float(val):.{ndp}f}"
+            return f"{s} {unit}".strip()
+        except Exception:
+            return "—"
+
+    def _onoff(self, val):
+        return "ON" if bool(val) else "OFF"
+    
+    def updateEspTelem(self, payload):
+        try:
+            d = json.loads(payload)
+        except Exception as e:
+            print(f"[ESP telem] bad JSON: {e}")
+            return
+        
+        # Power/state fields
+        if self.labelBattV:   self.labelBattV.setText(self._fmt_num(d.get("v_batt"), 2, "V"))
+        if self.labelEspA:    self.labelEspA.setText(self._fmt_num(d.get("i_esp"),  3, "A"))
+        if self.labelPiA:     self.labelPiA.setText(self._fmt_num(d.get("i_pi"),   3, "A"))
+        if self.labelFCA:     self.labelFCA.setText(self._fmt_num(d.get("i_fc"),   3, "A"))
+        if self.labelModemA:  self.labelModemA.setText(self._fmt_num(d.get("i_modem"), 3, "A"))
+
+        # ESP power-state (string)
+        if self.labelEspState:
+            self.labelEspState.setText(str(d.get("state", "—")).upper())
+
+        # Relay labels (ON/OFF text)
+        if self.labelRelayPi:     self.labelRelayPi.setText(self._onoff(d.get("relay_pi")))
+        if self.labelRelayFC:     self.labelRelayFC.setText(self._onoff(d.get("relay_fc")))
+        if self.labelRelayModem:  self.labelRelayModem.setText(self._onoff(d.get("relay_modem")))
+
+        if self.labelUpdateTime:
+            self.labelUpdateTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
+
+    def updatePiTelem(self, payload):
+        pass
 
     #=============================================#
     #                 MQTT SETUP                  #
@@ -211,19 +264,15 @@ class GUI(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(str, str)
     def on_mqtt_msg_ui(self, topic, payload):
         # Update specific labels if present
-        if topic == TOPIC_TELEM_ESP and self.labelEsp:
-            self.labelEsp.setText(payload)
-        elif topic == TOPIC_TELEM_PI and self.labelPi:
-            self.labelPi.setText(payload)
-        # You can also append to a QTextEdit log if you have one
-        if hasattr(self, "textLog"):  # optional log widget
-            self.textLog.append(f"[{topic}] {payload}")
+        if topic == TOPIC_TELEM_ESP:
+            self.updateEspTelem(payload)
+        elif topic == TOPIC_TELEM_PI:
+            self.updatePiTelem(payload)
+
 
     @QtCore.pyqtSlot(str)
     def on_mqtt_status_ui(self, line):
         print(line)
-        if hasattr(self, "textLog"):
-            self.textLog.append(line)
 
     # Clean shutdown
     def closeEvent(self, event):
