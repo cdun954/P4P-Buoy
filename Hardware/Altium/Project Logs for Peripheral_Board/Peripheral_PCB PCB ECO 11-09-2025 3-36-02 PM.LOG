@@ -1,0 +1,120 @@
+Removed Pin From Net: NetName=4G_jump Pin=4G_sc-1
+Removed Pin From Net: NetName=4G_5V Pin=4G_sc-2
+Removed Pin From Net: NetName=4G_jump Pin=4G_sen-1
+Removed Pin From Net: NetName=4G_sense Pin=4G_sen-2
+Removed Pin From Net: NetName=5V Pin=ESP_sc-1
+Removed Pin From Net: NetName=ESP_5V Pin=ESP_sc-2
+Removed Pin From Net: NetName=5V Pin=ESP_sen-1
+Removed Pin From Net: NetName=ESP_sense Pin=ESP_sen-2
+Removed Pin From Net: NetName=FC_jump Pin=FC_sc-1
+Removed Pin From Net: NetName=FC_5V Pin=FC_sc-2
+Removed Pin From Net: NetName=FC_jump Pin=FC_sen-1
+Removed Pin From Net: NetName=FC_sense Pin=FC_sen-2
+Removed Pin From Net: NetName=Motor1_ESP Pin=M1_E-1
+Removed Pin From Net: NetName=Motor1_OUT Pin=M1_E-2
+Removed Pin From Net: NetName=Motor1_IN Pin=M1_FC-1
+Removed Pin From Net: NetName=Motor1_OUT Pin=M1_FC-2
+Removed Pin From Net: NetName=Motor2_ESP Pin=M2_E-1
+Removed Pin From Net: NetName=Motor2_OUT Pin=M2_E-2
+Removed Pin From Net: NetName=Motor2_IN Pin=M2_FC-1
+Removed Pin From Net: NetName=Motor2_OUT Pin=M2_FC-2
+Removed Pin From Net: NetName=Pi_jump Pin=Pi_sc-1
+Removed Pin From Net: NetName=Pi_5V Pin=Pi_sc-2
+Removed Pin From Net: NetName=Pi_jump Pin=Pi_sen-1
+Removed Pin From Net: NetName=Pi_sense Pin=Pi_sen-2
+Change Component Footprint: Designator=4G_sc Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=4G_sen Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=ESP_sc Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=ESP_sen Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=FC_sc Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=FC_sen Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=M1_E Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=M1_FC Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=M2_E Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=M2_FC Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=Pi_sc Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Footprint: Designator=Pi_sen Old Footprint=RAD-0.2 New Footprint=HDR1X2
+Change Component Comment : Designator=4G_sc Old Comment= New Comment=Header 2
+Change Component Comment : Designator=4G_sen Old Comment= New Comment=Header 2
+Change Component Comment : Designator=ESP_sc Old Comment= New Comment=Header 2
+Change Component Comment : Designator=ESP_sen Old Comment= New Comment=Header 2
+Change Component Comment : Designator=FC_sc Old Comment= New Comment=Header 2
+Change Component Comment : Designator=FC_sen Old Comment= New Comment=Header 2
+Change Component Comment : Designator=M1_E Old Comment= New Comment=Header 2
+Change Component Comment : Designator=M1_FC Old Comment= New Comment=Header 2
+Change Component Comment : Designator=M2_E Old Comment= New Comment=Header 2
+Change Component Comment : Designator=M2_FC Old Comment= New Comment=Header 2
+Change Component Comment : Designator=Pi_sc Old Comment= New Comment=Header 2
+Change Component Comment : Designator=Pi_sen Old Comment= New Comment=Header 2
+Change component parameters: Designator = "4G_sc" ("4G_sc"); Footprint = "RAD-0.2"; UniqueID = "\GFITVUKL" ("\GFITVUKL")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "4G_sen" ("4G_sen"); Footprint = "RAD-0.2"; UniqueID = "\VDMJIKMI" ("\VDMJIKMI")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "ESP_sc" ("ESP_sc"); Footprint = "RAD-0.2"; UniqueID = "\ZFOTAHPY" ("\ZFOTAHPY")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "ESP_sen" ("ESP_sen"); Footprint = "RAD-0.2"; UniqueID = "\PNKNCQQY" ("\PNKNCQQY")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "FC_sc" ("FC_sc"); Footprint = "RAD-0.2"; UniqueID = "\HNWBHSZS" ("\HNWBHSZS")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "FC_sen" ("FC_sen"); Footprint = "RAD-0.2"; UniqueID = "\OIPVTBZF" ("\OIPVTBZF")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "M1_E" ("M1_E"); Footprint = "RAD-0.2"; UniqueID = "\GGTSKOJU" ("\GGTSKOJU")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "M1_FC" ("M1_FC"); Footprint = "RAD-0.2"; UniqueID = "\PILDYTPK" ("\PILDYTPK")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "M2_E" ("M2_E"); Footprint = "RAD-0.2"; UniqueID = "\CGUOMNWB" ("\CGUOMNWB")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "M2_FC" ("M2_FC"); Footprint = "RAD-0.2"; UniqueID = "\DNMLUXLN" ("\DNMLUXLN")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "Pi_sc" ("Pi_sc"); Footprint = "RAD-0.2"; UniqueID = "\LLFEYDPS" ("\LLFEYDPS")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Change component parameters: Designator = "Pi_sen" ("Pi_sen"); Footprint = "RAD-0.2"; UniqueID = "\BHCQEZII" ("\BHCQEZII")
+Change component parameters (AddParameter): Name = "LatestRevisionDate"; Value = "17-Jul-2002"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "LatestRevisionNote"; Value = "Re-released for DXP Platform."; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=4G_5V Pin=4G_sc-1
+Added Pin To Net: NetName=4G_jump Pin=4G_sc-2
+Added Pin To Net: NetName=4G_sense Pin=4G_sen-1
+Added Pin To Net: NetName=4G_jump Pin=4G_sen-2
+Added Pin To Net: NetName=ESP_5V Pin=ESP_sc-1
+Added Pin To Net: NetName=5V Pin=ESP_sc-2
+Added Pin To Net: NetName=ESP_sense Pin=ESP_sen-1
+Added Pin To Net: NetName=5V Pin=ESP_sen-2
+Added Pin To Net: NetName=FC_5V Pin=FC_sc-1
+Added Pin To Net: NetName=FC_jump Pin=FC_sc-2
+Added Pin To Net: NetName=FC_sense Pin=FC_sen-1
+Added Pin To Net: NetName=FC_jump Pin=FC_sen-2
+Added Pin To Net: NetName=Motor1_OUT Pin=M1_E-1
+Added Pin To Net: NetName=Motor1_ESP Pin=M1_E-2
+Added Pin To Net: NetName=Motor1_OUT Pin=M1_FC-1
+Added Pin To Net: NetName=Motor1_IN Pin=M1_FC-2
+Added Pin To Net: NetName=Motor2_OUT Pin=M2_E-1
+Added Pin To Net: NetName=Motor2_ESP Pin=M2_E-2
+Added Pin To Net: NetName=Motor2_OUT Pin=M2_FC-1
+Added Pin To Net: NetName=Motor2_IN Pin=M2_FC-2
+Added Pin To Net: NetName=Pi_5V Pin=Pi_sc-1
+Added Pin To Net: NetName=Pi_jump Pin=Pi_sc-2
+Added Pin To Net: NetName=Pi_sense Pin=Pi_sen-1
+Added Pin To Net: NetName=Pi_jump Pin=Pi_sen-2

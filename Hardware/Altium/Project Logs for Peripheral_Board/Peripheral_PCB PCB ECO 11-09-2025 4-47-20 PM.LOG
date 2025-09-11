@@ -1,0 +1,2 @@
+Change Component Designator: OldDesignator=ESP_T NewDesignator=ES_T
+Added Member To Class: ClassName=P4P_PCB Member=Component RPI RASPBERRY_PI_ZERO_2_W
