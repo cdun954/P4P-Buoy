@@ -3,8 +3,9 @@
 #include <WiFiClientSecure.h>
 #include <HardwareSerial.h>
 #include <MAVLink.h>
+#include <ArduinoJson.h>
 
-""" 
+/*
 main.ino
 
 Power management controller
@@ -13,8 +14,8 @@ Features:
 - Handles MQTT commands from GCS
 - Controls relays for power distribution
 - Monitors current and voltage via ADC
-- FSM with states: FULL, MID, LOW, CRIT
-"""
+- FSM with states: FULL, MID, SLEEP, CRIT
+*/
 
 /*==============================
           CONSTANTS
@@ -40,9 +41,10 @@ static uint8_t tgt_comp = MAV_COMP_ID_AUTOPILOT1;
 // ======= Times ==========
 const int TIME_FULL = 10000;   // 10 sec
 const int TIME_MID  = 60000;   // 60 sec
-const int TIME_LOW  = 600000;   // 10 min
+const int TIME_SLEEP  = 600000;   // 10 min
 const int TIME_CRIT = 30000;    // 30 sec
 const int TIME_FC_BOOT = 5000; // 5 sec
+const int TIME_MODEM_BOOT = 6000; // 6 sec
 const int TIME_LOAD = 2000;    // 2 sec
 const int TIME_GPS  = 300000;  // 5 min
 const int TIME_IDLE = 60000;   // 60 sec
@@ -65,7 +67,7 @@ const float ADC_V_CONV    = 69;       // voltage battery conversion factor
 // ======== Voltage Thresholds ==========
 const float V_HYSTERESIS    = 0.3;
 const float V_MID_BOUNDARY  = 14.8;
-const float V_LOW_BOUNDARY  = 14;
+const float V_SLEEP_BOUNDARY  = 14;
 const float V_CRIT_BOUNDARY = 13.2;
 
 // ======== WiFi ==========
@@ -134,18 +136,19 @@ bool relayModemStatus = false;
 bool relayFCStatus    = false;
 
 // State
-enum State { IDLE, FULL, MID, LOW, CRIT };
-State state = IDLE;
-State prevState = IDLE;
+enum State { IDLE, FULL, MID, SLEEP, CRIT };
+State state = FULL;
+State prevState = FULL;
 
 // Timing
-unsigned long tFull, tMid, tLow, tIdle, tCrit, tGPS = 0;
+unsigned long tFull, tMid, tSleep, tIdle, tCrit, tGPS = 0;
 
 /*==============================
       FORWARD DECLARATIONS
 ===============================*/
 // MQTT/WiFi
 void setupWiFi();
+void wifiEnsureConnected();
 void setupMQTT();
 void mqttEnsureConnected();
 void mqttCallback(char* topic, byte* payload, unsigned int len);
@@ -162,7 +165,8 @@ void cmdForceRTL();
 void enterState(State s);
 void doFull();
 void doMid();
-void doLow();
+void doSleep();
+void doCrit();
 void doIdle();
 const char* getStateName(State s);
 
@@ -186,8 +190,8 @@ void mavForceRTL();
 float* getFCGPS();
 static void mav_send(const mavlink_message_t &m);
 static void mav_cmd_long(uint16_t command,
-                         float p1,float p2,float p3,float p4,
-                         float p5,float p6,float p7);
+                         float p1=0,float p2=0,float p3=0,float p4=0,
+                         float p5=0,float p6=0,float p7=0);
 
 /*==============================
           MQTT COMMANDS
@@ -200,22 +204,37 @@ void cmdUpdate() {
   float i_fc            = readADCCurrent(ADC_I_FC_PIN);
   float i_modem         = readADCCurrent(ADC_I_MODEM_PIN);
   float i_esp           = readADCCurrent(ADC_I_ESP_PIN);
-  const char* state     = getStateName(state);
+  const char* stateName = getStateName(state);
   bool relay_pi         = relayPiStatus;
   bool relay_modem      = relayModemStatus;
   bool relay_fc         = relayFCStatus;
 
+  StaticJsonDocument<256> doc;
+  doc["v_batt"]     = v_batt;
+  doc["i_pi"]       = i_pi;
+  doc["i_fc"]       = i_fc;
+  doc["i_modem"]    = i_modem;
+  doc["i_esp"]      = i_esp;
+  doc["state"]      = stateName;
+  doc["relay_pi"]   = relay_pi;
+  doc["relay_modem"]= relay_modem;
+  doc["relay_fc"]   = relay_fc; 
 
-  // package into json
-  // send via mqtt MQTT_TOPIC_TELEM
-  char msg[512];
-  // TODO:
+  char buffer[256];
+  size_t n = serializeJson(doc, buffer, sizeof(buffer));
+  if (n == 0 || n >= sizeof(buffer)) {
+    Serial.println("[MQTT] Failed to serialize telemetry");
+    return;
+  } else{
+    Serial.println("[MQTT] Telemetry Sent!");
+    client.publish(MQTT_TOPIC_TELEM, buffer);
+  }
 }
 
 void cmdPause() {
   // pause all operations
   // enter idle state
-  prevState = state;
+  if (state != IDLE) prevState = state;
   enterState(IDLE);
 }
 
@@ -225,12 +244,9 @@ void cmdResume() {
 }
 
 void cmdForceRTL() {
-  // probably need to ensure FC is on and other things
-  if (!relayFCStatus) {
-    relayFCOn();
-    mavArmFC();
-  }
-  mavForceRTL();
+  // CRIT is designed to force RTL
+  // enter CRIT state
+  enterState(CRIT);
 }
 
 struct Cmd {
@@ -243,15 +259,22 @@ Cmd commands[] = {
   {"pause", cmdPause},
   {"resume", cmdResume},
   {"rtl", cmdForceRTL}
-};
+};  
 
 /*==============================
       MQTT/WIFI FUNCTIONS
 ===============================*/
 void setupWiFi() {
   WiFi.mode(WIFI_STA);
+  Serial.println("[SETUP] Wifi Configured!");
+}
+
+void wifiEnsureConnected(){
+  if (WiFi.status() == WL_CONNECTED) return;
   WiFi.begin(WIFI_SSID, WIFI_PW);
+  Serial.println("[WiFi] Connecting...");
   while (WiFi.status() != WL_CONNECTED) { delay(300); }
+  Serial.println("[WiFi] Connected!");
 }
 
 void setupMQTT() {
@@ -259,14 +282,18 @@ void setupMQTT() {
   client.setServer(MQTT_HOST, MQTT_PORT);
   client.setCallback(mqttCallback);
   clientId = "esp32-" + String((uint32_t)ESP.getEfuseMac(), HEX);
+  Serial.println("[SETUP] MQTT Configured!");
 }
 
 void mqttEnsureConnected() {
+  if (client.connected()) return;
+  Serial.println("[MQTT] Connecting...");
   while (!client.connected()) {
     if (client.connect(clientId.c_str(), MQTT_USER, MQTT_PASS)) {
       client.subscribe(MQTT_TOPIC_CMD);
-    } else { delay(2000); }
+    } else { delay(300); }
   }
+  Serial.println("[MQTT] Connected");
 }
 
 void mqttCallback(char* topic, byte* payload, unsigned int len) {
@@ -274,6 +301,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int len) {
   len = min(len, (unsigned int)(sizeof(msg)-1));
   memcpy(msg, payload, len);
   msg[len] = '\0';
+  Serial.printf("[MQTT] Msg received on topic: %s\n", topic);
   if (strcmp(topic, MQTT_TOPIC_CMD) == 0) {
     for (auto &cmd : commands) {
       if (strcmp(msg, cmd.name) == 0) {
@@ -284,10 +312,6 @@ void mqttCallback(char* topic, byte* payload, unsigned int len) {
   }
 }
 
-bool sendMsg(const char* topic, const char* msg) {
-  return client.publish(topic, msg);
-}
-
 
 /*==============================
           ADC FUNCTIONS
@@ -296,6 +320,7 @@ float readBattVoltage(){
   int raw = analogRead(ADC_V_BATT_PIN);
   float v_adc  = (raw / ADC_MAX) * ADC_VREF; // convert to pin voltage
   float v = v_adc * ADC_V_CONV;   // Convert to real battery voltage
+  Serial.println("[ADC] Battery Read!");
   return v;
 }
 
@@ -303,6 +328,7 @@ float readADCCurrent(int pin){
   int raw = analogRead(pin);
   float v_adc  = (raw / ADC_MAX) * ADC_VREF; // convert to pin voltage
   float cur = v_adc * ADC_I_CONV;   // Convert to real current 
+  Serial.println("[ADC] Current Read!");
   return cur;
 }
 
@@ -310,49 +336,83 @@ float readADCCurrent(int pin){
           RELAY FUNCTIONS
 ===============================*/
 
-// need to ensure they are held in case of low power mode (ie deep sleep)
+// need to ensure they are held in case of sleep power mode (ie deep sleep)
 void setupPins(){
   pinMode(RELAY_PI_PIN, OUTPUT);
   pinMode(RELAY_MODEM_PIN, OUTPUT);
   pinMode(RELAY_FC_PIN, OUTPUT);
   pinMode(PI_SHUTDOWN_PIN, OUTPUT);
+
+  // set all to low
+  digitalWrite(RELAY_PI_PIN, LOW);
+  digitalWrite(RELAY_MODEM_PIN, LOW);
+  digitalWrite(RELAY_FC_PIN, LOW);
+  digitalWrite(PI_SHUTDOWN_PIN, LOW);
+  relayFCStatus    = false;
+  relayPiStatus    = false;
+  relayModemStatus = false;
+  
+  Serial.println("[SETUP] Pins Setup!");
 }
 
 
 void relayModemOn(){
-  digitalWrite(RELAY_MODEM_PIN, HIGH);
-  relayModemStatus = true;
+  if (!relayModemStatus){
+    digitalWrite(RELAY_MODEM_PIN, HIGH);
+    relayModemStatus = true;
+    Serial.println("[RELAY] Modem Switched On");
+    delay(TIME_MODEM_BOOT);
+    wifiEnsureConnected();
+    mqttEnsureConnected();
+  }
+  
 }
 
 void relayModemOff(){
-  digitalWrite(RELAY_MODEM_PIN, LOW);
-  relayModemStatus = false;
+  if (relayModemStatus){
+    digitalWrite(RELAY_MODEM_PIN, LOW);
+    relayModemStatus = false;
+    Serial.println("[RELAY] Modem Switched Off");
+  }
 }
 
 void relayPiOn(){
-  digitalWrite(RELAY_PI_PIN, HIGH);
-  relayPiStatus = true;
+  if (!relayPiStatus){
+    digitalWrite(RELAY_PI_PIN, HIGH);
+    relayPiStatus = true;
+    Serial.println("[RELAY] Pi Switched On");
+  }
 }
 
 void relayPiOff(){
-  digitalWrite(PI_SHUTDOWN_PIN, HIGH);
-  delay(TIME_PI_SHUTDOWN);
-  digitalWrite(RELAY_PI_PIN, LOW);
-  relayPiStatus = false;
+  if (relayPiStatus){
+    digitalWrite(PI_SHUTDOWN_PIN, HIGH);
+    delay(TIME_PI_SHUTDOWN);
+    digitalWrite(RELAY_PI_PIN, LOW);
+    relayPiStatus = false;
+    Serial.println("[RELAY] Pi Switched Off");
+  }
+  
 }
 
 void relayFCOn(){
-  digitalWrite(RELAY_FC_PIN, HIGH);
-  relayFCStatus = true;
-  // wait for boot
-  delay(TIME_FC_BOOT);
+  if (!relayFCStatus){
+    digitalWrite(RELAY_FC_PIN, HIGH);
+    relayFCStatus = true;
+    // wait for boot
+    delay(TIME_FC_BOOT);
+    Serial.println("[RELAY] FC Switched On");
+  }
 }
 
 void relayFCOff(){
   // disarm first, then wait
-  mavDisarmFC();
-  digitalWrite(RELAY_FC_PIN, LOW);
-  relayFCStatus = false;
+  if (relayFCStatus){
+    mavDisarmFC();
+    digitalWrite(RELAY_FC_PIN, LOW);
+    relayFCStatus = false;
+    Serial.println("[RELAY] FC Switched Off");
+  }
 }
 
 /*==============================
@@ -424,8 +484,8 @@ static void mav_send(const mavlink_message_t &m) {
 }
 
 static void mav_cmd_long(uint16_t command,
-                         float p1=0,float p2=0,float p3=0,float p4=0,
-                         float p5=0,float p6=0,float p7=0) {
+                         float p1,float p2,float p3,float p4,
+                         float p5,float p6,float p7) {
   mavlink_message_t m;
   mavlink_msg_command_long_pack(
     g_sysid, g_compid, &m,
@@ -440,17 +500,18 @@ static void mav_cmd_long(uint16_t command,
 ===============================*/
 const char* getStateName(State s) {
   switch (s) {
-    case IDLE: return "IDLE";
-    case FULL: return "FULL";
-    case MID:  return "MID";
-    case LOW:  return "LOW";
-    case CRIT: return "CRIT";
-    default:   return "UNKNOWN";
+    case IDLE:  return "IDLE";
+    case FULL:  return "FULL";
+    case MID:   return "MID";
+    case SLEEP: return "SLEEP";
+    case CRIT:  return "CRIT";
+    default:    return "UNKNOWN";
   }
 }
 
 void enterState(State s) {
   state = s;
+  Serial.printf("[FSM] Entering State: %s\n", getStateName(s));
   switch (state){
     case FULL:
       // entering full
@@ -469,8 +530,8 @@ void enterState(State s) {
       relayFCOff();
       break;
 
-    case LOW:
-      // entering low
+    case SLEEP:
+      // entering sleep
       // ensure all off 
       // need to let pi know to shutdown
       relayFCOff();
@@ -487,45 +548,45 @@ void enterState(State s) {
       relayModemOff();
       relayPiOff();
       relayFCOn();
-      // mqtt telem update??
       mavArmFC();
       mavForceRTL();
       break;
     case IDLE:
       // entering idle
-      // everything on?
-      // unsure
+      relayModemOn();
+      relayPiOff();
+      relayFCOff();
       break;
   }
 }
 
 void doFull(){
   // pretty much just monitor and report
-  mqttEnsureConnected();
-  client.loop();
   cmdUpdate();
 }
 
 void doMid(){
-  mqttEnsureConnected();
-  client.loop();
   // pretty much just monitor and report
   // update gps every so often
   cmdUpdate();
-  if (millis() - tGPS >= TIME_GPS) {
-    relayFCOn(); // ensure FC is on
-    sendGPS();
-    relayFCOff(); // turn FC off again
-    tGPS = millis();
-  }
+  // if (millis() - tGPS >= TIME_GPS) {
+  //   relayFCOn(); // ensure FC is on
+  //   //sendGPS();
+  //   relayFCOff(); // turn FC off again
+  //   tGPS = millis();
+  // }
 }
 
-void doLow(){
+void doSleep(){
   // everything is off
   // deep sleep for period of time
   // wake up, check voltage and report
   // keep modem on for 10 or so minutes to allow for commands
   // go back to sleep
+}
+
+void doCrit(){
+  // rtl!
 }
 
 void doIdle(){
@@ -548,8 +609,8 @@ void setup() {
   State s = IDLE; // default
   float v_batt = readBattVoltage();
   if (v_batt >= V_MID_BOUNDARY) s = FULL;
-  else if (v_batt >= V_LOW_BOUNDARY) s = MID;
-  else if (v_batt >= V_CRIT_BOUNDARY) s = LOW;
+  else if (v_batt >= V_SLEEP_BOUNDARY) s = MID;
+  else if (v_batt >= V_CRIT_BOUNDARY) s = SLEEP;
   else s = CRIT;
 
   // init rest of system
@@ -571,6 +632,9 @@ void loop() {
 
   switch (state) {
     case FULL:
+      wifiEnsureConnected();
+      mqttEnsureConnected();
+      client.loop();
       if (millis() - tFull >= TIME_FULL){
         doFull(); tFull = millis();
       }
@@ -578,31 +642,38 @@ void loop() {
       break;
 
     case MID:
+      wifiEnsureConnected();
+      mqttEnsureConnected();
+      client.loop();
       if (millis() - tMid >= TIME_MID){
         doMid(); tMid = millis();
       }
       if (v_batt >= V_MID_BOUNDARY + V_HYSTERESIS) enterState(FULL);
-      if (v_batt < V_LOW_BOUNDARY) enterState(LOW);
+      if (v_batt < V_SLEEP_BOUNDARY) enterState(SLEEP);
       break;
 
-    case LOW:
-      if (millis() - tLow >= TIME_LOW){
-        doLow(); tLow = millis();
+    case SLEEP:
+      if (millis() - tSleep >= TIME_SLEEP){
+        doSleep(); tSleep = millis();
       }
-      if (v_batt >= V_LOW_BOUNDARY + V_HYSTERESIS) enterState(MID);
+      if (v_batt >= V_SLEEP_BOUNDARY + V_HYSTERESIS) enterState(MID);
       if (v_batt < V_CRIT_BOUNDARY) enterState(CRIT);
       break;
     
     case CRIT:
-      if (millis() - tCrit >= TIME_LOW){
+      if (millis() - tCrit >= TIME_SLEEP){
         doCrit(); tCrit = millis();
       }
       break;
 
     case IDLE:
+      wifiEnsureConnected();
+      mqttEnsureConnected();
+      client.loop();
       if (millis() - tIdle >= TIME_IDLE){
         doIdle(); tIdle = millis();
       }
       break;
   }
+  delay(1000);
 }
