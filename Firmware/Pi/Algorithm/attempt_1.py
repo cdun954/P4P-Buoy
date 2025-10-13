@@ -132,7 +132,7 @@ def plot_decomposition(polygon_m, grid_cells_2d, path_coords=None):
 
 if __name__ == "__main__":
     start = time.time()
-    poly = read_geofence()
+    poly = read_geofence("Firmware/Pi/Algorithm/test_poly.poly")
     cells, centers = decompose_geofence(poly)
     path = perimeter_then_lawnmower_fixed(centers)
     end = time.time()

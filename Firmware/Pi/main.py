@@ -5,6 +5,7 @@ import os
 import subprocess
 import certifi
 import paho.mqtt.client as mqtt
+import json
 
 """
 main.py
@@ -13,7 +14,9 @@ Central command hub for the Raspberry Pi on the P4P Buoy.
 Handles:
 - Receiving commands via MQTT and dispatching them
 - Starting/stopping mavproxy and camera streaming
-- (Future) Sending telemetry data via MQTT
+- Sending telemetry data via MQTT
+- (Future) Water quality sensors integration
+- (Future) Coordinate traversal automation
 """
 
 # ======================== #
@@ -30,8 +33,9 @@ USERNAME    = "P4P-Buoy"
 PASSWORD    = "P4P108buoy"
 
 # ==== MQTT Topics ====  
-TOPIC_CMD = "boat/pi/cmd"
-TOPIC_TELEM = "boat/pi/telem"
+TOPIC_CMD = "buoy/pi/cmd"
+TOPIC_STATUS = "buoy/pi/status"
+TOPIC_SENSOR = "buoy/pi/sensor"
 
 # ==== MAVPROXY config ====
 MAVPROXY = "/home/pi/Desktop/python/bin/mavproxy.py"
@@ -43,9 +47,14 @@ PHONE_IP = "100.69.169.71"
 PHONE_PORT = 14551
 AUTO_IP = "127.0.0.1"
 AUTO_PORT = 14552
+CROM_IP = "100.69.169.72"
+CROM_PORT = 14553
 
 # ==== CAM config ====
 CAMERA = "/home/pi/Desktop/project/camera.py"
+
+# ==== Autonomy Scripts ====
+GUIDED_TEST = "/home/pi/Desktop/project/algo_test.py"
 
 # ========================= #
 #         GLOBALS           #
@@ -58,7 +67,16 @@ running = True
 
 def cmd_update(client, args):
     # TODO:
-    pass
+    # force update
+    result = subprocess.run("tmux list-windows -t project", shell=True, capture_output=True, text=True)
+    mavproxy_on = "mavproxy" in result.stdout
+    cam_on = "camera" in result.stdout
+    status = {
+        "mavproxy_on": mavproxy_on,
+        "cam_on": cam_on,
+    }
+    print(f"Status Update.")
+    client.publish(TOPIC_STATUS, json.dumps(status))
 
 def cmd_cam(client, args):
     result = subprocess.run("tmux list-windows -t project", shell=True, capture_output=True, text=True)
@@ -83,10 +101,20 @@ def cmd_proxy(client, args):
         print("Starting MAVProxy...")
         start_mavproxy()
 
+def cmd_guided_test(client, args):
+    result = subprocess.run("tmux list-windows -t project", shell=True, capture_output=True, text=True)
+    if "guided_test" in result.stdout:
+        # kill
+        print("Killed Guided Test.")
+        subprocess.run("tmux kill-window -t project:guided_test", shell=True)
+    else:
+        # start
+        print("Starting Guided Test...")
+        start_guided_test()
+
 # ========================= #
 #          COMMANDS         #
 # ========================= #
-
 def start_mavproxy():
     # make sure port is correct: ls /dev/tty*
     port_num = 0
@@ -108,16 +136,23 @@ def start_mavproxy():
         f"--out=udp:{LAPTOP_IP}:{LAPTOP_PORT}",
         f"--out=udp:{PHONE_IP}:{PHONE_PORT}",
         f"--out=udp:{AUTO_IP}:{AUTO_PORT}",
+        f"--out=udp:{CROM_IP}:{CROM_PORT}",
         f"--baud={FC_BAUDRATE}"
     ])
     # run in tmux
     tmux_cmd = f"tmux new-window -t project -n mavproxy {cmd}"
     print(f"Executing: {tmux_cmd}")
-    subprocess.run(tmux_cmd, shell=True)
+    subprocess.run(tmux_cmd, shell=True) 
 
 def start_cam():
     cmd = f"{VENV_DIR} {CAMERA}"
     tmux_cmd = f"tmux new-window -t project -n camera {cmd}"
+    print(f"Executing: {tmux_cmd}")
+    subprocess.run(tmux_cmd, shell=True)
+
+def start_guided_test():
+    cmd = f"{VENV_DIR} {GUIDED_TEST}"
+    tmux_cmd = f"tmux new-window -t project -n guided_test {cmd}"
     print(f"Executing: {tmux_cmd}")
     subprocess.run(tmux_cmd, shell=True)
 
@@ -130,9 +165,10 @@ def on_connect(client, userdata, flags, rc):
 
 # Map command keyword -> handler
 DISPATCH = {
-    "update": cmd_update,
-    "toggle_cam":    cmd_cam,
+    "update":           cmd_update,
+    "toggle_cam":       cmd_cam,
     "toggle_mavproxy":  cmd_proxy,
+    "guided_test":      cmd_guided_test
 }
 
 def parse_cmd(payload: str):
@@ -155,6 +191,7 @@ def on_message(client, userdata, msg):
             handler(client, args)
         except Exception as e:
             # incorrect cmd
+            print("[ERR] Unknown Command: ", e)
             pass
  
 def on_disconnect(client, userdata, rc):
@@ -193,7 +230,9 @@ def main():
     client.loop_start()
 
     while running:
-        time.sleep(1)
+        time.sleep(5)
+        # update
+        cmd_update(client, None)
 
 if __name__ == "__main__":
     main()

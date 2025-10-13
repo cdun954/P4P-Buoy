@@ -39,17 +39,16 @@ static uint8_t tgt_comp = MAV_COMP_ID_AUTOPILOT1;
 #define RELAY_FC_PIN     21
 
 // ======= Times ==========
-const int TIME_FULL = 10000;   // 10 sec
-const int TIME_MID  = 60000;   // 60 sec
+const int TIME_FULL = 10000;      // 10 sec
+const int TIME_MID  = 60000;      // 60 sec
 const int TIME_SLEEP  = 600000;   // 10 min
-const int TIME_CRIT = 30000;    // 30 sec
-const int TIME_FC_BOOT = 5000; // 5 sec
+const int TIME_CRIT = 30000;      // 30 sec
+const int TIME_FC_BOOT = 5000;    // 5 sec
 const int TIME_MODEM_BOOT = 6000; // 6 sec
-const int TIME_LOAD = 2000;    // 2 sec
-const int TIME_GPS  = 300000;  // 5 min
-const int TIME_IDLE = 60000;   // 60 sec
-const int TIME_PI_SHUTDOWN = 5000; // 5 sec
-
+const int TIME_LOAD = 2000;       // 2 sec
+const int TIME_GPS  = 600000;     // 10 min
+const int TIME_IDLE = 60000;      // 60 sec
+const int TIME_PI_SHUTDOWN = 5000;// 5 sec
 
 // ======== ADC ==========
 #define ADC_I_PI_PIN     36
@@ -62,7 +61,7 @@ const float ADC_VREF      = 3.3;      // ESP32 ADC reference (Volts)
 const int   ADC_RES       = 12;       // 12-bit ADC
 const float ADC_MAX       = 4095;     // 12-bit ADC
 const float ADC_I_CONV    = 69;       // current sensor conversion factor
-const float ADC_V_CONV    = 69;       // voltage battery conversion factor
+const float ADC_V_CONV    = 5.1;       // voltage battery conversion factor
 
 // ======== Voltage Thresholds ==========
 const float V_HYSTERESIS    = 0.3;
@@ -71,8 +70,10 @@ const float V_SLEEP_BOUNDARY  = 14;
 const float V_CRIT_BOUNDARY = 13.2;
 
 // ======== WiFi ==========
-const char* WIFI_SSID = "IE_Room_BKUP";
-const char* WIFI_PW   = "ieroom12345";
+//const char* WIFI_SSID = "IE_Room_BKUP";
+//const char* WIFI_PW   = "ieroom12345";
+const char* WIFI_SSID = "nnud";
+const char* WIFI_PW   = "12345678";
 
 // ======== MQTT ==========
 const char* MQTT_HOST = "f1bd5a3c43044a3a816321410ca20435.s1.eu.hivemq.cloud";
@@ -114,8 +115,10 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 -----END CERTIFICATE-----
 )EOF";
 
-const char* MQTT_TOPIC_CMD   = "buoy/esp/cmd";
-const char* MQTT_TOPIC_TELEM = "buoy/esp/telem";
+const char* MQTT_TOPIC_CMD    = "buoy/esp/cmd";
+const char* MQTT_TOPIC_STATUS = "buoy/esp/status";
+const char* MQTT_TOPIC_POWER  = "buoy/esp/power";
+const char* MQTT_TOPIC_PANIC  = "buoy/esp/panic";
 
 /*==============================
             GLOBALS
@@ -143,6 +146,18 @@ State prevState = FULL;
 // Timing
 unsigned long tFull, tMid, tSleep, tIdle, tCrit, tGPS = 0;
 
+// HW Timer
+hw_timer_t * timer = nullptr;
+portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
+volatile bool timerFlag = false;
+
+// ADC
+float adc_v_batt = 16.8; // max
+float adc_i_pi   = 0.0;
+float adc_i_fc   = 0.0;
+float adc_i_modem= 0.0;
+float adc_i_esp  = 0.0;
+
 /*==============================
       FORWARD DECLARATIONS
 ===============================*/
@@ -156,10 +171,11 @@ bool sendMsg(const char* topic, const char* msg);
 
 // MQTT commands
 void cmdUpdate();
+void updateStatus();
+void updatePower();
 void cmdPause();
 void cmdResume();
 void cmdForceRTL();
-
 
 // FSM
 void enterState(State s);
@@ -173,6 +189,12 @@ const char* getStateName(State s);
 // ADC
 float readBattVoltage();
 float readADCCurrent(int pin);
+
+// Timer
+void IRAM_ATTR onTimer();
+void setupTimer();
+void timerStop();
+void timerStart();
 
 // Relays / Pins
 void setupPins();
@@ -193,41 +215,88 @@ static void mav_cmd_long(uint16_t command,
                          float p1=0,float p2=0,float p3=0,float p4=0,
                          float p5=0,float p6=0,float p7=0);
 
+
+/*==============================
+          HW TIMER
+===============================*/
+void IRAM_ATTR onTimer() {
+  portENTER_CRITICAL_ISR(&timerMux);
+  timerFlag = true;
+  portEXIT_CRITICAL_ISR(&timerMux);
+}
+
+void setupTimer() {
+  // timer 1 MHz
+  timer = timerBegin(1000000);                 // frequency in Hz
+  timerAttachInterrupt(timer, &onTimer); 
+  // Alarm after 1,000,000 us = 1 s, auto-reload forever (0 = unlimited)
+  timerAlarm(timer, 1000000ULL, true, 0);
+  //Serial.println("[SETUP] Timer Setup!");
+}
+
+void timerStart(){
+  timerStart(timer); 
+  //Serial.println("[TIMER] Started...");
+}
+
+void timerStop(){
+  timerStop(timer);
+  //Serial.println("[TIMER] Stopped!");
+}
+
 /*==============================
           MQTT COMMANDS
 ===============================*/
 void cmdUpdate() {
-  // force update status
-  // read adc and send telemetry
-  float v_batt          = readBattVoltage();
-  float i_pi            = readADCCurrent(ADC_I_PI_PIN);
-  float i_fc            = readADCCurrent(ADC_I_FC_PIN);
-  float i_modem         = readADCCurrent(ADC_I_MODEM_PIN);
-  float i_esp           = readADCCurrent(ADC_I_ESP_PIN);
+  updateStatus();
+  updatePower();
+}
+
+void updateStatus() {
   const char* stateName = getStateName(state);
   bool relay_pi         = relayPiStatus;
   bool relay_modem      = relayModemStatus;
   bool relay_fc         = relayFCStatus;
 
-  StaticJsonDocument<256> doc;
-  doc["v_batt"]     = v_batt;
-  doc["i_pi"]       = i_pi;
-  doc["i_fc"]       = i_fc;
-  doc["i_modem"]    = i_modem;
-  doc["i_esp"]      = i_esp;
-  doc["state"]      = stateName;
-  doc["relay_pi"]   = relay_pi;
-  doc["relay_modem"]= relay_modem;
-  doc["relay_fc"]   = relay_fc; 
+  StaticJsonDocument<256> statusDoc;
+  statusDoc["state"]      = stateName;
+  statusDoc["relay_pi"]   = relay_pi;
+  statusDoc["relay_modem"]= relay_modem;
+  statusDoc["relay_fc"]   = relay_fc; 
 
-  char buffer[256];
-  size_t n = serializeJson(doc, buffer, sizeof(buffer));
-  if (n == 0 || n >= sizeof(buffer)) {
-    Serial.println("[MQTT] Failed to serialize telemetry");
-    return;
-  } else{
-    Serial.println("[MQTT] Telemetry Sent!");
-    client.publish(MQTT_TOPIC_TELEM, buffer);
+  char statusBuf[192];
+  size_t sn = serializeJson(statusDoc, statusBuf, sizeof(statusBuf));
+  if (sn == 0 || sn >= sizeof(statusBuf)) {
+    //Serial.println("[MQTT] STATUS serialize failed");
+  } else if (!client.publish(MQTT_TOPIC_STATUS, statusBuf)) {
+    //Serial.println("[MQTT] STATUS publish failed");
+  } else {
+    //Serial.println("[MQTT] STATUS sent");
+  }
+}
+
+void updatePower() {
+  float v_batt          = adc_v_batt;
+  float i_pi            = adc_i_pi;
+  float i_fc            = adc_i_fc;
+  float i_modem         = adc_i_modem;
+  float i_esp           = adc_i_esp;
+
+  StaticJsonDocument<256> powerDoc;
+  powerDoc["v_batt"]     = v_batt;
+  powerDoc["i_pi"]       = i_pi;
+  powerDoc["i_fc"]       = i_fc;
+  powerDoc["i_modem"]    = i_modem;
+  powerDoc["i_esp"]      = i_esp;
+
+  char powerBuf[256];
+  size_t pn = serializeJson(powerDoc, powerBuf, sizeof(powerBuf));
+  if (pn == 0 || pn >= sizeof(powerBuf)) {
+    //Serial.println("[MQTT] POWER serialize failed");
+  } else if (!client.publish(MQTT_TOPIC_POWER, powerBuf)) {
+    //Serial.println("[MQTT] POWER publish failed");
+  } else {
+    //Serial.println("[MQTT] POWER sent");
   }
 }
 
@@ -246,7 +315,7 @@ void cmdResume() {
 void cmdForceRTL() {
   // CRIT is designed to force RTL
   // enter CRIT state
-  enterState(CRIT);
+  enterState(CRIT); // V_SLEEP_BOUNDARY
 }
 
 struct Cmd {
@@ -266,15 +335,15 @@ Cmd commands[] = {
 ===============================*/
 void setupWiFi() {
   WiFi.mode(WIFI_STA);
-  Serial.println("[SETUP] Wifi Configured!");
+  //Serial.println("[SETUP] Wifi Configured!");
 }
 
 void wifiEnsureConnected(){
   if (WiFi.status() == WL_CONNECTED) return;
   WiFi.begin(WIFI_SSID, WIFI_PW);
-  Serial.println("[WiFi] Connecting...");
+  //Serial.println("[WiFi] Connecting...");
   while (WiFi.status() != WL_CONNECTED) { delay(300); }
-  Serial.println("[WiFi] Connected!");
+  //Serial.println("[WiFi] Connected!");
 }
 
 void setupMQTT() {
@@ -282,18 +351,18 @@ void setupMQTT() {
   client.setServer(MQTT_HOST, MQTT_PORT);
   client.setCallback(mqttCallback);
   clientId = "esp32-" + String((uint32_t)ESP.getEfuseMac(), HEX);
-  Serial.println("[SETUP] MQTT Configured!");
+  //Serial.println("[SETUP] MQTT Configured!");
 }
 
 void mqttEnsureConnected() {
   if (client.connected()) return;
-  Serial.println("[MQTT] Connecting...");
+  //Serial.println("[MQTT] Connecting...");
   while (!client.connected()) {
     if (client.connect(clientId.c_str(), MQTT_USER, MQTT_PASS)) {
       client.subscribe(MQTT_TOPIC_CMD);
     } else { delay(300); }
   }
-  Serial.println("[MQTT] Connected");
+  //Serial.println("[MQTT] Connected");
 }
 
 void mqttCallback(char* topic, byte* payload, unsigned int len) {
@@ -320,7 +389,8 @@ float readBattVoltage(){
   int raw = analogRead(ADC_V_BATT_PIN);
   float v_adc  = (raw / ADC_MAX) * ADC_VREF; // convert to pin voltage
   float v = v_adc * ADC_V_CONV;   // Convert to real battery voltage
-  Serial.println("[ADC] Battery Read!");
+  //Serial.print("[ADC] Read!");
+  ////Serial.println(v);
   return v;
 }
 
@@ -328,7 +398,6 @@ float readADCCurrent(int pin){
   int raw = analogRead(pin);
   float v_adc  = (raw / ADC_MAX) * ADC_VREF; // convert to pin voltage
   float cur = v_adc * ADC_I_CONV;   // Convert to real current 
-  Serial.println("[ADC] Current Read!");
   return cur;
 }
 
@@ -352,7 +421,7 @@ void setupPins(){
   relayPiStatus    = false;
   relayModemStatus = false;
   
-  Serial.println("[SETUP] Pins Setup!");
+  //Serial.println("[SETUP] Pins Setup!");
 }
 
 
@@ -360,19 +429,18 @@ void relayModemOn(){
   if (!relayModemStatus){
     digitalWrite(RELAY_MODEM_PIN, HIGH);
     relayModemStatus = true;
-    Serial.println("[RELAY] Modem Switched On");
+    //Serial.println("[RELAY] Modem Switched On");
     delay(TIME_MODEM_BOOT);
     wifiEnsureConnected();
     mqttEnsureConnected();
   }
-  
 }
 
 void relayModemOff(){
   if (relayModemStatus){
     digitalWrite(RELAY_MODEM_PIN, LOW);
     relayModemStatus = false;
-    Serial.println("[RELAY] Modem Switched Off");
+    //Serial.println("[RELAY] Modem Switched Off");
   }
 }
 
@@ -380,7 +448,7 @@ void relayPiOn(){
   if (!relayPiStatus){
     digitalWrite(RELAY_PI_PIN, HIGH);
     relayPiStatus = true;
-    Serial.println("[RELAY] Pi Switched On");
+    //Serial.println("[RELAY] Pi Switched On");
   }
 }
 
@@ -390,7 +458,7 @@ void relayPiOff(){
     delay(TIME_PI_SHUTDOWN);
     digitalWrite(RELAY_PI_PIN, LOW);
     relayPiStatus = false;
-    Serial.println("[RELAY] Pi Switched Off");
+    //Serial.println("[RELAY] Pi Switched Off");
   }
   
 }
@@ -401,7 +469,7 @@ void relayFCOn(){
     relayFCStatus = true;
     // wait for boot
     delay(TIME_FC_BOOT);
-    Serial.println("[RELAY] FC Switched On");
+    //Serial.println("[RELAY] FC Switched On");
   }
 }
 
@@ -411,7 +479,7 @@ void relayFCOff(){
     mavDisarmFC();
     digitalWrite(RELAY_FC_PIN, LOW);
     relayFCStatus = false;
-    Serial.println("[RELAY] FC Switched Off");
+    //Serial.println("[RELAY] FC Switched Off");
   }
 }
 
@@ -421,22 +489,22 @@ void relayFCOff(){
 void mavArmFC() {
   mav_cmd_long(MAV_CMD_COMPONENT_ARM_DISARM, 1.0f);
   delay(TIME_LOAD);
-  Serial.println(F("[MAV] ARM sent"));
+  //Serial.println(F("[MAV] ARM sent"));
 }
 
 void mavDisarmFC() {
   mav_cmd_long(MAV_CMD_COMPONENT_ARM_DISARM, 0.0f);
   delay(TIME_LOAD);
-  Serial.println(F("[MAV] DISARM sent"));
+  //Serial.println(F("[MAV] DISARM sent"));
 }
 
 void mavForceRTL() {
   mavlink_message_t m;
   const uint8_t  base_mode   = MAV_MODE_FLAG_CUSTOM_MODE_ENABLED;
-  const uint32_t custom_mode = 8; // Rover Smart RTL
+  const uint32_t custom_mode = 8; // Rover Smart RTL 
   mavlink_msg_set_mode_pack(g_sysid, g_compid, &m, tgt_sys, base_mode, custom_mode);
   mav_send(m);
-  Serial.println(F("[MAV] RTL sent"));
+  //Serial.println(F("[MAV] RTL sent"));
 }
 
 float* getFCGPS() {
@@ -516,6 +584,7 @@ void enterState(State s) {
     case FULL:
       // entering full
       // ensure all systems on
+      timerStart();
       relayPiOn();
       relayFCOn();
       relayModemOn();
@@ -525,6 +594,7 @@ void enterState(State s) {
       // entering mid
       // ensure all on except for FC
       // must disarm and force fc shutdown first
+      timerStart();
       relayPiOn();
       relayModemOn();
       relayFCOff();
@@ -534,6 +604,7 @@ void enterState(State s) {
       // entering sleep
       // ensure all off 
       // need to let pi know to shutdown
+      timerStop();
       relayFCOff();
       relayModemOff();
       relayPiOff();
@@ -545,6 +616,7 @@ void enterState(State s) {
       // turn FC on
       // arm FC
       // force RTL
+      timerStop();
       relayModemOff();
       relayPiOff();
       relayFCOn();
@@ -553,28 +625,31 @@ void enterState(State s) {
       break;
     case IDLE:
       // entering idle
+      timerStop();
       relayModemOn();
-      relayPiOff();
+      relayPiOn();
       relayFCOff();
       break;
   }
 }
 
 void doFull(){
-  // pretty much just monitor and report
+  wifiEnsureConnected();
+  mqttEnsureConnected();
   cmdUpdate();
 }
 
 void doMid(){
-  // pretty much just monitor and report
-  // update gps every so often
+  wifiEnsureConnected();
+  mqttEnsureConnected();
   cmdUpdate();
-  // if (millis() - tGPS >= TIME_GPS) {
-  //   relayFCOn(); // ensure FC is on
-  //   //sendGPS();
-  //   relayFCOff(); // turn FC off again
-  //   tGPS = millis();
-  // }
+// if (millis() - tGPS >= TIME_GPS) {
+//   relayFCOn(); // ensure FC is on
+//   //sendGPS();
+//   relayFCOff(); // turn FC off again
+//   tGPS = millis();
+// } 
+//  ENABLE THIS WHEN FC CONNECTION IS CONFIRMED
 }
 
 void doSleep(){
@@ -586,21 +661,39 @@ void doSleep(){
 }
 
 void doCrit(){
-  // rtl!
+  // rtl already handled
+  // do nothing
+  // if adc_v_batt <= 12
+  // kill fc
+  // modem on
+  // send panic
+  adc_v_batt = readBattVoltage();
+  if (adc_v_batt <= 12){
+    mavDisarmFC();
+    relayFCOff();
+    relayModemOn();
+    wifiEnsureConnected();
+    mqttEnsureConnected();
+    client.publish(MQTT_TOPIC_PANIC, "HELP!");
+    //Serial.println("[MQTT] PANIC!!!!!!!");
+    delay(4294967295UL); // MAX VALUE DELAY, BATTERY TOO LOW, PLEASE RETRIEVE FROM LAKE
+    // alternatively, deep sleep indefinitely
+  }
 }
 
 void doIdle(){
-  // idle behaviour here
-  // entered from user command (pause)
-  // everything on?
+  wifiEnsureConnected();
+  mqttEnsureConnected();
   cmdUpdate();
 }
-
 
 /*==============================
             SETUP
 ===============================*/
 void setup() {
+  Serial.begin(115200);
+  setCpuFrequencyMhz(80);
+
   // init adc
   analogReadResolution(ADC_RES); // 12-bit
   analogSetAttenuation(ADC_11db); // Full-scale ~3.3–3.6 V
@@ -614,8 +707,8 @@ void setup() {
   else s = CRIT;
 
   // init rest of system
-  Serial.begin(115200);
   FC.begin(FC_BAUD, SERIAL_8N1, FC_RX_PIN, FC_TX_PIN);
+  setupTimer();
   setupPins();
   
   setupWiFi();
@@ -628,52 +721,58 @@ void setup() {
             LOOP
 ===============================*/
 void loop() {
-  float v_batt = readBattVoltage();
+  // check timer flag
+  if (timerFlag) {
+    portENTER_CRITICAL(&timerMux);
+    timerFlag = false;
+    portEXIT_CRITICAL(&timerMux);
+
+    adc_v_batt = readBattVoltage();
+    adc_i_pi   = readADCCurrent(ADC_I_PI_PIN);
+    adc_i_fc   = readADCCurrent(ADC_I_FC_PIN);
+    adc_i_modem= readADCCurrent(ADC_I_MODEM_PIN);
+    adc_i_esp  = readADCCurrent(ADC_I_ESP_PIN);
+
+    updatePower();
+  }
+
+  client.loop();
 
   switch (state) {
     case FULL:
-      wifiEnsureConnected();
-      mqttEnsureConnected();
-      client.loop();
       if (millis() - tFull >= TIME_FULL){
         doFull(); tFull = millis();
       }
-      if (v_batt < V_MID_BOUNDARY) enterState(MID);
+      if (adc_v_batt < V_MID_BOUNDARY) enterState(MID);
       break;
 
     case MID:
-      wifiEnsureConnected();
-      mqttEnsureConnected();
-      client.loop();
       if (millis() - tMid >= TIME_MID){
         doMid(); tMid = millis();
       }
-      if (v_batt >= V_MID_BOUNDARY + V_HYSTERESIS) enterState(FULL);
-      if (v_batt < V_SLEEP_BOUNDARY) enterState(SLEEP);
+      if (adc_v_batt >= V_MID_BOUNDARY + V_HYSTERESIS) enterState(FULL);
+      if (adc_v_batt < V_SLEEP_BOUNDARY) enterState(SLEEP);
       break;
 
     case SLEEP:
       if (millis() - tSleep >= TIME_SLEEP){
         doSleep(); tSleep = millis();
       }
-      if (v_batt >= V_SLEEP_BOUNDARY + V_HYSTERESIS) enterState(MID);
-      if (v_batt < V_CRIT_BOUNDARY) enterState(CRIT);
+      if (adc_v_batt >= V_SLEEP_BOUNDARY + V_HYSTERESIS) enterState(MID);
+      if (adc_v_batt < V_CRIT_BOUNDARY) enterState(CRIT);
       break;
     
     case CRIT:
-      if (millis() - tCrit >= TIME_SLEEP){
+      if (millis() - tCrit >= TIME_CRIT){
         doCrit(); tCrit = millis();
       }
       break;
 
     case IDLE:
-      wifiEnsureConnected();
-      mqttEnsureConnected();
-      client.loop();
       if (millis() - tIdle >= TIME_IDLE){
         doIdle(); tIdle = millis();
       }
       break;
   }
-  delay(1000);
+  delay(100);
 }

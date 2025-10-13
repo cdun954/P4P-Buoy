@@ -4,11 +4,11 @@ import requests
 
 app = Flask(__name__)
 
-PI_IP = "100.69.169.69" # STATIC IP of the Raspberry Pi
+PI_IP = "100.69.169.69"  # STATIC IP of the Raspberry Pi
 PORT = 5000
 CAMERA_STREAM_URL = f"http://{PI_IP}:{PORT}/video_feed"
 
-@app.route('/')
+@app.route("/")
 def index():
     return render_template_string('''
         <html>
@@ -20,18 +20,19 @@ def index():
         </html>
     ''')
 
-@app.route('/proxy_stream')
+@app.route("/proxy_stream")
 def proxy_stream():
     def generate():
         try:
-            with requests.get(CAMERA_STREAM_URL, stream=True, timeout=5) as r:
-                for chunk in r.iter_content(chunk_size=1024):
+            with requests.get(CAMERA_STREAM_URL, stream=True, timeout=10) as r:
+                for chunk in r.iter_content(chunk_size=16384):
                     if chunk:
                         yield chunk
         except requests.RequestException as e:
             print(f"[!] Error connecting to Pi: {e}")
-            yield b'' # Yield empty bytes to keep the connection alive
+            # keep connection alive so the <img> doesn't instantly die
+            yield b''
     return Response(generate(), content_type='multipart/x-mixed-replace; boundary=frame')
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080, threaded=True)

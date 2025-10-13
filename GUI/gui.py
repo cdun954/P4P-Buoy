@@ -1,8 +1,8 @@
 import sys, random, string
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-from PyQt5.uic import loadUi
 import paho.mqtt.client as mqtt
+from PyQt5.uic import loadUi
 import certifi
 import json
 
@@ -27,17 +27,25 @@ BROKER_PORT = 8883
 USERNAME    = "P4P-Buoy"
 PASSWORD    = "P4P108buoy"
 
-TOPIC_TELEM_ESP = "buoy/esp/telem"
-TOPIC_TELEM_PI  = "buoy/pi/telem"
-TOPIC_CMD_ESP   = "buoy/esp/cmd"
-TOPIC_CMD_PI    = "buoy/pi/cmd"
+TOPIC_STATUS_ESP = "buoy/esp/status"
+TOPIC_POWER_ESP  = "buoy/esp/power"
+TOPIC_CMD_ESP    = "buoy/esp/cmd"
+TOPIC_STATUS_PI  = "buoy/pi/status"
+TOPIC_AUTON_PI   = "buoy/pi/autonomy"
+TOPIC_SENSOR_PI  = "buoy/pi/sensor"
+TOPIC_CMD_PI     = "buoy/pi/cmd"
 
 # ===== CAMERA CONFIG =====
 PI_IP = "100.69.169.69" # STATIC IP of the Pi
 PORT = 5000
 CAMERA_STREAM_URL = f"http://{PI_IP}:{PORT}/video_feed"
 
+# ===== VARIABLES ===== uneeded?
+mavproxy_on = False  # Whether MAVLink comms is active
+system_state = False  # RC, AUTO, IDLE, etc.
 
+
+# ===== HELPERS =====
 def _rand_id(prefix="gui-"):
     return prefix + "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
 
@@ -62,6 +70,8 @@ class GUI(QtWidgets.QMainWindow):
     #=============================================#
     def setupUi(self):
         #------------- CONTROL TAB ---------------#
+        self.labelConnection = getattr(self, "connection_txt", None)
+
         # Control Buttons
         self.btnMavproxy = getattr(self, "mavproxy_btn", None)
         self.btnRcOverride = getattr(self, "rc_btn", None)
@@ -70,15 +80,21 @@ class GUI(QtWidgets.QMainWindow):
         self.btnPause = getattr(self, "pause_btn", None)
         self.btnResume = getattr(self, "resume_btn", None)
 
-        # Status Labels
-        #TODO:
-        self.labelEspState = getattr(self, "espstate_txt", None)
-        self.labelPiState = getattr(self, "pistate_txt", None)
+        # Pi Status Labels
         self.labelMavproxy = getattr(self, "mavproxy_txt", None)
+        self.labelPiStatusTime = getattr(self, "pistatustime_txt", None)
+        self.labelPiState = getattr(self, "pistate_txt", None)
+
+        # ESP Status Labels
+        self.labelEspStatusTime = getattr(self, "espstatustime_txt", None)
+        self.labelEspState = getattr(self, "espstate_txt", None)
         self.labelRelayFC = getattr(self, "relayfc_txt", None)
         self.labelRelayPi = getattr(self, "relaypi_txt", None)
-        self.labelRelayModem = getattr(self, "relaymodem_txt", None)  
-        # couple more?  
+        self.labelRelayModem = getattr(self, "relaymodem_txt", None)
+
+        # FC Status Labels
+        self.labelFCArmStatus = getattr(self, "fcarmstatus_txt", None)
+        self.labelFCMode = getattr(self, "fcmode_txt", None)
 
         # Power Labels
         self.labelBattV = getattr(self, "battv_txt", None)
@@ -86,6 +102,7 @@ class GUI(QtWidgets.QMainWindow):
         self.labelPiA = getattr(self, "pia_txt", None)
         self.labelFCA = getattr(self, "fca_txt", None)
         self.labelModemA = getattr(self, "modema_txt", None)
+        self.labelEspPowerTime = getattr(self, "esppowertime_txt", None)
 
         # Sensor Labels
         #TODO:
@@ -96,7 +113,7 @@ class GUI(QtWidgets.QMainWindow):
         #------------- CAMERA TAB ----------------#
         # Camera Display
         self.cameraView = getattr(self, "cam_view", None)
-        self.cameraView.setUrl(QtCore.QUrl(CAMERA_STREAM_URL))
+        if self.cameraView: self.cameraView.setUrl(QtCore.QUrl(CAMERA_STREAM_URL))
         # Camera Button
         self.btnToggleCam = getattr(self, "cam_btn", None)
 
@@ -105,24 +122,18 @@ class GUI(QtWidgets.QMainWindow):
 
         #------------- TESTING TAB ---------------#
         # Send Buttons
-        self.btnSendEsp = getattr(self, "sendesp_btn", None)
-        self.btnSendPi  = getattr(self, "sendpi_btn",  None)
-        # Recv Labels
-        self.labelEsp = getattr(self, "recvesp_txt", None)
-        self.labelPi  = getattr(self, "recvpi_txt",  None)
+        self.btnGuidedTest = getattr(self, "guidedtest_btn", None)
 
     def setupButtons(self):
         #------------- CONTROL TAB ---------------#
         if self.btnMavproxy:
-            self.btnMavproxy.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "toggle_mavproxy")
-            )
+            self.btnMavproxy.clicked.connect(self.btnMavproxyFunc)
 
         if self.btnRcOverride:
             self.btnRcOverride.clicked.connect(
                 lambda: self.publish(TOPIC_CMD_PI, "toggle_rc_override")
             )
-        
+
         if self.btnUpdate:
             self.btnUpdate.clicked.connect(
                 lambda: (self.publish(TOPIC_CMD_PI, "update"), 
@@ -156,14 +167,34 @@ class GUI(QtWidgets.QMainWindow):
         #TODO:
 
         #------------- TESTING TAB ---------------#
-        if self.btnSendEsp:
-            self.btnSendEsp.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_ESP, "hello from GUI")
+        if self.btnGuidedTest:
+            self.btnGuidedTest.clicked.connect(
+                lambda: self.publish(TOPIC_CMD_PI, "guided_test")
             )
-        if self.btnSendPi:
-            self.btnSendPi.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "hello from GUI")
-            )
+
+
+    #=============================================#
+    #                 BTN FUNCs                   #
+    #=============================================#
+    def btnMavproxyFunc(self):
+        global mavproxy_on
+        mavproxy_on = not mavproxy_on
+        self.publish(TOPIC_CMD_PI, "toggle_mavproxy")
+        self._set_status_label(self.labelMavproxy, mavproxy_on)
+    
+    def btnRCOverrideFunc(self):
+        self.publish(TOPIC_CMD_PI, "toggle_rc_override")
+
+    def _set_status_label(self, label, on):
+        if not label:
+            return
+        if on:
+            label.setText("ACTIVE")
+            label.setStyleSheet("color: rgb(0,170,0);")  # green
+        else:
+            label.setText("INACTIVE")
+            label.setStyleSheet("color: rgb(220,0,0);")  # red
+
 
     #=============================================#
     #                 RECV MQTT                   #
@@ -179,11 +210,11 @@ class GUI(QtWidgets.QMainWindow):
     def _onoff(self, val):
         return "ON" if bool(val) else "OFF"
     
-    def updateEspTelem(self, payload):
+    def updateEspPower(self, payload):
         try:
             d = json.loads(payload)
         except Exception as e:
-            print(f"[ESP telem] bad JSON: {e}")
+            print(f"[ESP Power] bad JSON: {e}")
             return
         
         # Power/state fields
@@ -192,6 +223,20 @@ class GUI(QtWidgets.QMainWindow):
         if self.labelPiA:     self.labelPiA.setText(self._fmt_num(d.get("i_pi"),   3, "A"))
         if self.labelFCA:     self.labelFCA.setText(self._fmt_num(d.get("i_fc"),   3, "A"))
         if self.labelModemA:  self.labelModemA.setText(self._fmt_num(d.get("i_modem"), 3, "A"))
+
+        if self.labelEspPowerTime:
+            self.labelEspPowerTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
+
+    def updatePiSensor(self, payload):
+        # pi sensor updates should be seperate to other status, more frequent
+        pass
+    
+    def updateEspStatus(self, payload):
+        try:
+            d = json.loads(payload)
+        except Exception as e:
+            print(f"[ESP Status] bad JSON: {e}")
+            return
 
         # ESP power-state (string)
         if self.labelEspState:
@@ -202,10 +247,22 @@ class GUI(QtWidgets.QMainWindow):
         if self.labelRelayFC:     self.labelRelayFC.setText(self._onoff(d.get("relay_fc")))
         if self.labelRelayModem:  self.labelRelayModem.setText(self._onoff(d.get("relay_modem")))
 
-        if self.labelUpdateTime:
-            self.labelUpdateTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
+        if self.labelEspStatusTime:
+            self.labelEspStatusTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
 
-    def updatePiTelem(self, payload):
+    def updatePiStatus(self, payload):
+        try:
+            d = json.loads(payload)
+        except Exception as e:
+            print(f"[ESP Status] bad JSON: {e}")
+            return
+        
+        # FC state fields
+
+        # Mavproxy status
+        if self.labelMavproxy:
+            self._set_status_label(self.labelMavproxy, d.get("mavproxy_on", False))
+        
         pass
 
     #=============================================#
@@ -215,7 +272,6 @@ class GUI(QtWidgets.QMainWindow):
         # Connect signals --> UI slots
         self.mqtt_msg.connect(self.on_mqtt_msg_ui)
         self.mqtt_status.connect(self.on_mqtt_status_ui)
-
         self._build_mqtt()
 
     def _build_mqtt(self):
@@ -240,8 +296,8 @@ class GUI(QtWidgets.QMainWindow):
     # ---------- MQTT callbacks (background thread) ----------
     def _on_connect(self, client, userdata, flags, rc, properties=None):
         self.mqtt_status.emit(f"[MQTT] Connected (rc={rc})")
+        client.subscribe([(TOPIC_STATUS_ESP, 0), (TOPIC_POWER_ESP, 0), (TOPIC_STATUS_PI, 0), (TOPIC_SENSOR_PI, 0)])
         # Subscribe to telemetry
-        client.subscribe([(TOPIC_TELEM_ESP, 0), (TOPIC_TELEM_PI, 0)])
 
     def _on_message(self, client, userdata, msg):
         payload = msg.payload.decode(errors="replace")
@@ -264,10 +320,14 @@ class GUI(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(str, str)
     def on_mqtt_msg_ui(self, topic, payload):
         # Update specific labels if present
-        if topic == TOPIC_TELEM_ESP:
-            self.updateEspTelem(payload)
-        elif topic == TOPIC_TELEM_PI:
-            self.updatePiTelem(payload)
+        if topic == TOPIC_STATUS_ESP:
+            self.updateEspStatus(payload)
+        elif topic == TOPIC_POWER_ESP:
+            self.updateEspPower(payload)
+        elif topic == TOPIC_STATUS_PI:
+            self.updatePiStatus(payload)
+        elif topic == TOPIC_SENSOR_PI:
+            self.updatePiSensor(payload)
 
 
     @QtCore.pyqtSlot(str)

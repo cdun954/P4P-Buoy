@@ -1,6 +1,7 @@
 from pymavlink import mavutil
 
-master = mavutil.mavlink_connection('COM8', baud=115200)
+master = mavutil.mavlink_connection('tcp:0.0.0.0:5762')
+print("Waiting for heartbeat...")
 master.wait_heartbeat()
 print("Connected.")
 

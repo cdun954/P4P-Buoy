@@ -1,0 +1,182 @@
+#!/usr/bin/env python3
+"""
+Full-coverage runner for ArduRover SITL.
+
+Flow: GUIDED -> approach tile center -> LOITER wait -> next ... -> RTL
+
+Deps:
+- mavlink_cmd.py (your helper with connect_fc, arm, set_mode, send_guided_waypoint, read_gps, is_at_wp, etc.)
+- coverage_grid.py (your grid/planner module with build_grid_map, plan_lawnmower_path, read_poly_file, _nearest_tile_to_point)
+
+Run:
+    python cover_geofence_run.py --fen Firmware/Pi/Algorithm/taka_lake.fen
+"""
+
+from __future__ import annotations
+import time
+import math
+import argparse
+from typing import Dict, List, Tuple, Optional
+
+import mavlink_cmd as m
+from grid import (
+    read_poly_file,
+    build_grid_map,
+    plan_lawnmower_path,
+    _nearest_tile_to_point,
+)
+
+EARTH_R = 6371000.0  # meters
+Coordinate = Tuple[float, float]  # (lat, lon)
+
+
+# -------------------- convenience / safety --------------------
+def wait_heartbeat(master, timeout=10):
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        hb = master.recv_match(type="HEARTBEAT", blocking=True, timeout=1)
+        if hb:
+            return True
+    return False
+
+def _norm(pt: Tuple[float, float], nd=7) -> Tuple[float, float]:
+    # stable float key for centers
+    return (round(pt[0], nd), round(pt[1], nd))
+
+def _center_to_key_map(grid) -> Dict[Tuple[float,float], Tuple[int,int]]:
+    # maps (center_lat, center_lon) -> (row, col)
+    m = {}
+    for t in grid.iter_tiles():
+        m[_norm(t.center)] = (t.row, t.col)
+    return m
+
+def _tile_key_for_coord(grid, center_to_key, lat, lon) -> Tuple[int,int]:
+    # fast exact/rounded center lookup, fallback to nearest tile
+    key = center_to_key.get(_norm((lat, lon)))
+    if key:
+        return key
+    t = _nearest_tile_to_point(grid, (lat, lon))
+    return (t.row, t.col) if t else (-1, -1)
+
+
+
+# -------------------- main coverage routine --------------------
+def run_coverage(
+    fen_path: str,
+    tile_size_lat: float = 0.00015,
+    tile_size_lon: Optional[float] = None,
+    coverage_threshold: float = 0.65,
+    samples_per_side: int = 5,
+    wp_accept_m: float = 2.5,
+    loiter_sec: float = 2.0,
+    max_wp_time_s: float = 10.0,
+    rtl_at_end: bool = True,
+) -> None:
+    # 1) Load geofence and build route
+    geofence = read_poly_file(fen_path)
+    grid = build_grid_map(
+        geofence,
+        tile_size_lat=tile_size_lat,
+        tile_size_lon=tile_size_lon,
+        coverage_threshold=coverage_threshold,
+        samples_per_side=samples_per_side,
+    )
+
+    # Start hint: use first coordinate of geofence
+    start_hint = geofence[0]
+    route: List[Coordinate] = plan_lawnmower_path(grid, start_hint=start_hint)
+
+    if not route:
+        raise RuntimeError("No route generated from geofence/grid settings.")
+
+    print(f"[COVER] Waypoints in coverage path: {len(route)}")
+
+    # 2) Connect to FC
+    master = m.connect_fc()  # your helper already connects to udp:127.0.0.1:14552
+
+    if not wait_heartbeat(master, timeout=10):
+        raise RuntimeError("No heartbeat from FC.")
+    
+    center_to_key = _center_to_key_map(grid)
+    visited: set[Tuple[int,int]] = set()
+
+    # ensure GUIDED, arm, GPS...
+    if not m.read_mode(master) == "GUIDED":
+        m.set_mode(master, "GUIDED")
+    if m.is_armed(master) is False:
+        m.arm(master)
+        while not m.is_armed(master):
+            time.sleep(0.01)
+    if not m.read_gps(master):
+        raise RuntimeError("No GPS fix from FC.")
+
+# March through the route
+    for idx, (lat, lon) in enumerate(route, start=1):
+        tile_key = _tile_key_for_coord(grid, center_to_key, lat, lon)
+        first_time_here = tile_key not in visited
+
+        print(f"[COVER] {idx}/{len(route)} -> ({lat:.7f}, {lon:.7f}) "
+              f"{'(new tile)' if first_time_here else '(revisit)'}")
+
+        if not m.read_mode(master) == "GUIDED":
+            m.set_mode(master, "GUIDED")
+        m.send_guided_waypoint(master, lat, lon)
+
+        # Wait until arrived or timeout
+        t0 = time.time()
+        while not m.is_at_wp(master, lat, lon):
+            if time.time() - t0 > max_wp_time_s:
+                print(f"[COVER] WARNING: WP timeout after {max_wp_time_s} sec, continuing.")
+                break
+            time.sleep(0.1)
+
+        # Mark visited *after* arrival attempt
+        if tile_key != (-1, -1):
+            visited.add(tile_key)
+
+        # Loiter only on first visit
+        if first_time_here:
+            m.do_loiter_at(master, lat, lon, radius_m=5)
+            print(f"[COVER] Loitering for {loiter_sec} sec...")
+            time.sleep(loiter_sec)
+        else:
+            print("[COVER] Skipping loiter (already visited).")
+
+    # Finish
+    if rtl_at_end:
+        print("[FC] Switching to RTL.")
+        m.set_mode(master, "RTL")
+    else:
+        print("[FC] Coverage complete. Disarming.")
+        m.disarm(master)
+    print("[COVER] Done.")
+
+
+# -------------------- CLI --------------------
+def parse_args():
+    p = argparse.ArgumentParser(description="Coverage runner for ArduRover SITL")
+    p.add_argument("--fen", default="taka_lake.fen", help="Path to geofence .fen file (lat lon per line)")
+    p.add_argument("--tile-size-lat", type=float, default=0.00015, help="Tile size in degrees latitude")
+    p.add_argument("--tile-size-lon", type=float, default=None, help="Tile size in degrees longitude (default = same as lat)")
+    p.add_argument("--coverage-threshold", type=float, default=0.7, help="Fraction of tile that must be inside geofence")
+    p.add_argument("--samples-per-side", type=int, default=5, help="Sampling density per side for coverage estimation")
+    p.add_argument("--wp-accept-m", type=float, default=2.5, help="Acceptance radius (m) for tile center")
+    p.add_argument("--loiter-sec", type=float, default=2.0, help="Seconds to pause at each tile center")
+    p.add_argument("--max-wp-time-s", type=float, default=5.0, help="Per-WP timeout (s) before continuing anyway")
+    p.add_argument("--no-rtl", action="store_true", help="Do not RTL; disarm at the end instead")
+    return p.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    run_coverage(
+        fen_path=args.fen,
+        tile_size_lat=args.tile_size_lat,
+        tile_size_lon=args.tile_size_lon,
+        coverage_threshold=args.coverage_threshold,
+        samples_per_side=args.samples_per_side,
+        wp_accept_m=args.wp_accept_m,
+        loiter_sec=args.loiter_sec,
+        max_wp_time_s=args.max_wp_time_s,
+        rtl_at_end=(not args.no_rtl),
+    )
