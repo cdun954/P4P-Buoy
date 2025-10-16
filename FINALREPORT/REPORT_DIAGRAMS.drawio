@@ -61,24 +61,6 @@
         <mxCell id="Z0ar6c9nnnO7voV9sIDM-51" value="Power Distribution Board" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="Z0ar6c9nnnO7voV9sIDM-11">
           <mxGeometry x="440" y="40" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="Z0ar6c9nnnO7voV9sIDM-57" value="35.5cm x 43.5cm&lt;div&gt;1.9cm gap&lt;br&gt;&lt;div&gt;pt x 10 = cm&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="720" y="120" width="355" height="435" as="geometry" />
-        </mxCell>
-        <mxCell id="Z0ar6c9nnnO7voV9sIDM-58" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="720" y="120" width="355" height="15" as="geometry" />
-        </mxCell>
-        <mxCell id="Z0ar6c9nnnO7voV9sIDM-59" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="720" y="540" width="355" height="15" as="geometry" />
-        </mxCell>
-        <mxCell id="Z0ar6c9nnnO7voV9sIDM-60" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="120" width="15" height="435" as="geometry" />
-        </mxCell>
-        <mxCell id="Z0ar6c9nnnO7voV9sIDM-61" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="720" y="120" width="15" height="435" as="geometry" />
-        </mxCell>
-        <mxCell id="Z0ar6c9nnnO7voV9sIDM-62" value="35.5 x 24.5" style="rounded=0;whiteSpace=wrap;html=1;rotation=0;" vertex="1" parent="1">
-          <mxGeometry x="1120" y="120" width="355" height="245" as="geometry" />
-        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
