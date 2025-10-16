@@ -1,10 +1,14 @@
 import sys, random, string
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QPushButton, QLabel
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-import paho.mqtt.client as mqtt
 from PyQt5.uic import loadUi
+import paho.mqtt.client as mqtt
 import certifi
 import json
+import csv, datetime, os
+
 
 """
 gui.py 
@@ -40,10 +44,6 @@ PI_IP = "100.69.169.69" # STATIC IP of the Pi
 PORT = 5000
 CAMERA_STREAM_URL = f"http://{PI_IP}:{PORT}/video_feed"
 
-# ===== VARIABLES ===== uneeded?
-mavproxy_on = False  # Whether MAVLink comms is active
-system_state = False  # RC, AUTO, IDLE, etc.
-
 
 # ===== HELPERS =====
 def _rand_id(prefix="gui-"):
@@ -63,6 +63,9 @@ class GUI(QtWidgets.QMainWindow):
         self.setupMQTT()
         self.setupButtons()
 
+        self.power_data = []  # (timestamp, voltage, i_esp, i_pi, i_fc, i_modem)
+        self.sensor_data = []  # (timestamp, turbidity, temperature, pH, nitrate, phosphate)
+
         self.show()
 
     #=============================================#
@@ -71,129 +74,146 @@ class GUI(QtWidgets.QMainWindow):
     def setupUi(self):
         #------------- CONTROL TAB ---------------#
         self.labelConnection = getattr(self, "connection_txt", None)
+        self.load_data_button = self.findChild(QPushButton, 'loadDataButton')
+
 
         # Control Buttons
-        self.btnMavproxy = getattr(self, "mavproxy_btn", None)
-        self.btnRcOverride = getattr(self, "rc_btn", None)
-        self.btnUpdate = getattr(self, "update_btn", None)
-        self.btnRtl = getattr(self, "rtl_btn", None)
-        self.btnPause = getattr(self, "pause_btn", None)
-        self.btnResume = getattr(self, "resume_btn", None)
+        self.btnMavproxy = self.findChild(QPushButton, 'mavproxy_btn')
+        self.btnRcOverride = self.findChild(QPushButton, 'rc_btn')
+        self.btnUpdate = self.findChild(QPushButton, 'update_btn')
+        self.btnRtl = self.findChild(QPushButton, 'rtl_btn')
+        self.btnPause = self.findChild(QPushButton, 'pause_btn')
+        self.btnResume = self.findChild(QPushButton, 'resume_btn')
+
+        # Data Buttons
+        self.btnDownloadPower = self.findChild(QPushButton, 'powerdl_btn')
+        self.btnDownloadSensor = self.findChild(QPushButton, 'sensordl_btn')
+        self.btnGraphPower = self.findChild(QPushButton, 'powergraph_btn')
+        self.btnGraphSensor = self.findChild(QPushButton, 'sensorgraph_btn')
 
         # Pi Status Labels
-        self.labelMavproxy = getattr(self, "mavproxy_txt", None)
-        self.labelPiStatusTime = getattr(self, "pistatustime_txt", None)
-        self.labelPiState = getattr(self, "pistate_txt", None)
+        self.labelMavproxy = self.findChild(QLabel, 'mavproxy_txt')
+        self.labelPiState = self.findChild(QLabel, 'pistate_txt')
 
         # ESP Status Labels
-        self.labelEspStatusTime = getattr(self, "espstatustime_txt", None)
-        self.labelEspState = getattr(self, "espstate_txt", None)
-        self.labelRelayFC = getattr(self, "relayfc_txt", None)
-        self.labelRelayPi = getattr(self, "relaypi_txt", None)
-        self.labelRelayModem = getattr(self, "relaymodem_txt", None)
+        self.labelEspState = self.findChild(QLabel, 'espstate_txt')
+        self.labelRelayFC = self.findChild(QLabel, 'relayfc_txt')
+        self.labelRelayPi = self.findChild(QLabel, 'relaypi_txt')
+        self.labelRelayModem = self.findChild(QLabel, 'relaymodem_txt')
 
         # FC Status Labels
-        self.labelFCArmStatus = getattr(self, "fcarmstatus_txt", None)
-        self.labelFCMode = getattr(self, "fcmode_txt", None)
+        self.labelFCArmStatus = self.findChild(QLabel, 'fcarmstatus_txt')
+        self.labelFCMode = self.findChild(QLabel, 'fcmode_txt')
 
         # Power Labels
-        self.labelBattV = getattr(self, "battv_txt", None)
-        self.labelEspA = getattr(self, "espa_txt", None)
-        self.labelPiA = getattr(self, "pia_txt", None)
-        self.labelFCA = getattr(self, "fca_txt", None)
-        self.labelModemA = getattr(self, "modema_txt", None)
-        self.labelEspPowerTime = getattr(self, "esppowertime_txt", None)
+        self.labelBattV = self.findChild(QLabel, 'battv_txt')
+        self.labelEspA = self.findChild(QLabel, 'espa_txt')
+        self.labelPiA = self.findChild(QLabel, 'pia_txt')
+        self.labelFCA = self.findChild(QLabel, 'fca_txt')
+        self.labelModemA = self.findChild(QLabel, 'modema_txt')
 
         # Sensor Labels
-        #TODO:
+        self.labelSensTurbidity = self.findChild(QLabel, 'turbidity_txt')
+        self.labelSensTemp = self.findChild(QLabel, 'temp_txt')
+        self.labelSensPH = self.findChild(QLabel, 'ph_txt')
+        self.labelSensNitrate = self.findChild(QLabel, 'nitrate_txt')
+        self.labelSensPhosphate = self.findChild(QLabel, 'phosphate_txt')
 
-        # Update Time Label
-        self.labelUpdateTime = getattr(self, "updatetime_txt", None)
+        # Update Times Labels
+        self.labelEspStatusTime = self.findChild(QLabel, 'espstatustime_txt')
+        self.labelEspPowerTime = self.findChild(QLabel, 'esppowertime_txt')
+        self.labelPiStatusTime = self.findChild(QLabel, 'pistatustime_txt')
+        self.labelPiSensorTime = self.findChild(QLabel, 'pisensortime_txt')
+
 
         #------------- CAMERA TAB ----------------#
         # Camera Display
         self.cameraView = getattr(self, "cam_view", None)
         if self.cameraView: self.cameraView.setUrl(QtCore.QUrl(CAMERA_STREAM_URL))
         # Camera Button
-        self.btnToggleCam = getattr(self, "cam_btn", None)
+        self.btnToggleCam = self.findChild(QPushButton, 'cam_btn')
 
         #------------ AUTONOMY TAB ---------------#
-        #TODO:
+        self.autonomyView = self.findChild(QLabel, 'autonomy_view')
+        self.btnToggleAutonomy = self.findChild(QPushButton, 'autonomy_btn')
 
         #------------- TESTING TAB ---------------#
-        # Send Buttons
-        self.btnGuidedTest = getattr(self, "guidedtest_btn", None)
+        self.btnGuidedTest = self.findChild(QPushButton, 'guidedtest_btn')
 
     def setupButtons(self):
         #------------- CONTROL TAB ---------------#
-        if self.btnMavproxy:
-            self.btnMavproxy.clicked.connect(self.btnMavproxyFunc)
-
-        if self.btnRcOverride:
-            self.btnRcOverride.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "toggle_rc_override")
-            )
-
-        if self.btnUpdate:
-            self.btnUpdate.clicked.connect(
-                lambda: (self.publish(TOPIC_CMD_PI, "update"), 
-                          self.publish(TOPIC_CMD_ESP, "update"))
-            )
-
-        if self.btnRtl:
-            self.btnRtl.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_ESP, "rtl")
-            )
-        
-        if self.btnPause:
-            self.btnPause.clicked.connect(
-                lambda: (self.publish(TOPIC_CMD_PI, "pause"),
-                          self.publish(TOPIC_CMD_ESP, "pause"))
-            )
-
-        if self.btnResume:
-            self.btnResume.clicked.connect(
-                lambda: (self.publish(TOPIC_CMD_PI, "resume"),
-                          self.publish(TOPIC_CMD_ESP, "resume"))
-            )
+        self.btnMavproxy.clicked.connect(self.btnMavproxyFunc)
+        self.btnRcOverride.clicked.connect(self.btnRCOverrideFunc)
+        self.btnUpdate.clicked.connect(self.btnUpdateFunc)
+        self.btnRtl.clicked.connect(self.btnRtlFunc)
+        self.btnPause.clicked.connect(self.btnPauseFunc)
+        self.btnResume.clicked.connect(self.btnResumeFunc)
+        self.btnDownloadPower.clicked.connect(self.btnDownloadPowerFunc)
+        self.btnDownloadSensor.clicked.connect(self.btnDownloadSensorFunc)  
+        self.btnGraphPower.clicked.connect(self.btnGraphPowerFunc)
+        self.btnGraphSensor.clicked.connect(self.btnGraphSensorFunc)
 
         #------------- CAMERA TAB ----------------#
-        if self.btnToggleCam:
-            self.btnToggleCam.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "toggle_cam")
-            )
 
-        #------------ AUTONOMY TAB ---------------#
-        #TODO:
+        self.btnToggleCam.clicked.connect(self.btnCameraFunc)
+
+        #------------ AUTONOMY TAB ---------------# 
+
+        self.btnToggleAutonomy.clicked.connect(self.btnAutonomyFunc)
 
         #------------- TESTING TAB ---------------#
-        if self.btnGuidedTest:
-            self.btnGuidedTest.clicked.connect(
-                lambda: self.publish(TOPIC_CMD_PI, "guided_test")
-            )
+
+        self.btnGuidedTest.clicked.connect(
+            lambda: self.publish(TOPIC_CMD_PI, "guided_test")
+        )
 
 
     #=============================================#
     #                 BTN FUNCs                   #
     #=============================================#
+
     def btnMavproxyFunc(self):
-        global mavproxy_on
-        mavproxy_on = not mavproxy_on
         self.publish(TOPIC_CMD_PI, "toggle_mavproxy")
-        self._set_status_label(self.labelMavproxy, mavproxy_on)
     
     def btnRCOverrideFunc(self):
         self.publish(TOPIC_CMD_PI, "toggle_rc_override")
 
-    def _set_status_label(self, label, on):
-        if not label:
-            return
-        if on:
-            label.setText("ACTIVE")
-            label.setStyleSheet("color: rgb(0,170,0);")  # green
-        else:
-            label.setText("INACTIVE")
-            label.setStyleSheet("color: rgb(220,0,0);")  # red
+    def btnUpdateFunc(self):
+        self.publish(TOPIC_CMD_PI, "update")
+        self.publish(TOPIC_CMD_ESP, "update")
+
+    def btnRtlFunc(self):
+        self.publish(TOPIC_CMD_PI, "rtl")
+
+    def btnPauseFunc(self):
+        self.publish(TOPIC_CMD_PI, "pause")
+        self.publish(TOPIC_CMD_ESP, "pause")
+    
+    def btnResumeFunc(self):
+        self.publish(TOPIC_CMD_PI, "resume")
+        self.publish(TOPIC_CMD_ESP, "resume")
+
+    def btnCameraFunc(self):
+        self.publish(TOPIC_CMD_PI, "toggle_camera")
+        if self.cameraView:
+            self.cameraView.setUrl(QtCore.QUrl(CAMERA_STREAM_URL))
+
+    def btnAutonomyFunc(self):
+        self.publish(TOPIC_CMD_PI, "toggle_autonomy")
+
+    def btnDownloadPowerFunc(self):
+        ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        self._save_rows_to_csv(self.power_data, f"power_data_{ts}.csv")
+
+    def btnDownloadSensorFunc(self):
+        ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        self._save_rows_to_csv(self.sensor_data, f"sensor_data_{ts}.csv")
+
+    def btnGraphPowerFunc(self):
+        pass
+
+    def btnGraphSensorFunc(self):
+        pass
 
 
     #=============================================#
@@ -210,26 +230,78 @@ class GUI(QtWidgets.QMainWindow):
     def _onoff(self, val):
         return "ON" if bool(val) else "OFF"
     
+    def _set_status_label(self, label, on):
+        if not label:
+            return
+        if on:
+            label.setText("ACTIVE")
+            label.setStyleSheet("color: rgb(0,170,0);")  # green
+        else:
+            label.setText("INACTIVE")
+            label.setStyleSheet("color: rgb(220,0,0);")  # red
+
+    def _save_rows_to_csv(self, rows, suggested_name):
+        if not rows:
+            QtWidgets.QMessageBox.information(self, "No data", "No data to download yet.")
+            return
+        # Build consistent header = union of keys across rows, with 'timestamp' first if present
+        all_keys = set().union(*[r.keys() for r in rows])
+        header = ["timestamp"] + sorted(k for k in all_keys if k != "timestamp")
+
+        # Ask user where to save (default filename provided)
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self,
+            "Save CSV",
+            os.path.join(os.getcwd(), suggested_name),
+            "CSV Files (*.csv)"
+        )
+        if not path:
+            return
+
+        with open(path, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=header)
+            w.writeheader()
+            for r in rows:
+                w.writerow(r)
+
+        QtWidgets.QMessageBox.information(self, "Saved", f"Saved {len(rows)} rows to:\n{path}")
+    
+    # incoming MQTT messages
     def updateEspPower(self, payload):
         try:
             d = json.loads(payload)
         except Exception as e:
             print(f"[ESP Power] bad JSON: {e}")
             return
+
         
         # Power/state fields
-        if self.labelBattV:   self.labelBattV.setText(self._fmt_num(d.get("v_batt"), 2, "V"))
-        if self.labelEspA:    self.labelEspA.setText(self._fmt_num(d.get("i_esp"),  3, "A"))
-        if self.labelPiA:     self.labelPiA.setText(self._fmt_num(d.get("i_pi"),   3, "A"))
-        if self.labelFCA:     self.labelFCA.setText(self._fmt_num(d.get("i_fc"),   3, "A"))
-        if self.labelModemA:  self.labelModemA.setText(self._fmt_num(d.get("i_modem"), 3, "A"))
+        self.labelBattV.setText(self._fmt_num(d.get("v_batt"), 2, "V"))
+        self.labelEspA.setText(self._fmt_num(d.get("i_esp"),  3, "A"))
+        self.labelPiA.setText(self._fmt_num(d.get("i_pi"),   3, "A"))
+        self.labelFCA.setText(self._fmt_num(d.get("i_fc"),   3, "A"))
+        self.labelModemA.setText(self._fmt_num(d.get("i_modem"), 3, "A"))
 
-        if self.labelEspPowerTime:
-            self.labelEspPowerTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
+        self.labelEspPowerTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
 
     def updatePiSensor(self, payload):
-        # pi sensor updates should be seperate to other status, more frequent
-        pass
+        try:
+            d = json.loads(payload)
+        except Exception as e:
+            print(f"[Pi Sensor] bad JSON: {e}")
+            return
+
+        self.sensor_data.append({
+            "timestamp": datetime.datetime.now().isoformat(timespec="seconds"),
+            **d
+        })
+        
+        # Sensor fields
+        self.labelSensTurbidity.setText(self._fmt_num(d.get("turbidity"), 2, "NTU"))
+        self.labelSensTemp.setText(self._fmt_num(d.get("temperature"), 2,"°C"))
+        self.labelSensPH.setText(self._fmt_num(d.get("ph"), 2, "pH"))
+        self.labelSensNitrate.setText(self._fmt_num(d.get("nitrate"), 2, "mg/L"))
+        self.labelSensPhosphate.setText(self._fmt_num(d.get("phosphate"), 2, "mg/L"))
     
     def updateEspStatus(self, payload):
         try:
@@ -237,32 +309,37 @@ class GUI(QtWidgets.QMainWindow):
         except Exception as e:
             print(f"[ESP Status] bad JSON: {e}")
             return
+        
+        self.power_data.append({
+            "timestamp": datetime.datetime.now().isoformat(timespec="seconds"),
+            **d
+        })
 
         # ESP power-state (string)
-        if self.labelEspState:
-            self.labelEspState.setText(str(d.get("state", "—")).upper())
+        self.labelEspState.setText(str(d.get("state", "—")).upper())
 
         # Relay labels (ON/OFF text)
-        if self.labelRelayPi:     self.labelRelayPi.setText(self._onoff(d.get("relay_pi")))
-        if self.labelRelayFC:     self.labelRelayFC.setText(self._onoff(d.get("relay_fc")))
-        if self.labelRelayModem:  self.labelRelayModem.setText(self._onoff(d.get("relay_modem")))
+        self._set_status_label(self.labelRelayPi, d.get("relay_pi", False))
+        self._set_status_label(self.labelRelayFC, d.get("relay_fc", False))
+        self._set_status_label(self.labelRelayModem, d.get("relay_modem", False))
 
-        if self.labelEspStatusTime:
-            self.labelEspStatusTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
+        self.labelEspStatusTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
 
     def updatePiStatus(self, payload):
         try:
             d = json.loads(payload)
         except Exception as e:
-            print(f"[ESP Status] bad JSON: {e}")
+            print(f"[Pi Status] bad JSON: {e}")
             return
         
         # FC state fields
+        self.labelFCArmStatus.setText(self._onoff(d.get("fc_armed", False)))
+        self.labelFCMode.setText(str(d.get("fc_mode", "—")).upper())
 
         # Mavproxy status
-        if self.labelMavproxy:
-            self._set_status_label(self.labelMavproxy, d.get("mavproxy_on", False))
-        
+        self._set_status_label(self.labelMavproxy, d.get("mavproxy_on", False))
+
+    def updateAutonomy(self, payload):
         pass
 
     #=============================================#
@@ -296,8 +373,14 @@ class GUI(QtWidgets.QMainWindow):
     # ---------- MQTT callbacks (background thread) ----------
     def _on_connect(self, client, userdata, flags, rc, properties=None):
         self.mqtt_status.emit(f"[MQTT] Connected (rc={rc})")
-        client.subscribe([(TOPIC_STATUS_ESP, 0), (TOPIC_POWER_ESP, 0), (TOPIC_STATUS_PI, 0), (TOPIC_SENSOR_PI, 0)])
         # Subscribe to telemetry
+        client.subscribe([
+            (TOPIC_STATUS_ESP, 0), 
+            (TOPIC_POWER_ESP, 0), 
+            (TOPIC_STATUS_PI, 0), 
+            (TOPIC_SENSOR_PI, 0),
+            (TOPIC_AUTON_PI, 0)
+            ])
 
     def _on_message(self, client, userdata, msg):
         payload = msg.payload.decode(errors="replace")
@@ -328,6 +411,10 @@ class GUI(QtWidgets.QMainWindow):
             self.updatePiStatus(payload)
         elif topic == TOPIC_SENSOR_PI:
             self.updatePiSensor(payload)
+        elif topic == TOPIC_AUTON_PI:
+            self.updateAutonomy(payload)
+        else:
+            print(f"[MQTT] Unknown topic: {topic}")
 
 
     @QtCore.pyqtSlot(str)
