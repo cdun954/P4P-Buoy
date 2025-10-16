@@ -4,6 +4,7 @@
 #include <HardwareSerial.h>
 #include <MAVLink.h>
 #include <ArduinoJson.h>
+#include <esp_sleep.h>
 
 /*
 main.ino
@@ -41,14 +42,14 @@ static uint8_t tgt_comp = MAV_COMP_ID_AUTOPILOT1;
 // ======= Times ==========
 const int TIME_FULL = 10000;      // 10 sec
 const int TIME_MID  = 60000;      // 60 sec
-const int TIME_SLEEP  = 600000;   // 10 min
+const int TIME_SLEEP  = 3600000;   // 60 min
+const int TIME_TO_SLEEP = 600000;  // 10 min
 const int TIME_CRIT = 30000;      // 30 sec
 const int TIME_FC_BOOT = 5000;    // 5 sec
 const int TIME_MODEM_BOOT = 6000; // 6 sec
 const int TIME_LOAD = 2000;       // 2 sec
-const int TIME_GPS  = 600000;     // 10 min
 const int TIME_IDLE = 60000;      // 60 sec
-const int TIME_PI_SHUTDOWN = 5000;// 5 sec
+const int TIME_PI_SHUTDOWN = 1000;// 1 sec
 
 // ======== ADC ==========
 #define ADC_I_PI_PIN     36
@@ -64,16 +65,17 @@ const float ADC_I_CONV    = 69;       // current sensor conversion factor
 const float ADC_V_CONV    = 5.1;       // voltage battery conversion factor
 
 // ======== Voltage Thresholds ==========
-const float V_HYSTERESIS    = 0.3;
-const float V_MID_BOUNDARY  = 14.8;
-const float V_SLEEP_BOUNDARY  = 14;
-const float V_CRIT_BOUNDARY = 13.2;
+const float V_HYSTERESIS    = 0.7;
+const float V_MID_BOUNDARY  = 14.4; 
+const float V_SLEEP_BOUNDARY  = 13.8;
+const float V_CRIT_BOUNDARY = 13.5;   
+const float V_ABSOLUTE_MIN  = 12.0;   // below this, shut everything down
 
 // ======== WiFi ==========
-//const char* WIFI_SSID = "IE_Room_BKUP";
-//const char* WIFI_PW   = "ieroom12345";
-const char* WIFI_SSID = "nnud";
-const char* WIFI_PW   = "12345678";
+const char* WIFI_SSID = "IE_Room_BKUP";
+const char* WIFI_PW   = "ieroom12345";
+// const char* WIFI_SSID = "nnud";
+// const char* WIFI_PW   = "12345678";
 
 // ======== MQTT ==========
 const char* MQTT_HOST = "f1bd5a3c43044a3a816321410ca20435.s1.eu.hivemq.cloud";
@@ -144,7 +146,7 @@ State state = FULL;
 State prevState = FULL;
 
 // Timing
-unsigned long tFull, tMid, tSleep, tIdle, tCrit, tGPS = 0;
+unsigned long time_till_sleep = 0;
 
 // HW Timer
 hw_timer_t * timer = nullptr;
@@ -168,6 +170,7 @@ void setupMQTT();
 void mqttEnsureConnected();
 void mqttCallback(char* topic, byte* payload, unsigned int len);
 bool sendMsg(const char* topic, const char* msg);
+void tickComms();
 
 // MQTT commands
 void cmdUpdate();
@@ -179,11 +182,11 @@ void cmdForceRTL();
 
 // FSM
 void enterState(State s);
-void doFull();
-void doMid();
-void doSleep();
-void doCrit();
-void doIdle();
+void doEnterFull();
+void doEnterMid();
+void doEnterSleep();
+void doEnterCrit();
+void doEnterIdle();
 const char* getStateName(State s);
 
 // ADC
@@ -370,7 +373,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int len) {
   len = min(len, (unsigned int)(sizeof(msg)-1));
   memcpy(msg, payload, len);
   msg[len] = '\0';
-  Serial.printf("[MQTT] Msg received on topic: %s\n", topic);
+  //Serial.printf("[MQTT] Msg received on topic: %s\n", topic);
   if (strcmp(topic, MQTT_TOPIC_CMD) == 0) {
     for (auto &cmd : commands) {
       if (strcmp(msg, cmd.name) == 0) {
@@ -390,7 +393,7 @@ float readBattVoltage(){
   float v_adc  = (raw / ADC_MAX) * ADC_VREF; // convert to pin voltage
   float v = v_adc * ADC_V_CONV;   // Convert to real battery voltage
   //Serial.print("[ADC] Read!");
-  ////Serial.println(v);
+  //Serial.println(v);
   return v;
 }
 
@@ -544,7 +547,7 @@ float* getFCGPS() {
   }
   return res; // unchanged {NAN,NAN,NAN,NAN} if nothing seen
 }
-
+  
 static void mav_send(const mavlink_message_t &m) {
   uint8_t buf[MAVLINK_MAX_PACKET_LEN];
   const uint16_t n = mavlink_msg_to_send_buffer(buf, &m);
@@ -579,113 +582,68 @@ const char* getStateName(State s) {
 
 void enterState(State s) {
   state = s;
-  Serial.printf("[FSM] Entering State: %s\n", getStateName(s));
+  //Serial.printf("[FSM] Entering State: %s\n", getStateName(s));
   switch (state){
-    case FULL:
-      // entering full
-      // ensure all systems on
-      timerStart();
-      relayPiOn();
-      relayFCOn();
-      relayModemOn();
-      break;
-
-    case MID:
-      // entering mid
-      // ensure all on except for FC
-      // must disarm and force fc shutdown first
-      timerStart();
-      relayPiOn();
-      relayModemOn();
-      relayFCOff();
-      break;
-
-    case SLEEP:
-      // entering sleep
-      // ensure all off 
-      // need to let pi know to shutdown
-      timerStop();
-      relayFCOff();
-      relayModemOff();
-      relayPiOff();
-      break;
-
-    case CRIT:
-      // entering crit
-      // ensure all off
-      // turn FC on
-      // arm FC
-      // force RTL
-      timerStop();
-      relayModemOff();
-      relayPiOff();
-      relayFCOn();
-      mavArmFC();
-      mavForceRTL();
-      break;
-    case IDLE:
-      // entering idle
-      timerStop();
-      relayModemOn();
-      relayPiOn();
-      relayFCOff();
-      break;
+    case FULL: doEnterFull(); break;
+    case MID: doEnterMid(); break;
+    case SLEEP: doEnterSleep(); break;
+    case CRIT: doEnterCrit(); break;
+    case IDLE: doEnterIdle(); break;
   }
 }
 
-void doFull(){
-  wifiEnsureConnected();
-  mqttEnsureConnected();
-  cmdUpdate();
+void doEnterFull(){
+  // ensure all systems on
+  timerStart();
+  relayPiOn();
+  relayFCOn();
+  relayModemOn();
 }
 
-void doMid(){
-  wifiEnsureConnected();
-  mqttEnsureConnected();
-  cmdUpdate();
-// if (millis() - tGPS >= TIME_GPS) {
-//   relayFCOn(); // ensure FC is on
-//   //sendGPS();
-//   relayFCOff(); // turn FC off again
-//   tGPS = millis();
-// } 
-//  ENABLE THIS WHEN FC CONNECTION IS CONFIRMED
+void doEnterMid(){
+  // ensure all on except for FC
+  // must disarm and force fc shutdown first
+  timerStart();
+  relayPiOn();
+  relayModemOn();
+  relayFCOff();
 }
 
-void doSleep(){
+void doEnterSleep(){
   // everything is off
   // deep sleep for period of time
-  // wake up, check voltage and report
-  // keep modem on for 10 or so minutes to allow for commands
-  // go back to sleep
+  timerStop();
+  relayPiOff();
+  relayModemOn();
+  relayFCOff();
+  time_till_sleep = millis();
 }
 
-void doCrit(){
-  // rtl already handled
-  // do nothing
-  // if adc_v_batt <= 12
-  // kill fc
-  // modem on
-  // send panic
-  adc_v_batt = readBattVoltage();
-  if (adc_v_batt <= 12){
-    mavDisarmFC();
-    relayFCOff();
-    relayModemOn();
-    wifiEnsureConnected();
-    mqttEnsureConnected();
-    client.publish(MQTT_TOPIC_PANIC, "HELP!");
-    //Serial.println("[MQTT] PANIC!!!!!!!");
-    delay(4294967295UL); // MAX VALUE DELAY, BATTERY TOO LOW, PLEASE RETRIEVE FROM LAKE
-    // alternatively, deep sleep indefinitely
-  }
+void doEnterCrit(){
+  // ensure all off
+  // force RTL
+  timerStop();
+  relayPiOff();
+  relayModemOff();
+  relayFCOn();
+  mavArmFC();
+  mavForceRTL();
 }
 
-void doIdle(){
+void doEnterIdle(){
+  timerStart();
+  relayModemOn();
+  relayPiOn();
+  relayFCOff();
+}
+
+void tickComms(){
   wifiEnsureConnected();
   mqttEnsureConnected();
-  cmdUpdate();
+  client.loop();
+  updateStatus();
 }
+
 
 /*==============================
             SETUP
@@ -708,8 +666,8 @@ void setup() {
 
   // init rest of system
   FC.begin(FC_BAUD, SERIAL_8N1, FC_RX_PIN, FC_TX_PIN);
-  setupTimer();
   setupPins();
+  setupTimer();
   
   setupWiFi();
   setupMQTT();
@@ -736,42 +694,45 @@ void loop() {
     updatePower();
   }
 
-  client.loop();
-
   switch (state) {
     case FULL:
-      if (millis() - tFull >= TIME_FULL){
-        doFull(); tFull = millis();
-      }
+      tickComms();
       if (adc_v_batt < V_MID_BOUNDARY) enterState(MID);
       break;
 
     case MID:
-      if (millis() - tMid >= TIME_MID){
-        doMid(); tMid = millis();
-      }
+      tickComms();
       if (adc_v_batt >= V_MID_BOUNDARY + V_HYSTERESIS) enterState(FULL);
       if (adc_v_batt < V_SLEEP_BOUNDARY) enterState(SLEEP);
       break;
 
     case SLEEP:
-      if (millis() - tSleep >= TIME_SLEEP){
-        doSleep(); tSleep = millis();
-      }
       if (adc_v_batt >= V_SLEEP_BOUNDARY + V_HYSTERESIS) enterState(MID);
       if (adc_v_batt < V_CRIT_BOUNDARY) enterState(CRIT);
+      // deep sleep after being in sleep state for x min
+      if (millis() - time_till_sleep >= TIME_TO_SLEEP) {
+        relayModemOff();
+        esp_sleep_enable_timer_wakeup(TIME_SLEEP * 1000ULL);
+        esp_deep_sleep_start();
+      }
       break;
     
     case CRIT:
-      if (millis() - tCrit >= TIME_CRIT){
-        doCrit(); tCrit = millis();
-      }
+      if (adc_v_batt <= V_ABSOLUTE_MIN) {
+          mavDisarmFC();
+          relayFCOff();
+          relayModemOn();
+          wifiEnsureConnected();
+          mqttEnsureConnected();
+          client.publish(MQTT_TOPIC_PANIC, "HELP!");
+          // deep sleep
+          esp_sleep_enable_timer_wakeup(TIME_SLEEP * 1000ULL);
+          esp_deep_sleep_start();
+        }
       break;
 
     case IDLE:
-      if (millis() - tIdle >= TIME_IDLE){
-        doIdle(); tIdle = millis();
-      }
+      tickComms();
       break;
   }
   delay(100);
