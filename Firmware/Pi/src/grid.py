@@ -25,6 +25,37 @@ def point_in_polygon(point: Coordinate, polygon: Sequence[Coordinate]) -> bool:
                 inside = not inside
     return inside
 
+# ---- NZ-accurate geodesy helpers (WGS-84) ----
+# Source: standard m/deg formulas with cos(phi) corrections; ~sub-meter accuracy at NZ latitudes.
+# Good for local gridding & planning without extra deps.
+WGS84_A = 6378137.0          # major axis
+WGS84_B = 6356752.314245     # minor axis
+WGS84_E2 = 1 - (WGS84_B**2 / WGS84_A**2)
+
+def meters_per_deg_lat(phi_rad: float) -> float:
+    """Meters per degree latitude at latitude phi (radians)."""
+    # Using a high-accuracy series approximation
+    sin2 = math.sin(phi_rad) ** 2
+    # meridional radius of curvature
+    M = (WGS84_A * (1 - WGS84_E2)) / (1 - WGS84_E2 * sin2) ** 1.5
+    return (math.pi / 180.0) * M
+
+def meters_per_deg_lon(phi_rad: float) -> float:
+    """Meters per degree longitude at latitude phi (radians)."""
+    sin2 = math.sin(phi_rad) ** 2
+    # prime vertical radius of curvature
+    N = WGS84_A / math.sqrt(1 - WGS84_E2 * sin2)
+    return (math.pi / 180.0) * N * math.cos(phi_rad)
+
+def deg_lat_per_meter(phi_rad: float) -> float:
+    return 1.0 / meters_per_deg_lat(phi_rad)
+
+def deg_lon_per_meter(phi_rad: float) -> float:
+    mpd_lon = meters_per_deg_lon(phi_rad)
+    # protect against cos ~ 0, but NZ is far from poles
+    return 0.0 if mpd_lon == 0 else 1.0 / mpd_lon
+
+
 # --- NEW: coverage helpers ---
 def fraction_rect_inside_polygon(bounds: Bounds, polygon: Sequence[Coordinate], samples_per_side: int = 5) -> float:
     """Estimate what fraction of a rectangle's area lies within a polygon by uniform sampling."""
@@ -138,6 +169,94 @@ def build_grid_map(
     if not any(t is not None for row in tiles for t in row):
         raise ValueError("Geofence too small or threshold too high; no tiles kept.")
     return GridMap(tiles=tiles, geofence=geofence)
+
+def build_grid_map_meters(
+    geofence: Sequence[Coordinate],
+    tile_size_m: float,
+    coverage_threshold: float = 0.0,
+    samples_per_side: int = 5
+) -> GridMap:
+    """
+    Build a grid of ~square tiles in meters over the geofence bbox.
+    Square size is tile_size_m x tile_size_m in local ground distance.
+    Accurate for NZ using WGS-84 per-row degree step conversion.
+
+    coverage_threshold:
+        0.0 -> center-only inclusion (fast)
+        (0,1] -> require that fraction of tile area be inside polygon (via sampling)
+    """
+    if len(geofence) < 3:
+        raise ValueError("Geofence must contain at least three vertices")
+
+    lats = [lat for lat, _ in geofence]
+    lons = [lon for _, lon in geofence]
+    min_lat, max_lat = min(lats), max(lats)
+    min_lon, max_lon = min(lons), max(lons)
+
+    # Use mid-latitude for initial sizing decisions
+    mid_lat = 0.5 * (min_lat + max_lat)
+    mid_phi = math.radians(mid_lat)
+
+    # Compute overall N-S and E-W extents in meters using local m/deg at mid-lat
+    ns_m = abs((max_lat - min_lat) * meters_per_deg_lat(mid_phi))
+    # For E-W, use longitude span converted at mid-lat
+    ew_m = abs((max_lon - min_lon) * meters_per_deg_lon(mid_phi))
+
+    # Min-guard if user gives tiny geofence
+    if ns_m < 1e-6 or ew_m < 1e-6:
+        raise ValueError("Geofence bbox is degenerate or extremely small.")
+
+    rows = max(1, math.ceil(ns_m / tile_size_m))
+    cols = max(1, math.ceil(ew_m / tile_size_m))
+
+    tiles: List[List[Optional[GridTile]]] = []
+    # We'll ascend in latitude; compute per-row lat step in degrees at the row latitude
+    lat_cursor = min_lat
+    for r in range(rows):
+        # Use the *current* row's latitude to compute how many degrees of lat correspond to tile_size_m
+        phi_row = math.radians(lat_cursor)
+        dlat_deg = tile_size_m * deg_lat_per_meter(phi_row)
+
+        # Guard if deg step underflows (won't happen in NZ, but be safe)
+        if dlat_deg <= 0:
+            dlat_deg = tile_size_m * deg_lat_per_meter(mid_phi)
+
+        row_min_lat = lat_cursor
+        row_max_lat = row_min_lat + dlat_deg
+        row_center_lat = 0.5 * (row_min_lat + row_max_lat)
+        phi_center = math.radians(row_center_lat)
+
+        # For this row, compute how many degrees of longitude equal tile_size_m at the row center
+        dlon_deg = tile_size_m * deg_lon_per_meter(phi_center)
+        if dlon_deg <= 0:
+            dlon_deg = tile_size_m * deg_lon_per_meter(mid_phi)
+
+        # Now lay out columns across the fixed lon range using constant dlon for this row
+        row_tiles: List[Optional[GridTile]] = []
+        lon_cursor = min_lon
+        for c in range(cols):
+            cell_min_lat = row_min_lat
+            cell_max_lat = row_max_lat
+            cell_min_lon = lon_cursor
+            cell_max_lon = cell_min_lon + dlon_deg
+
+            bounds = (cell_min_lat, cell_min_lon, cell_max_lat, cell_max_lon)
+            center = ((cell_min_lat + cell_max_lat) / 2.0, (cell_min_lon + cell_max_lon) / 2.0)
+
+            if tile_passes(bounds, geofence, coverage_threshold, samples_per_side):
+                row_tiles.append(GridTile(r, c, center, bounds))
+            else:
+                row_tiles.append(None)
+
+            lon_cursor = cell_max_lon
+        tiles.append(row_tiles)
+
+        lat_cursor = row_max_lat
+
+    if not any(t is not None for row in tiles for t in row):
+        raise ValueError("Geofence too small vs tile size/threshold; no tiles kept.")
+    return GridMap(tiles=tiles, geofence=geofence)
+
 
 
 # -------------------- Lawn-mower path (start nearest to hint) --------------------
@@ -313,7 +432,7 @@ if __name__ == "__main__":
     path = "taka_lake.fen"
     geofence = read_poly_file(path)
 
-    grid = build_grid_map(geofence, tile_size_lat=0.00015, coverage_threshold=0.65)  # adjust as needed
+    grid = build_grid_map_meters(geofence, tile_size_m=15, coverage_threshold=0.65)  # adjust as needed
     start_hint = geofence[0]  # first coordinate in the file
 
     route = plan_lawnmower_path(grid, start_hint)

@@ -39,30 +39,32 @@ static uint8_t tgt_comp = MAV_COMP_ID_AUTOPILOT1;
 #define RELAY_MODEM_PIN  22
 #define RELAY_FC_PIN     21
 
-// ======= Times ==========
-const int TIME_FULL = 10000;      // 10 sec
-const int TIME_MID  = 60000;      // 60 sec
+#define LED_BUILTIN_PIN 2  // ESP32 onboard LED
+
+// ======= Times (ms) ==========
 const int TIME_SLEEP  = 3600000;   // 60 min
-const int TIME_TO_SLEEP = 600000;  // 10 min
-const int TIME_CRIT = 30000;      // 30 sec
-const int TIME_FC_BOOT = 5000;    // 5 sec
-const int TIME_MODEM_BOOT = 6000; // 6 sec
-const int TIME_LOAD = 2000;       // 2 sec
-const int TIME_IDLE = 60000;      // 60 sec
-const int TIME_PI_SHUTDOWN = 1000;// 1 sec
+const int TIME_TO_SLEEP = 600000;  // 10 min 
+const int TIME_FC_BOOT = 5;//5000;    // 5 sec
+const int TIME_MODEM_BOOT = 5;//6000; // 6 sec
+const int TIME_LOAD = 5;// 2000;       // 2 sec
+const int TIME_PI_SHUTDOWN = 5;//1000;// 1 sec
+
+const int TIMER_INTERVAL = 200000; // 200 ms (us)
+const int FSM_INTERVAL = 3000;   // 3 sec
 
 // ======== ADC ==========
-#define ADC_I_PI_PIN     36
-#define ADC_I_FC_PIN     39
-#define ADC_I_MODEM_PIN  34
-#define ADC_I_ESP_PIN    35
-#define ADC_V_BATT_PIN   32
+// if charging port is on the bottom
+#define ADC_I_PI_PIN     36 // 3rd from top left
+#define ADC_I_FC_PIN     39 // 4th
+#define ADC_I_MODEM_PIN  34 // 5th
+#define ADC_I_ESP_PIN    35 // 6th
+#define ADC_V_BATT_PIN   32 // 7th
 
 const float ADC_VREF      = 3.3;      // ESP32 ADC reference (Volts)
 const int   ADC_RES       = 12;       // 12-bit ADC
 const float ADC_MAX       = 4095;     // 12-bit ADC
-const float ADC_I_CONV    = 69;       // current sensor conversion factor
-const float ADC_V_CONV    = 5.1;       // voltage battery conversion factor
+const float ADC_I_ADD     = 0.05;       // current sensor addition factor?
+const float ADC_V_CONV    = 5.1*4;       // voltage battery conversion factor
 
 // ======== Voltage Thresholds ==========
 const float V_HYSTERESIS    = 0.7;
@@ -153,6 +155,9 @@ hw_timer_t * timer = nullptr;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 volatile bool timerFlag = false;
 
+static unsigned long lastComms = 0;
+
+
 // ADC
 float adc_v_batt = 16.8; // max
 float adc_i_pi   = 0.0;
@@ -223,9 +228,9 @@ static void mav_cmd_long(uint16_t command,
           HW TIMER
 ===============================*/
 void IRAM_ATTR onTimer() {
-  portENTER_CRITICAL_ISR(&timerMux);
-  timerFlag = true;
-  portEXIT_CRITICAL_ISR(&timerMux);
+    portENTER_CRITICAL(&timerMux);
+    timerFlag = true;
+    portEXIT_CRITICAL(&timerMux);
 }
 
 void setupTimer() {
@@ -233,7 +238,7 @@ void setupTimer() {
   timer = timerBegin(1000000);                 // frequency in Hz
   timerAttachInterrupt(timer, &onTimer); 
   // Alarm after 1,000,000 us = 1 s, auto-reload forever (0 = unlimited)
-  timerAlarm(timer, 1000000ULL, true, 0);
+  timerAlarm(timer, TIMER_INTERVAL, true, 0);
   //Serial.println("[SETUP] Timer Setup!");
 }
 
@@ -270,7 +275,7 @@ void updateStatus() {
   char statusBuf[192];
   size_t sn = serializeJson(statusDoc, statusBuf, sizeof(statusBuf));
   if (sn == 0 || sn >= sizeof(statusBuf)) {
-    //Serial.println("[MQTT] STATUS serialize failed");
+    //Serial.println("[MQTT] STATUS //Serialize failed");
   } else if (!client.publish(MQTT_TOPIC_STATUS, statusBuf)) {
     //Serial.println("[MQTT] STATUS publish failed");
   } else {
@@ -295,7 +300,7 @@ void updatePower() {
   char powerBuf[256];
   size_t pn = serializeJson(powerDoc, powerBuf, sizeof(powerBuf));
   if (pn == 0 || pn >= sizeof(powerBuf)) {
-    //Serial.println("[MQTT] POWER serialize failed");
+    //Serial.println("[MQTT] POWER //Serialize failed");
   } else if (!client.publish(MQTT_TOPIC_POWER, powerBuf)) {
     //Serial.println("[MQTT] POWER publish failed");
   } else {
@@ -389,19 +394,15 @@ void mqttCallback(char* topic, byte* payload, unsigned int len) {
           ADC FUNCTIONS
 ===============================*/
 float readBattVoltage(){
-  int raw = analogRead(ADC_V_BATT_PIN);
-  float v_adc  = (raw / ADC_MAX) * ADC_VREF; // convert to pin voltage
-  float v = v_adc * ADC_V_CONV;   // Convert to real battery voltage
+  int raw = analogReadMilliVolts(ADC_V_BATT_PIN);
+  float v = raw * ADC_V_CONV;   // Convert to real battery voltage
   //Serial.print("[ADC] Read!");
   //Serial.println(v);
   return v;
 }
 
 float readADCCurrent(int pin){
-  int raw = analogRead(pin);
-  float v_adc  = (raw / ADC_MAX) * ADC_VREF; // convert to pin voltage
-  float cur = v_adc * ADC_I_CONV;   // Convert to real current 
-  return cur;
+  return (analogReadMilliVolts(pin) -142.0) / 1000.0;
 }
 
 /*==============================
@@ -414,6 +415,7 @@ void setupPins(){
   pinMode(RELAY_MODEM_PIN, OUTPUT);
   pinMode(RELAY_FC_PIN, OUTPUT);
   pinMode(PI_SHUTDOWN_PIN, OUTPUT);
+  pinMode(LED_BUILTIN_PIN, OUTPUT);
 
   // set all to low
   digitalWrite(RELAY_PI_PIN, LOW);
@@ -423,7 +425,10 @@ void setupPins(){
   relayFCStatus    = false;
   relayPiStatus    = false;
   relayModemStatus = false;
-  
+
+  // turn ON builtin led
+  digitalWrite(LED_BUILTIN_PIN, HIGH);
+
   //Serial.println("[SETUP] Pins Setup!");
 }
 
@@ -638,6 +643,9 @@ void doEnterIdle(){
 }
 
 void tickComms(){
+  // only every x seconds
+  if (millis() - lastComms < FSM_INTERVAL) return;
+  lastComms = millis();
   wifiEnsureConnected();
   mqttEnsureConnected();
   client.loop();
@@ -649,7 +657,7 @@ void tickComms(){
             SETUP
 ===============================*/
 void setup() {
-  Serial.begin(115200);
+  //Serial.begin(115200);
   setCpuFrequencyMhz(80);
 
   // init adc
@@ -658,7 +666,8 @@ void setup() {
 
   // determine state from battery voltage
   State s = IDLE; // default
-  float v_batt = readBattVoltage();
+  //float v_batt = readBattVoltage();
+  float v_batt = 16.8; // assume full for initial testing
   if (v_batt >= V_MID_BOUNDARY) s = FULL;
   else if (v_batt >= V_SLEEP_BOUNDARY) s = MID;
   else if (v_batt >= V_CRIT_BOUNDARY) s = SLEEP;
@@ -679,13 +688,16 @@ void setup() {
             LOOP
 ===============================*/
 void loop() {
-  // check timer flag
-  if (timerFlag) {
-    portENTER_CRITICAL(&timerMux);
+  
+  bool do_sample = false;
+  portENTER_CRITICAL(&timerMux);
+  if (timerFlag) { 
     timerFlag = false;
-    portEXIT_CRITICAL(&timerMux);
-
-    adc_v_batt = readBattVoltage();
+    do_sample = true;
+  }
+  portEXIT_CRITICAL(&timerMux);
+  if (do_sample) {
+    //adc_v_batt = readBattVoltage();
     adc_i_pi   = readADCCurrent(ADC_I_PI_PIN);
     adc_i_fc   = readADCCurrent(ADC_I_FC_PIN);
     adc_i_modem= readADCCurrent(ADC_I_MODEM_PIN);
@@ -735,5 +747,5 @@ void loop() {
       tickComms();
       break;
   }
-  delay(100);
+  delay(50);
 }

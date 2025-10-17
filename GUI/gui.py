@@ -9,6 +9,8 @@ import certifi
 import json
 import csv, datetime, os
 
+from graph import LiveGraphWindow
+
 
 """
 gui.py 
@@ -31,13 +33,14 @@ BROKER_PORT = 8883
 USERNAME    = "P4P-Buoy"
 PASSWORD    = "P4P108buoy"
 
-TOPIC_STATUS_ESP = "buoy/esp/status"
-TOPIC_POWER_ESP  = "buoy/esp/power"
-TOPIC_CMD_ESP    = "buoy/esp/cmd"
-TOPIC_STATUS_PI  = "buoy/pi/status"
-TOPIC_AUTON_PI   = "buoy/pi/autonomy"
-TOPIC_SENSOR_PI  = "buoy/pi/sensor"
-TOPIC_CMD_PI     = "buoy/pi/cmd"
+TOPIC_ESP_STATUS = "buoy/esp/status"
+TOPIC_ESP_POWER  = "buoy/esp/power"
+TOPIC_ESP_CMD    = "buoy/esp/cmd"
+
+TOPIC_PI_STATUS  = "buoy/pi/status"
+TOPIC_PI_AUTON   = "buoy/pi/autonomy"
+TOPIC_PI_SENSOR  = "buoy/pi/sensor"
+TOPIC_PI_CMD     = "buoy/pi/cmd"
 
 # ===== CAMERA CONFIG =====
 PI_IP = "100.69.169.69" # STATIC IP of the Pi
@@ -61,10 +64,12 @@ class GUI(QtWidgets.QMainWindow):
 
         self.setupUi()
         self.setupMQTT()
-        self.setupButtons()
 
         self.power_data = []  # (timestamp, voltage, i_esp, i_pi, i_fc, i_modem)
         self.sensor_data = []  # (timestamp, turbidity, temperature, pH, nitrate, phosphate)
+
+        self.powerGraphWin = None
+        self.sensorGraphWin = None
 
         self.show()
 
@@ -84,15 +89,27 @@ class GUI(QtWidgets.QMainWindow):
         self.btnRtl = self.findChild(QPushButton, 'rtl_btn')
         self.btnPause = self.findChild(QPushButton, 'pause_btn')
         self.btnResume = self.findChild(QPushButton, 'resume_btn')
+        self.btnMavproxy.clicked.connect(self.btnMavproxyFunc)
+        self.btnRcOverride.clicked.connect(self.btnRCOverrideFunc)
+        self.btnUpdate.clicked.connect(self.btnUpdateFunc)
+        self.btnRtl.clicked.connect(self.btnRtlFunc)
+        self.btnPause.clicked.connect(self.btnPauseFunc)
+        self.btnResume.clicked.connect(self.btnResumeFunc)
 
         # Data Buttons
         self.btnDownloadPower = self.findChild(QPushButton, 'powerdl_btn')
         self.btnDownloadSensor = self.findChild(QPushButton, 'sensordl_btn')
         self.btnGraphPower = self.findChild(QPushButton, 'powergraph_btn')
         self.btnGraphSensor = self.findChild(QPushButton, 'sensorgraph_btn')
+        self.btnDownloadPower.clicked.connect(self.btnDownloadPowerFunc)
+        self.btnDownloadSensor.clicked.connect(self.btnDownloadSensorFunc)  
+        self.btnGraphPower.clicked.connect(self.btnGraphPowerFunc)
+        self.btnGraphSensor.clicked.connect(self.btnGraphSensorFunc)
 
         # Pi Status Labels
         self.labelMavproxy = self.findChild(QLabel, 'mavproxy_txt')
+        self.labelCamera = self.findChild(QLabel, 'camera_txt')
+        self.labelAutonomy = self.findChild(QLabel, 'autonomy_txt')
         self.labelPiState = self.findChild(QLabel, 'pistate_txt')
 
         # ESP Status Labels
@@ -125,6 +142,13 @@ class GUI(QtWidgets.QMainWindow):
         self.labelPiStatusTime = self.findChild(QLabel, 'pistatustime_txt')
         self.labelPiSensorTime = self.findChild(QLabel, 'pisensortime_txt')
 
+        # heartbeats
+        self.labelEspHeartbeat = self.findChild(QLabel, 'esphb_txt')
+        self.labelPiHeartbeat = self.findChild(QLabel, 'pihb_txt')
+        self._set_status_label(self.labelPiHeartbeat, False)
+        self._set_status_label(self.labelEspHeartbeat, False)
+
+
 
         #------------- CAMERA TAB ----------------#
         # Camera Display
@@ -132,40 +156,73 @@ class GUI(QtWidgets.QMainWindow):
         if self.cameraView: self.cameraView.setUrl(QtCore.QUrl(CAMERA_STREAM_URL))
         # Camera Button
         self.btnToggleCam = self.findChild(QPushButton, 'cam_btn')
+        self.btnToggleCam.clicked.connect(self.btnCameraFunc)
 
         #------------ AUTONOMY TAB ---------------#
         self.autonomyView = self.findChild(QLabel, 'autonomy_view')
+
+        # buttons
         self.btnToggleAutonomy = self.findChild(QPushButton, 'autonomy_btn')
+        self.btnResetDefault = self.findChild(QPushButton, 'resetdefault_btn')
+        self.btnToggleAutonomy.clicked.connect(self.btnAutonomyFunc)
+        self.btnResetDefault.clicked.connect(self.btnResetDefaultFunc)
+ 
+        # sliders
+        self.sldrGridSize = self.findChild(QtWidgets.QSlider, 'gridsize_sldr')
+        self.sldrEdgeRatio = self.findChild(QtWidgets.QSlider, 'edgeratio_sldr')
+        self.sldrTravelSpeed = self.findChild(QtWidgets.QSlider, 'travelspeed_sldr')
+        self.sldrLoiterRadius = self.findChild(QtWidgets.QSlider, 'loiterrad_sldr')
+        self.sldrLoiterTime = self.findChild(QtWidgets.QSlider, 'loitertime_sldr')
+        self.sldrMaxWpTime = self.findChild(QtWidgets.QSlider, 'maxwptime_sldr')
+
+        # spin boxes
+        self.spinGridSize = self.findChild(QtWidgets.QSpinBox, 'gridsize_spin')
+        self.spinEdgeRatio = self.findChild(QtWidgets.QSpinBox, 'edgeratio_spin')
+        self.spinTravelSpeed = self.findChild(QtWidgets.QDoubleSpinBox, 'travelspeed_spin')
+        self.spinLoiterRadius = self.findChild(QtWidgets.QSpinBox, 'loiterrad_spin')
+        self.spinLoiterTime = self.findChild(QtWidgets.QSpinBox, 'loitertime_spin')
+        self.spinMaxWpTime = self.findChild(QtWidgets.QSpinBox, 'maxwptime_spin')
+
+        # bind slider <-> spinbox
+        self.bind_slider_spin(self.sldrGridSize,    self.spinGridSize)
+        self.bind_slider_spin(self.sldrEdgeRatio,   self.spinEdgeRatio)
+        self.bind_slider_spin(self.sldrTravelSpeed, self.spinTravelSpeed, 0.1, 1)
+        self.bind_slider_spin(self.sldrLoiterRadius,self.spinLoiterRadius)
+        self.bind_slider_spin(self.sldrLoiterTime,  self.spinLoiterTime)  
+        self.bind_slider_spin(self.sldrMaxWpTime,   self.spinMaxWpTime)
+
 
         #------------- TESTING TAB ---------------#
         self.btnGuidedTest = self.findChild(QPushButton, 'guidedtest_btn')
-
-    def setupButtons(self):
-        #------------- CONTROL TAB ---------------#
-        self.btnMavproxy.clicked.connect(self.btnMavproxyFunc)
-        self.btnRcOverride.clicked.connect(self.btnRCOverrideFunc)
-        self.btnUpdate.clicked.connect(self.btnUpdateFunc)
-        self.btnRtl.clicked.connect(self.btnRtlFunc)
-        self.btnPause.clicked.connect(self.btnPauseFunc)
-        self.btnResume.clicked.connect(self.btnResumeFunc)
-        self.btnDownloadPower.clicked.connect(self.btnDownloadPowerFunc)
-        self.btnDownloadSensor.clicked.connect(self.btnDownloadSensorFunc)  
-        self.btnGraphPower.clicked.connect(self.btnGraphPowerFunc)
-        self.btnGraphSensor.clicked.connect(self.btnGraphSensorFunc)
-
-        #------------- CAMERA TAB ----------------#
-
-        self.btnToggleCam.clicked.connect(self.btnCameraFunc)
-
-        #------------ AUTONOMY TAB ---------------# 
-
-        self.btnToggleAutonomy.clicked.connect(self.btnAutonomyFunc)
-
-        #------------- TESTING TAB ---------------#
-
         self.btnGuidedTest.clicked.connect(
-            lambda: self.publish(TOPIC_CMD_PI, "guided_test")
+            lambda: self.publish(TOPIC_PI_CMD, "guided_test")
         )
+
+    # Minimal, clean slider <-> spin binder
+    def bind_slider_spin(self, slider, spin, scale=1, decimals=None):
+        is_double = isinstance(spin, QtWidgets.QDoubleSpinBox)
+        if is_double and decimals is not None:
+            spin.setDecimals(decimals)
+        # Set spin range to reflect slider range (scaled)
+        if is_double:
+            spin.setRange(slider.minimum()*scale, slider.maximum()*scale)
+        else:
+            spin.setRange(int(slider.minimum()*scale), int(slider.maximum()*scale))
+
+        def s2sp(v):
+            QtCore.QSignalBlocker(spin)
+            spin.setValue(v*scale)
+
+        def sp2s(x):
+            QtCore.QSignalBlocker(slider)
+            iv = int(round(float(x)/scale)) if scale else slider.value()
+            iv = max(slider.minimum(), min(slider.maximum(), iv))
+            slider.setValue(iv)
+
+        slider.valueChanged.connect(s2sp)
+        spin.valueChanged.connect(sp2s)
+        s2sp(slider.value())  # init
+
 
 
     #=============================================#
@@ -173,48 +230,145 @@ class GUI(QtWidgets.QMainWindow):
     #=============================================#
 
     def btnMavproxyFunc(self):
-        self.publish(TOPIC_CMD_PI, "toggle_mavproxy")
+        self.publish(TOPIC_PI_CMD, "toggle_mavproxy")
     
     def btnRCOverrideFunc(self):
-        self.publish(TOPIC_CMD_PI, "toggle_rc_override")
+        self.publish(TOPIC_PI_CMD, "rc_override")
 
     def btnUpdateFunc(self):
-        self.publish(TOPIC_CMD_PI, "update")
-        self.publish(TOPIC_CMD_ESP, "update")
+        self.publish(TOPIC_PI_CMD, "update")
+        self.publish(TOPIC_ESP_CMD, "update")
 
     def btnRtlFunc(self):
-        self.publish(TOPIC_CMD_PI, "rtl")
+        self.publish(TOPIC_PI_CMD, "rtl")
 
     def btnPauseFunc(self):
-        self.publish(TOPIC_CMD_PI, "pause")
-        self.publish(TOPIC_CMD_ESP, "pause")
+        self.publish(TOPIC_PI_CMD, "pause")
+        self.publish(TOPIC_ESP_CMD, "pause")
     
     def btnResumeFunc(self):
-        self.publish(TOPIC_CMD_PI, "resume")
-        self.publish(TOPIC_CMD_ESP, "resume")
-
-    def btnCameraFunc(self):
-        self.publish(TOPIC_CMD_PI, "toggle_camera")
-        if self.cameraView:
-            self.cameraView.setUrl(QtCore.QUrl(CAMERA_STREAM_URL))
-
-    def btnAutonomyFunc(self):
-        self.publish(TOPIC_CMD_PI, "toggle_autonomy")
+        self.publish(TOPIC_PI_CMD, "resume")
+        self.publish(TOPIC_ESP_CMD, "resume")
 
     def btnDownloadPowerFunc(self):
         ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         self._save_rows_to_csv(self.power_data, f"power_data_{ts}.csv")
+        self.power_data = []
 
     def btnDownloadSensorFunc(self):
         ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         self._save_rows_to_csv(self.sensor_data, f"sensor_data_{ts}.csv")
+        self.sensor_data = []
 
     def btnGraphPowerFunc(self):
-        pass
+        # Panels for power_data
+        panels = [
+            {
+                "title": "Battery Voltage (V)",
+                "series": [
+                    {"key": "v_batt", "name": "V_batt"},
+                ],
+            },
+            {
+                "title": "Currents (A)",
+                "series": [
+                    {"key": "i_esp",   "name": "ESP"},
+                    {"key": "i_pi",    "name": "Pi"},
+                    {"key": "i_fc",    "name": "FC"},
+                    {"key": "i_modem", "name": "Modem"},
+                ],
+            },
+        ]
+        if self.powerGraphWin is None or not self.powerGraphWin.isVisible():
+            self.powerGraphWin = LiveGraphWindow(
+                data_ref=self.power_data,
+                panels=panels,
+                x_mode="timestamp",   # "timestamp" also supported but "index" is simplest
+                max_points=1200,  # last ~1200 samples
+                update_ms=300,
+                parent=self,
+            )
+            self.powerGraphWin.show()
+        else:
+            self.powerGraphWin.raise_()
+            self.powerGraphWin.activateWindow()
 
     def btnGraphSensorFunc(self):
-        pass
+        # Panels for sensor_data (group however you like)
+        panels = [
+            {
+                "title": "Water Quality",
+                "series": [
+                    {"key": "turbidity", "name": "Turbidity (NTU)"},
+                    {"key": "temperature", "name": "Temp (°C)"},
+                    {"key": "ph", "name": "pH"},
+                ],
+            },
+            {
+                "title": "Nutrients (mg/L)",
+                "series": [
+                    {"key": "nitrate", "name": "Nitrate"},
+                    {"key": "phosphate", "name": "Phosphate"},
+                ],
+            },
+        ]
+        if self.sensorGraphWin is None or not self.sensorGraphWin.isVisible():
+            self.sensorGraphWin = LiveGraphWindow(
+                data_ref=self.sensor_data,
+                panels=panels,
+                x_mode="timestamp",
+                max_points=1200,
+                update_ms=300,
+                parent=self,
+            )
+            self.sensorGraphWin.show()
+        else:
+            self.sensorGraphWin.raise_()
+            self.sensorGraphWin.activateWindow()
 
+    # cam
+    def btnCameraFunc(self):
+        self.publish(TOPIC_PI_CMD, "toggle_cam")
+        if self.cameraView:
+            self.cameraView.setUrl(QtCore.QUrl(CAMERA_STREAM_URL))
+
+    # auton
+    def btnAutonomyFunc(self):
+        grid_size = self.spinGridSize.value()
+        edge_ratio = self.spinEdgeRatio.value() / 100.0
+        travel_speed = self.spinTravelSpeed.value()
+        loiter_radius = self.spinLoiterRadius.value()
+        loiter_time = self.spinLoiterTime.value()
+        max_wp_time = self.spinMaxWpTime.value()
+
+        args = {
+            "grid_size": grid_size,
+            "edge_ratio": edge_ratio,
+            "travel_speed": travel_speed,
+            "loiter_radius": loiter_radius,
+            "loiter_time": loiter_time,
+            "max_wp_time": max_wp_time,
+            "mavproxy": True,
+        }
+        payload = "toggle_autonomy " + json.dumps(args, separators=(',', ':'))
+        self.publish(TOPIC_PI_CMD, payload)
+
+    def btnResetDefaultFunc(self):
+        # sliders
+        self.sldrGridSize.setValue(15)      # 15
+        self.sldrEdgeRatio.setValue(65)     # 0.65
+        self.sldrTravelSpeed.setValue(10)   # 1.0 m/s
+        self.sldrLoiterRadius.setValue(5)   # 5 m
+        self.sldrLoiterTime.setValue(20)    # 2.0 s
+        self.sldrMaxWpTime.setValue(10)    # 10.0 s
+
+        # spinboxes
+        self.spinGridSize.setValue(15)
+        self.spinEdgeRatio.setValue(65)
+        self.spinTravelSpeed.setValue(1.2)
+        self.spinLoiterRadius.setValue(5)
+        self.spinLoiterTime.setValue(20)
+        self.spinMaxWpTime.setValue(10)
 
     #=============================================#
     #                 RECV MQTT                   #
@@ -274,6 +428,10 @@ class GUI(QtWidgets.QMainWindow):
             print(f"[ESP Power] bad JSON: {e}")
             return
 
+        self.power_data.append({
+            "timestamp": QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"),
+            **d
+        })
         
         # Power/state fields
         self.labelBattV.setText(self._fmt_num(d.get("v_batt"), 2, "V"))
@@ -292,7 +450,7 @@ class GUI(QtWidgets.QMainWindow):
             return
 
         self.sensor_data.append({
-            "timestamp": datetime.datetime.now().isoformat(timespec="seconds"),
+            "timestamp": QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"),
             **d
         })
         
@@ -302,18 +460,27 @@ class GUI(QtWidgets.QMainWindow):
         self.labelSensPH.setText(self._fmt_num(d.get("ph"), 2, "pH"))
         self.labelSensNitrate.setText(self._fmt_num(d.get("nitrate"), 2, "mg/L"))
         self.labelSensPhosphate.setText(self._fmt_num(d.get("phosphate"), 2, "mg/L"))
+
+        self.labelPiSensorTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
     
     def updateEspStatus(self, payload):
+        self._set_status_label(self.labelEspHeartbeat, True)        
+        try:
+            self.espHbTimer.stop()
+        except Exception:
+            pass
+        self.espHbTimer = QtCore.QTimer()
+        self.espHbTimer.setSingleShot(True)
+        self.espHbTimer.timeout.connect(lambda: self._set_status_label(self.labelEspHeartbeat, False))
+        self.espHbTimer.start(10000)
+        
+        
+        
         try:
             d = json.loads(payload)
         except Exception as e:
             print(f"[ESP Status] bad JSON: {e}")
             return
-        
-        self.power_data.append({
-            "timestamp": datetime.datetime.now().isoformat(timespec="seconds"),
-            **d
-        })
 
         # ESP power-state (string)
         self.labelEspState.setText(str(d.get("state", "—")).upper())
@@ -326,6 +493,17 @@ class GUI(QtWidgets.QMainWindow):
         self.labelEspStatusTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
 
     def updatePiStatus(self, payload):
+        self._set_status_label(self.labelPiHeartbeat, True)
+
+        try:
+            self.piHbTimer.stop()
+        except Exception:
+            pass
+        self.piHbTimer = QtCore.QTimer()
+        self.piHbTimer.setSingleShot(True)
+        self.piHbTimer.timeout.connect(lambda: self._set_status_label(self.labelPiHeartbeat, False))
+        self.piHbTimer.start(10000)
+
         try:
             d = json.loads(payload)
         except Exception as e:
@@ -336,8 +514,13 @@ class GUI(QtWidgets.QMainWindow):
         self.labelFCArmStatus.setText(self._onoff(d.get("fc_armed", False)))
         self.labelFCMode.setText(str(d.get("fc_mode", "—")).upper())
 
-        # Mavproxy status
+        # other status
         self._set_status_label(self.labelMavproxy, d.get("mavproxy_on", False))
+        self._set_status_label(self.labelCamera, d.get("camera_on", False))
+        self._set_status_label(self.labelAutonomy, d.get("autonomy_on", False))
+        self.labelPiState.setText(str(d.get("state", "—")).upper())
+
+        self.labelPiStatusTime.setText(QtCore.QDateTime.currentDateTime().toString("HH:mm:ss"))
 
     def updateAutonomy(self, payload):
         pass
@@ -375,11 +558,11 @@ class GUI(QtWidgets.QMainWindow):
         self.mqtt_status.emit(f"[MQTT] Connected (rc={rc})")
         # Subscribe to telemetry
         client.subscribe([
-            (TOPIC_STATUS_ESP, 0), 
-            (TOPIC_POWER_ESP, 0), 
-            (TOPIC_STATUS_PI, 0), 
-            (TOPIC_SENSOR_PI, 0),
-            (TOPIC_AUTON_PI, 0)
+            (TOPIC_ESP_STATUS, 0), 
+            (TOPIC_ESP_POWER, 0), 
+            (TOPIC_PI_STATUS, 0), 
+            (TOPIC_PI_SENSOR, 0),
+            (TOPIC_PI_AUTON, 0)
             ])
 
     def _on_message(self, client, userdata, msg):
@@ -403,15 +586,15 @@ class GUI(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot(str, str)
     def on_mqtt_msg_ui(self, topic, payload):
         # Update specific labels if present
-        if topic == TOPIC_STATUS_ESP:
+        if topic == TOPIC_ESP_STATUS:
             self.updateEspStatus(payload)
-        elif topic == TOPIC_POWER_ESP:
+        elif topic == TOPIC_ESP_POWER:
             self.updateEspPower(payload)
-        elif topic == TOPIC_STATUS_PI:
+        elif topic == TOPIC_PI_STATUS:
             self.updatePiStatus(payload)
-        elif topic == TOPIC_SENSOR_PI:
+        elif topic == TOPIC_PI_SENSOR:
             self.updatePiSensor(payload)
-        elif topic == TOPIC_AUTON_PI:
+        elif topic == TOPIC_PI_AUTON:
             self.updateAutonomy(payload)
         else:
             print(f"[MQTT] Unknown topic: {topic}")

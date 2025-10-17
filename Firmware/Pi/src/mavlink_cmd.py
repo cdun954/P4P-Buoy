@@ -1,8 +1,16 @@
 import time
 from pymavlink import mavutil
 import math
+import os
+
+# make py request data instead of poll for heartbeat
 
 EARTH_R = 6371000.0  # meters
+
+FC_SERIAL_PORT = "/dev/ttyACM"
+FC_HOST = "127.0.0.1"
+FC_PORT = 14552
+FC_BAUDRATE = 115200
 
 def _haversine_m(lat1, lon1, lat2, lon2):
     dlat = math.radians(lat2-lat1)
@@ -11,13 +19,23 @@ def _haversine_m(lat1, lon1, lat2, lon2):
          math.cos(math.radians(lat1))*math.cos(math.radians(lat2))*math.sin(dlon/2)**2)
     return 2 * EARTH_R * math.asin(math.sqrt(a))
 
-def connect_fc():
-    print("Connecting to FC...")
-    master = mavutil.mavlink_connection('udp:127.0.0.1:14552')
-    # Wait a heartbeat before sending commands
-    master.wait_heartbeat() 
-    print("[FC] Connected! System ID:", master.target_system)
-    return master
+def connect_fc(mavproxy: bool):
+    print("[FC] Connecting to FC...")
+    try:
+        if mavproxy:
+            m = mavutil.mavlink_connection(f"udp:{FC_HOST}:{FC_PORT}", udp_timeout=10)
+        else:
+            dev = next((f"{FC_SERIAL_PORT}{i}" for i in range(10) if os.path.exists(f"{FC_SERIAL_PORT}{i}")), None)
+            if not dev:
+                print("[FC] No FC serial device found.")
+                return None
+            m = mavutil.mavlink_connection(dev, baud=FC_BAUDRATE)
+        m.wait_heartbeat(timeout=5)
+        print("[FC] Connected! System ID:", m.target_system)
+        return m
+    except Exception:
+        print("[FC] Connection failed.")
+        return None
 
 def arm(master):
     print("[FC] Arming...")
@@ -40,6 +58,18 @@ def disarm(master):
     while is_armed(master):
         time.sleep(0.1)
     print("[FC] Disarmed.")
+
+def set_wp_speed(master, speed_m_s):
+    print(f"[FC] Setting WP speed to {speed_m_s} m/s...")
+    master.mav.command_long_send(
+        master.target_system, master.target_component,
+        mavutil.mavlink.MAV_CMD_DO_CHANGE_SPEED,
+        0,    # confirmation
+        1,    # speed type (1=ground speed)
+        float(speed_m_s),  # speed in m/s
+        -1,   # throttle (ignored)
+        0, 0, 0, 0  # unused
+    )
 
 
 def do_loiter_at(master, lat, lon, radius_m=5, alt=0):
