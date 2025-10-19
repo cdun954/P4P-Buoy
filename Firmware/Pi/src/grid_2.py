@@ -6,6 +6,8 @@ import math
 import json
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle, Polygon as MplPolygon
+import random  # NEW: used for demo selection of tiles
+
 
 Coordinate = Tuple[float, float]  # (lat, lon)
 Bounds = Tuple[float, float, float, float]  # (min_lat, min_lon, max_lat, max_lon)
@@ -86,6 +88,160 @@ def tile_passes(bounds: Bounds, polygon: Sequence[Coordinate],
         return point_in_polygon(center, polygon)
     frac = fraction_rect_inside_polygon(bounds, polygon, samples_per_side)
     return frac >= thr
+
+def subdivide_tile_into_subtiles(
+    parent: GridTile,
+    geofence: Sequence[Coordinate],
+    n: int,
+    coverage_threshold: float = 0.0,
+    samples_per_side: int = 5,
+) -> List[GridTile]:
+    """
+    Subdivide a single parent tile into n×n smaller tiles, keeping only those
+    that meet coverage_threshold (0.0 => center-only).
+    Returns a flat list of 'child' GridTile objects (with synthetic row/col).
+    NOTE: These children are 'local' to their parent and are NOT inserted into g.tiles.
+          Use them for local refinement passes and visualisation.
+    """
+    n = max(1, int(n))
+    if n == 1:
+        return [parent]
+
+    min_lat, min_lon, max_lat, max_lon = parent.bounds
+    dlat = (max_lat - min_lat) / n
+    dlon = (max_lon - min_lon) / n
+
+    children: List[GridTile] = []
+    base_r, base_c = parent.row * n, parent.col * n  # synthetic local indices
+    for i in range(n):
+        row_min_lat = min_lat + i * dlat
+        row_max_lat = row_min_lat + dlat
+        for j in range(n):
+            cell_min_lon = min_lon + j * dlon
+            cell_max_lon = cell_min_lon + dlon
+            bounds = (row_min_lat, cell_min_lon, row_max_lat, cell_max_lon)
+            center = ((row_min_lat + row_max_lat) / 2.0, (cell_min_lon + cell_max_lon) / 2.0)
+
+            if tile_passes(bounds, geofence, coverage_threshold, samples_per_side):
+                # Use synthetic (row,col) so they're stable for drawing/IDs
+                children.append(GridTile(row=base_r + i, col=base_c + j, center=center, bounds=bounds))
+    return children
+
+def pick_random_tiles_to_refine(
+    g: GridMap,
+    k: int,
+    n: int,
+    coverage_threshold: float = 0.0,
+    samples_per_side: int = 5,
+    rng: Optional[random.Random] = None,
+) -> Dict[Tuple[int, int], List[GridTile]]:
+    """
+    Pick k random existing tiles to refine into n×n subtiles (coverage-filtered).
+    Returns: {(parent_row, parent_col): [child GridTile, ...], ...}
+    """
+    rng = rng or random.Random()
+    tiles = g.iter_tiles()
+    if not tiles:
+        return {}
+
+    # sample without replacement (clip k to available number)
+    k = max(0, min(k, len(tiles)))
+    chosen = rng.sample(tiles, k)
+
+    refined: Dict[Tuple[int, int], List[GridTile]] = {}
+    for t in chosen:
+        kids = subdivide_tile_into_subtiles(
+            parent=t,
+            geofence=g.geofence,
+            n=n,
+            coverage_threshold=coverage_threshold,
+            samples_per_side=samples_per_side,
+        )
+        if kids:
+            refined[(t.row, t.col)] = kids
+    return refined
+
+
+def refine_every_ten_tile(
+    g: GridMap,
+    n: int,
+    coverage_threshold: float = 0.0,
+    samples_per_side: int = 5,
+) -> Dict[Tuple[int, int], List[GridTile]]:
+    """
+    Deterministic refinement: for tiles in the lawnmower order, refine every 3rd parent.
+    Returns: {(parent_row, parent_col): [child GridTile, ...], ...}
+    """
+    refined: Dict[Tuple[int, int], List[GridTile]] = {}
+    if not g._lawnmower_order:
+        return refined
+
+    for idx, (r, c) in enumerate(g._lawnmower_order):
+        if idx % 10 != 0:
+            continue
+        parent = g.get_tile(r, c)
+        if parent is None:
+            continue
+        kids = subdivide_tile_into_subtiles(
+            parent=parent,
+            geofence=g.geofence,
+            n=max(1, int(n)),
+            coverage_threshold=coverage_threshold,
+            samples_per_side=samples_per_side,
+        )
+        if kids:
+            refined[(r, c)] = kids
+    return refined
+
+
+def _local_lawnmower_over_children(children: List[GridTile]) -> List[Coordinate]:
+    """
+    Produce a simple left-right serpentine path over the child tiles (by their synthetic row/col).
+    """
+    if not children:
+        return []
+
+    # group by child rows, then serpentine by columns
+    rows: Dict[int, List[GridTile]] = {}
+    for ch in children:
+        rows.setdefault(ch.row, []).append(ch)
+    ordered_rows = sorted(rows.keys())
+
+    path: List[Coordinate] = []
+    for r_index, r in enumerate(ordered_rows):
+        cols = sorted(rows[r], key=lambda t: t.col)
+        if r_index % 2 == 1:
+            cols.reverse()
+        path.extend([t.center for t in cols])
+    return path
+
+def expand_route_with_refinements(
+    g: GridMap,
+    route: List[Coordinate],
+    refined: Dict[Tuple[int, int], List[GridTile]]
+) -> List[Coordinate]:
+    """
+    For each waypoint center that matches a refined parent, insert a local path over its children.
+    Matching is done by nearest parent tile lookup.
+    """
+    if not route or not refined:
+        return route[:]
+
+    # Build a quick lookup from parent tile centers to (r,c)
+    center_to_key: Dict[Tuple[float, float], Tuple[int, int]] = {}
+    for t in g.iter_tiles():
+        center_to_key[(round(t.center[0], 7), round(t.center[1], 7))] = (t.row, t.col)
+
+    out: List[Coordinate] = []
+    for wp in route:
+        key = center_to_key.get((round(wp[0], 7), round(wp[1], 7)))
+        if key and key in refined:
+            # Insert local pass over children, then proceed
+            out.extend(_local_lawnmower_over_children(refined[key]))
+        else:
+            out.append(wp)
+    return out
+
 
 
 # -------------------- Grid structures --------------------
@@ -346,32 +502,61 @@ def plot_grid_and_path(
     title: Optional[str] = None,
     start_dot: Optional[Coordinate] = None,
     end_dot: Optional[Coordinate] = None,
+    refined: Optional[Dict[Tuple[int, int], List[GridTile]]] = None,  # NEW
 ):
     fig, ax = plt.subplots()
 
-    # Draw grid tiles as thin black outlines (no fill)
+    # Draw base grid
     for t in g.iter_tiles():
         min_lat, min_lon, max_lat, max_lon = t.bounds
         rect = Rectangle((min_lon, min_lat), max_lon - min_lon, max_lat - min_lat,
                          fill=False, edgecolor="black", linewidth=0.6)
         ax.add_patch(rect)
 
-    # Geofence outline: bright red dashed/dotted line
+    # Overlay refined children (if any) as lightly filled
+    if refined:
+        for (pr, pc), kids in refined.items():
+            # Fill children
+            for ch in kids:
+                mn_la, mn_lo, mx_la, mx_lo = ch.bounds
+                ax.add_patch(Rectangle(
+                    (mn_lo, mn_la),
+                    mx_lo - mn_lo,
+                    mx_la - mn_la,
+                    fill=True,
+                    alpha=0.25,
+                    edgecolor="none"
+                ))
+            # Emphasize parent outline
+            parent = g.get_tile(pr, pc)
+            if parent is not None:
+                mn_la, mn_lo, mx_la, mx_lo = parent.bounds
+                ax.add_patch(Rectangle(
+                    (mn_lo, mn_la),
+                    mx_lo - mn_lo,
+                    mx_la - mn_la,
+                    fill=False,
+                    edgecolor="#1E88E5",
+                    linewidth=1.6,
+                    linestyle=":"
+                ))
+
+    # Geofence outline (red dashed)
     poly = MplPolygon([(lon, lat) for (lat, lon) in g.geofence], closed=True,
                       fill=False, edgecolor="#E20000", linewidth=1.8, linestyle="--")
     ax.add_patch(poly)
 
-    # Path overlay in lilac
+    # Path overlay
     if path and len(path) >= 2:
         xs = [lon for (lat, lon) in path]
         ys = [lat for (lat, lon) in path]
-        ax.plot(xs, ys, '-', linewidth=1.6, color="#C8A2C8")  # lilac
+        ax.plot(xs, ys, '-', linewidth=1.6, color="#C8A2C8")
 
-    # Start (green) and End (red) dots at tile centers
+    # Start / End
     if start_dot is not None:
-        ax.scatter([start_dot[1]], [start_dot[0]], s=30, c="#00C853", zorder=5)  # green
+        ax.scatter([start_dot[1]], [start_dot[0]], s=30, c="#00C853", zorder=5)
     if end_dot is not None:
-        ax.scatter([end_dot[1]], [end_dot[0]], s=30, c="#E53935", zorder=5)      # red
+        ax.scatter([end_dot[1]], [end_dot[0]], s=30, c="#E53935", zorder=5)
 
     lats = [lat for lat, _ in g.geofence]
     lons = [lon for _, lon in g.geofence]
@@ -380,10 +565,11 @@ def plot_grid_and_path(
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     ax.set_aspect('equal', adjustable='box')
-    ax.set_title(title or "Grid Decomposition and Path Planning of Geofenced Environment")
+    ax.set_title(title or "Grid Decomposition, Refinement, and Path")
     plt.tight_layout()
     plt.show()
     return fig, ax
+
 
 # -------------------- I/O helpers --------------------
 def read_poly_file(path: str) -> List[Coordinate]:
@@ -426,16 +612,29 @@ def grid_from_state(state: Dict) -> GridMap:
         tiles.append(row)
     return GridMap(tiles, geofence)
 
-# -------------------- Minimal demo --------------------
 if __name__ == "__main__":
-    # Example: replace with your path
-    path = "Firmware/Pi/src/taka_lake.fen"
+    path = "taka_lake.fen"
     geofence = read_poly_file(path)
 
-    grid = build_grid_map_meters(geofence, tile_size_m=8, coverage_threshold=0.65)  # adjust as needed
-    start_hint = geofence[0]  # first coordinate in the file
+    # Base grid: 10 m tiles, keep tiles with >=65% inside the geofence
+    grid = build_grid_map_meters(geofence, tile_size_m=10.0, coverage_threshold=0.75)
+    start_hint = geofence[0]
 
-    route = plan_lawnmower_path(grid, start_hint)
+    base_route = plan_lawnmower_path(grid, start_hint)
+
+    # --- Adaptive refinement demo ---
+    refined = refine_every_ten_tile(
+        g=grid,
+        n=3,                      # split each selected tile into 3x3 subtiles
+        coverage_threshold=0.80,  # keep only subtiles sufficiently inside polygon
+        samples_per_side=5,
+    )
+
+    # Option A: just show which tiles were refined, keep original route
+    #route = base_route
+
+    # Option B: expand route to do local sweeps over refined tiles (uncomment below)
+    route = expand_route_with_refinements(grid, base_route, refined)
 
     start_tile = _nearest_tile_to_point(grid, start_hint)
     start_center = start_tile.center if start_tile else None
@@ -443,7 +642,9 @@ if __name__ == "__main__":
 
     plot_grid_and_path(
         grid, route,
-        title="Grid Decomposition and Path Planning of Geofenced Environment",
+        title="Grid with Adaptive Refinement",
         start_dot=start_center,
         end_dot=end_center,
+        refined=refined,   # NEW: visualize which tiles were split
     )
+

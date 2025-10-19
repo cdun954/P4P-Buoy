@@ -183,7 +183,8 @@ class _SimFeeder(QtCore.QObject):
         self.po4 = 0.02
 
     def _now_iso(self):
-        return datetime.datetime.now().isoformat(timespec="seconds")
+        return datetime.datetime.now(datetime.UTC).strftime("%H:%M:%S")
+
 
     def _tick(self):
         self.t += 1

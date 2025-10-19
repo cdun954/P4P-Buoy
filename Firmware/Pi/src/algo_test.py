@@ -18,12 +18,14 @@ import math
 import argparse
 from typing import Dict, List, Tuple, Optional
 
-import mavlink_cmd as m
-from grid import (
+import mav2 as m
+from grid_2 import (
     read_poly_file,
     build_grid_map_meters,
     plan_lawnmower_path,
+    expand_route_with_refinements,
     _nearest_tile_to_point,
+    refine_every_ten_tile,
 )
 
 EARTH_R = 6371000.0  # meters
@@ -66,14 +68,14 @@ def run_coverage(
     mavproxy_on: bool = True,
     tile_size_lat: float = 0.00015,
     tile_size_lon: Optional[float] = None,
-    tile_size_m: float = 15.0,
-    coverage_threshold: float = 0.65,
+    tile_size_m: float = 10,
+    coverage_threshold: float = 0.75,
     samples_per_side: int = 5,
-    wp_accept_m: float = 2.5,
-    loiter_sec: float = 2.0,
+    wp_accept_m: float = 1,
+    loiter_sec: float = 1.0,
     loiter_radius: int = 5,
     wp_speed: float = 1.0,
-    max_wp_time_s: float = 10.0,
+    max_wp_time_s: float = 2.0,
     rtl_at_end: bool = True,
 ) -> None:
     
@@ -110,8 +112,18 @@ def run_coverage(
         raise RuntimeError("No route generated from geofence/grid settings.")
     print(f"[COVER] Waypoints in coverage path: {len(route)}")
 
-    # 5) Set desired groundspeed
+    refinement = refine_every_ten_tile(
+        g=grid,
+        n=3,                      # split each selected tile into 3x3 subtiles
+        coverage_threshold=0.80,  # keep only subtiles sufficiently inside polygon
+        samples_per_side=5,
+    )
+    route = expand_route_with_refinements(grid, route, refinement)
+
+    # 5) Set desired groundspeed + loiter radius + wp acceptance
     m.set_wp_speed(master, wp_speed)
+    m.set_loiter_radius(master, loiter_radius)
+    m.set_wp_acceptance_radius(master, wp_accept_m)
 
     center_to_key = _center_to_key_map(grid)
     visited: set[Tuple[int,int]] = set()
@@ -134,15 +146,16 @@ def run_coverage(
             if time.time() - t0 > max_wp_time_s:
                 print(f"[COVER] WARNING: WP timeout after {max_wp_time_s} sec, continuing.")
                 break
-            time.sleep(0.1)
+            time.sleep(0.2)
 
         # Mark visited *after* arrival attempt
+        print(f"[COVER] Arrived at tile center.")
         if tile_key != (-1, -1):
             visited.add(tile_key)
 
         # Loiter only on first visit
         if first_time_here:
-            m.do_loiter_at(master, lat, lon, radius_m=loiter_radius)
+            m.set_mode(master, "LOITER")
             print(f"[COVER] Loitering for {loiter_sec} sec...")
             time.sleep(loiter_sec)
         else:
@@ -164,14 +177,15 @@ def parse_args():
     p.add_argument("--fen", default="taka_lake.fen", help="Path to geofence .fen file (lat lon per line)")
     p.add_argument("--tile-size-lat", type=float, default=0.00015, help="Tile size in degrees latitude")
     p.add_argument("--tile-size-lon", type=float, default=None, help="Tile size in degrees longitude (default = same as lat)")
-    p.add_argument("--coverage-threshold", type=float, default=0.7, help="Fraction of tile that must be inside geofence")
+    p.add_argument("--tile-size-m", type=float, default=10, help="Tile size in meters (overrides degree settings)")
+    p.add_argument("--coverage-threshold", type=float, default=0.75, help="Fraction of tile that must be inside geofence")
     p.add_argument("--samples-per-side", type=int, default=5, help="Sampling density per side for coverage estimation")
-    p.add_argument("--wp-accept-m", type=float, default=2.5, help="Acceptance radius (m) for tile center")
-    p.add_argument("--loiter-sec", type=float, default=2.0, help="Seconds to pause at each tile center")
+    p.add_argument("--wp-accept-m", type=float, default=1, help="Acceptance radius (m) for tile center")
+    p.add_argument("--loiter-sec", type=float, default=1.0, help="Seconds to pause at each tile center")
     p.add_argument("--loiter-radius", type=int, default=5, help="Loitering radius (m) at each tile center")
     p.add_argument("--mavproxy", action="store_true", help="Connect via MAVProxy UDP (else serial)")
     p.add_argument("--wp_speed", type=float, default=1.0, help="Speed (m/s) for guided waypoints")
-    p.add_argument("--max-wp-time-s", type=float, default=5.0, help="Per-WP timeout (s) before continuing anyway")
+    p.add_argument("--max-wp-time-s", type=float, default=1.0, help="Per-WP timeout (s) before continuing anyway")
     p.add_argument("--no-rtl", action="store_true", help="Do not RTL; disarm at the end instead")
     return p.parse_args()
 

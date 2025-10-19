@@ -12,6 +12,8 @@ FC_HOST = "127.0.0.1"
 FC_PORT = 14552
 FC_BAUDRATE = 115200
 
+
+
 def _haversine_m(lat1, lon1, lat2, lon2):
     dlat = math.radians(lat2-lat1)
     dlon = math.radians(lon2-lon1)
@@ -21,6 +23,13 @@ def _haversine_m(lat1, lon1, lat2, lon2):
 
 def connect_fc(mavproxy: bool):
     print("[FC] Connecting to FC...")
+    m = mavutil.mavlink_connection("tcp:127.0.0.1:5762")
+    if m is not None:
+        print("[FC] Connected! System ID:", m.target_system)
+        return m
+    else:
+        print("[FC] Connection failed.")
+        return None
     try:
         if mavproxy:
             m = mavutil.mavlink_connection(f"udp:{FC_HOST}:{FC_PORT}", udp_timeout=10)
@@ -71,24 +80,16 @@ def set_wp_speed(master, speed_m_s):
         0, 0, 0, 0  # unused
     )
 
-
-def do_loiter_at(master, lat, lon, radius_m=5, alt=0):
-    cmd = (mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM)
-
-    p1 = 0                   # seconds (only used for LOITER_TIME)
-    p2 = 0                   # unused
-    p3 = float(radius_m)     # loiter radius (meters)
-    p4 = 0                   # 0: default/cw; sign may select direction on some frames
-    # params 5/6/7: target location (deg, deg, meters)
-    master.mav.command_long_send(
-        master.target_system, master.target_component,
-        cmd, 0,
-        p1, p2, p3, p4,
-        float(lat), float(lon), float(alt)
+def set_loiter_radius(master, radius_m):
+    print(f"[FC] Setting LOITER radius to {radius_m:.1f} m...")
+    master.mav.param_set_send(
+        master.target_system,
+        master.target_component,
+        b"WP_RADIUS",
+        radius_m,
+        mavutil.mavlink.MAV_PARAM_TYPE_REAL32,
     )
-    while read_mode(master) != "LOITER":
-        time.sleep(0.1)
-    print(f"[FC] Loitering at ({lat}, {lon}) at {radius_m}m radius")
+
 
 def set_mode(master, mode_name):
     print(f"[FC] Setting mode to {mode_name}...")
@@ -105,16 +106,16 @@ def set_mode(master, mode_name):
         time.sleep(0.1)
     print(f"[FC] Mode set to {mode_name}.")
 
-# send guided waypoint (lat, lon in degrees) and speed (m/s)
-def send_guided_waypoint(master, lat, lon, speed=1.0):
+# send guided waypoint (lat, lon in degrees)
+def send_guided_waypoint(master, lat, lon):
     # Send SET_POSITION_TARGET_GLOBAL_INT (position-only target)
     print(f"[FC] Sending GUIDED waypoint to ({lat}, {lon})...")
     master.mav.set_position_target_global_int_send(
-        0,  # time_boot_ms (ignored)
+        0,
         master.target_system,
         master.target_component,
         mavutil.mavlink.MAV_FRAME_GLOBAL_INT,
-        0b111111111100,  # ignore everything except x/y position
+        0b111111111100,  # bitmask: ignore everything except x/y position
         int(lat * 1e7),
         int(lon * 1e7),
         0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -145,11 +146,22 @@ def read_mode(master):
 def is_armed(master):
     msg = master.recv_match(type='HEARTBEAT', blocking=True, timeout=5)
     if not msg:
-        return None # no heartbeat
+        return False # no heartbeat
     return bool(msg.base_mode & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED) 
 
 def is_at_wp(master, target_lat, target_lon):
     gps = read_gps(master)
     if not gps:
-        return None # no GPS fix
-    return _haversine_m(gps["lat"], gps["lon"], target_lat, target_lon) < 1.0  # 1 meter threshold
+        return False # no GPS fix
+    return _haversine_m(gps["lat"], gps["lon"], target_lat, target_lon) < 1.5  # 1.5 meter threshold
+
+def set_wp_acceptance_radius(master, radius_m):
+    print(f"[FC] Setting WP acceptance radius to {radius_m:.1f} m...")
+    master.mav.command_long_send(
+        master.target_system,
+        master.target_component,
+        mavutil.mavlink.MAV_CMD_DO_SET_PARAMETER,  # safer for ArduPilot
+        0,                                         # confirmation
+        mavutil.mavlink.MAV_PARAM_TYPE_REAL32,     # optional param type
+        0, 0, 0, 0, 0, 0, 0
+    )

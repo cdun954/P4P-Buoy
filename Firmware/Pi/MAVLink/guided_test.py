@@ -1,16 +1,16 @@
 import mavlink_cmd as m
-import time
-import math
+import math, time
 
-# Earth radius in meters
+# small-angle, spherical-earth approximation
+# to build a square around a point as the SW corner
 EARTH_R = 6371000.0
-
+RAD_TO_DEG = (180.0 / math.pi)
 def corner_coords(fc, edge_m=10):
     origin = m.read_gps(fc)
-    if not origin: return None
     lat0, lon0 = origin["lat"], origin["lon"]
-    dlat = edge_m / EARTH_R * (180.0 / math.pi)
-    dlon = edge_m / (EARTH_R * math.cos(math.radians(lat0))) * (180.0 / math.pi)
+    dlat = edge_m / EARTH_R * RAD_TO_DEG
+    _lon = math.cos(math.radians(lat0))
+    dlon = edge_m / (EARTH_R * _lon) * RAD_TO_DEG
     return [
         (lat0,      lon0 + dlon),  # E
         (lat0+dlat, lon0 + dlon),  # NE
@@ -19,13 +19,7 @@ def corner_coords(fc, edge_m=10):
     ]
 
 # connect
-fc = None
-while not fc:
-    try:
-        fc = m.connect_fc()
-    except Exception as e:
-        print("[ERR] Failed to connect FC:", e)
-    time.sleep(2)
+fc = m.connect_fc()
 
 # arm
 if not m.is_armed(fc):
@@ -34,10 +28,8 @@ if not m.is_armed(fc):
 
 # wps
 wps = corner_coords(fc)
-if not wps:
-    print("No GPS fix")
-    exit(1)
 
+# loop through wps, GUIDED -> LOITER -> RPT
 while(True):
     for wp in wps:
         # set to GUIDED
@@ -48,3 +40,10 @@ while(True):
             time.sleep(0.1)
         m.set_mode(fc, "LOITER")
         time.sleep(3)
+
+
+
+
+
+
+

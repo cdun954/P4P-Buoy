@@ -1,0 +1,93 @@
+xxx
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "state":        { "type": "string",  "description": "Current FSM state." },
+    "relay_pi":     { "type": "boolean", "description": "Pi power rail enabled" },
+    "relay_modem":  { "type": "boolean", "description": "4G modem rail enabled" },
+    "relay_fc":     { "type": "boolean", "description": "Flight controller rail enabled" }
+  },
+  "required": ["state","relay_pi","relay_modem","relay_fc"],
+  "examples": [
+    { "state":"MID", "relay_pi":true, "relay_modem":true, "relay_fc":false }
+  ]
+}
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "v_batt": { "type": "number", "description": "Battery pack voltage [V]" },
+    "i_pi":   { "type": "number", "description": "Current draw of Pi rail [A]" },
+    "i_fc":   { "type": "number", "description": "Current draw of FC rail [A]" },
+    "i_modem":{ "type": "number", "description": "Current draw of modem rail [A]" },
+    "i_esp":  { "type": "number", "description": "ESP32 self current [A]" }
+  },
+  "required": ["v_batt","i_pi","i_fc","i_modem","i_esp"],
+  "examples": [
+    { "v_batt": 15.2, "i_pi": 0.42, "i_fc": 0.18, "i_modem": 0.25, "i_esp": 0.06 }
+  ]
+}
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "temperature": { "type": "number", "description": "Water temperature [°C]" },
+    "ph":          { "type": "number", "description": "pH" },
+    "turbidity":   { "type": "number", "description": "Turbidity [NTU]" },
+    "nitrate":     { "type": "number", "description": "Nitrate concentration [mg/L]" },
+    "phosphate":   { "type": "number", "description": "Phosphate concentration [mg/L]" }
+  },
+  "required": ["temperature","ph","turbidity","nitrate","phosphate"],
+  "examples": [
+    { "temperature": 17.8, "ph": 7.6, "turbidity": 12.3, "nitrate": 1.1, "phosphate": 0.09 }
+  ]
+}
+
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "mavproxy_on":  { "type": "boolean", "description": "MAVProxy process running" },
+    "camera_on":    { "type": "boolean", "description": "Camera streaming active" },
+    "autonomy_on":  { "type": "boolean", "description": "Autonomy process active" },
+    "state":        { "type": "string", "description": "High-level autonomy state" },
+    "fc_mode":      { "type": "string", "description": "Flight controller mode label (e.g., GUIDED, LOITER, RTL, MANUAL)" },
+    "fc_armed":     { "type": "boolean", "description": "FC armed status" }
+  },
+  "required": ["mavproxy_on","camera_on","autonomy_on","state","fc_mode","fc_armed"],
+  "examples": [
+    { "mavproxy_on": true, "camera_on": false, "autonomy_on": true, "state": "AUTO", "fc_mode": "GUIDED", "fc_armed": true }
+  ]
+}
+
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "cmd": { "type": "string", "description": "Command to execute"},
+    "args": {
+      "type": "object",
+      "properties": {
+        "grid_size":     { "type": "integer", "minimum": 5, "maximum": 200, "description": "Tile size [m] (approx geodesic)" },
+        "edge_ratio":    { "type": "number",  "minimum": 0.0, "maximum": 1.0, "description": "Min tile area fraction inside geofence" },
+        "travel_speed":  { "type": "number",  "minimum": 0.2, "maximum": 3.0, "description": "Travel speed [m/s]" },
+        "loiter_radius": { "type": "number",  "minimum": 1.0, "maximum": 20.0, "description": "Loiter radius [m]" },
+        "loiter_time":   { "type": "integer", "minimum": 0, "maximum": 600, "description": "Loiter duration [s]" },
+        "max_wp_time":   { "type": "integer", "minimum": 5, "maximum": 900, "description": "Waypoint timeout [s]" },
+        "mavproxy":      { "type": "boolean", "description": "Run through MAVProxy if running" }
+      },
+    }
+  },
+  "required": ["cmd"],
+  "examples": [
+    { "cmd": "toggle_autonomy", "args": { "grid_size": 30, "edge_ratio": 0.65, "travel_speed": 1.5, 
+                        "loiter_radius": 5, "loiter_time": 20, "max_wp_time": 90, "mavproxy": true } }
+  ]
+}
