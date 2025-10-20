@@ -1,4 +1,4 @@
-# CHAT GPT ASSISTED CODE
+# 
 
 from __future__ import annotations
 from dataclasses import dataclass
@@ -614,6 +614,8 @@ def grid_from_state(state: Dict) -> GridMap:
         tiles.append(row)
     return GridMap(tiles, geofence)
 
+
+# -------------------- Demo / Test code --------------------
 if __name__ == "__main__":
     path = "taka_lake.fen"
     geofence = read_poly_file(path)
@@ -628,8 +630,7 @@ if __name__ == "__main__":
     refined = refine_every_ten_tile(
         g=grid,
         n=3,                      # split each selected tile into 3x3 subtiles
-        coverage_threshold=0.80,  # keep only subtiles sufficiently inside polygon
-        samples_per_side=5,
+        coverage_threshold=0.80,
     )
 
     # Option A: just show which tiles were refined, keep original route

@@ -1,0 +1,196 @@
+import time
+from pymavlink import mavutil
+import math
+import os
+
+# --- Tiny non-blocking cache ---
+_STATE = {"mode": None, "armed": False, "gps": None, "last_hb": 0.0}
+
+def _pump(master, max_ms=15):
+    """Drain a few messages without blocking; update a tiny cache."""
+    deadline = time.time() + max_ms/1000.0
+    mapping = master.mode_mapping() or {}
+    while time.time() < deadline:
+        msg = master.recv_match(blocking=False)
+        if not msg:
+            break
+        tname = msg.get_type()
+        if tname == 'HEARTBEAT':
+            _STATE["last_hb"] = time.time()
+            _STATE["armed"] = bool(msg.base_mode & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED)
+            custom = msg.custom_mode
+            name = next((n for n, mid in mapping.items() if mid == custom), f"CUSTOM({custom})")
+            _STATE["mode"] = name
+        elif tname == 'GLOBAL_POSITION_INT':
+            _STATE["gps"] = {
+                "lat": msg.lat/1e7,
+                "lon": msg.lon/1e7,
+                "alt": msg.alt/1e3,
+                "t":   time.time()
+            }
+
+# === Helpers ===
+EARTH_R = 6371000.0  # meters
+def _haversine_m(lat1, lon1, lat2, lon2):
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+    a = (math.sin(dlat/2)**2 +
+         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2)**2)
+    return 2 * EARTH_R * math.asin(math.sqrt(a))
+
+# === Connection ===
+def connect_fc(mavproxy: bool):
+    # NOTE: For simulation, it connects through TCP, below is the actualy logic
+    print("[FC] Connecting to FC...")
+    m = mavutil.mavlink_connection("tcp:127.0.0.1:5762")
+    if m is not None:
+        print("[FC] Connected! System ID:", m.target_system)
+        return m
+    else:
+        print("[FC] Connection failed.")
+        return None
+
+    """
+    try:
+        if mavproxy:
+            m = mavutil.mavlink_connection(f"udp:{FC_HOST}:{FC_PORT}", udp_timeout=0.2)
+        else:
+            dev = next((f"{FC_SERIAL_PORT}{i}" for i in range(10) if os.path.exists(f"{FC_SERIAL_PORT}{i}")), None)
+            if not dev:
+                print("[FC] No FC serial device found.")
+                return None
+            m = mavutil.mavlink_connection(dev, baud=FC_BAUDRATE)
+        # Short, bounded heartbeat wait
+        t0 = time.time()
+        while time.time() - t0 < 3.0:
+            msg = m.recv_match(type='HEARTBEAT', blocking=False)
+            if msg:
+                _pump(m, 0)
+                print("[FC] Connected! System ID:", m.target_system)
+                return m
+            time.sleep(0.02)
+        print("[FC] Connection failed (no heartbeat).")
+        return None
+    except Exception:
+        print("[FC] Connection failed.")
+        return None
+    """
+
+def wait_heartbeat(master, timeout=10):
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        hb = master.recv_match(type="HEARTBEAT", blocking=True, timeout=1)
+        if hb:
+            return True
+    return False
+
+# === Arm/Disarm ===
+def arm(master):
+    print("[FC] Arming...")
+    master.mav.command_long_send(
+        master.target_system, master.target_component,
+        mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM,
+        0, 1, 0, 0, 0, 0, 0, 0
+    )
+    t0 = time.time()
+    while not is_armed(master) and time.time() - t0 < 5.0:
+        time.sleep(0.05)
+    print("[FC] Armed." if is_armed(master) else "[FC] Arm timeout.")
+
+def disarm(master):
+    print("[FC] Disarming...")
+    master.mav.command_long_send(
+        master.target_system, master.target_component,
+        mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM,
+        0, 0, 0, 0, 0, 0, 0, 0
+    )
+    t0 = time.time()
+    while is_armed(master) and time.time() - t0 < 5.0:
+        time.sleep(0.05)
+    print("[FC] Disarmed." if not is_armed(master) else "[FC] Disarm timeout.")
+
+# === Speed / Radius ===
+def set_wp_speed(master, speed_m_s):
+    print(f"[FC] Setting WP speed to {speed_m_s} m/s...")
+    master.mav.command_long_send(
+        master.target_system, master.target_component,
+        mavutil.mavlink.MAV_CMD_DO_CHANGE_SPEED,
+        0,    # confirmation
+        1,    # speed type (1=ground speed)
+        float(speed_m_s),  # speed in m/s
+        -1,   # throttle (ignored)
+        0, 0, 0, 0  # unused
+    )
+
+def set_loiter_radius(master, radius_m):
+    print(f"[FC] Setting LOITER/WP radius to {radius_m:.1f} m...")
+    master.mav.param_set_send(
+        master.target_system,
+        master.target_component,
+        b"WP_RADIUS",
+        float(radius_m),
+        mavutil.mavlink.MAV_PARAM_TYPE_REAL32,
+    )
+
+# === Mode ===
+def set_mode(master, mode_name):
+    print(f"[FC] Setting mode to {mode_name}...")
+    mode_id = master.mode_mapping().get(mode_name)
+    if mode_id is None:
+        print(f"[FC] Unknown mode: {mode_name}")
+        return
+    master.mav.set_mode_send(
+        master.target_system,
+        mavutil.mavlink.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
+        mode_id
+    )
+    t0 = time.time()
+    while read_mode(master) != mode_name and time.time() - t0 < 3.0:
+        time.sleep(0.05)
+    print(f"[FC] Mode set to {mode_name}." if read_mode(master) == mode_name else "[FC] Mode change timeout.")
+
+# === Guided Waypoint ===
+def send_guided_waypoint(master, lat, lon):
+    print(f"[FC] Sending GUIDED waypoint to ({lat}, {lon})...")
+    master.mav.set_position_target_global_int_send(
+        0,
+        master.target_system,
+        master.target_component,
+        mavutil.mavlink.MAV_FRAME_GLOBAL_INT,
+        0b111111111100,  # ignore everything except x/y position
+        int(lat * 1e7),
+        int(lon * 1e7),
+        0, 0, 0, 0, 0, 0, 0, 0, 0
+    )
+
+# === Reads ===
+def read_gps(master, max_age=1.0):
+    _pump(master, 10)
+    g = _STATE.get("gps")
+    if g and (time.time() - g["t"] <= max_age):
+        return {"lat": g["lat"], "lon": g["lon"], "alt": g["alt"]}
+    return None  # stale / not available
+
+def read_mode(master):
+    _pump(master, 5)
+    return _STATE.get("mode")
+
+def is_armed(master):
+    _pump(master, 5)
+    return bool(_STATE.get("armed"))
+
+def is_at_wp(master, target_lat, target_lon):
+    gps = read_gps(master, max_age=1.0)
+    if not gps:
+        return False  # no fresh GPS fix
+    return _haversine_m(gps["lat"], gps["lon"], target_lat, target_lon) < 1.5  # 1.5 m threshold
+
+def set_wp_acceptance_radius(master, radius_m):
+    print(f"[FC] Setting WP acceptance radius to {radius_m:.1f} m...")
+    master.mav.param_set_send(
+        master.target_system,
+        master.target_component,
+        b"WP_RADIUS",
+        float(radius_m),
+        mavutil.mavlink.MAV_PARAM_TYPE_REAL32,
+    )

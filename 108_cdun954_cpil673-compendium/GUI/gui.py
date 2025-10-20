@@ -28,10 +28,10 @@ Features:
 UI_FILE = "GUI/gui.ui"
 
 # ===== MQTT CONFIG =====
-BROKER_HOST = "f1bd5a3c43044a3a816321410ca20435.s1.eu.hivemq.cloud"
-BROKER_PORT = 8883 
-USERNAME    = "P4P-Buoy"
-PASSWORD    = "P4P108buoy"
+BROKER_HOST = "f1bd5a3c43044a3a816321410ca2043.s1.eu.hivemq.cloud"
+BROKER_PORT = 8883
+USERNAME = "P4P-Buoy"
+PASSWORD = "P4P108-buoy"
 
 TOPIC_ESP_STATUS = "buoy/esp/status"
 TOPIC_ESP_POWER  = "buoy/esp/power"
