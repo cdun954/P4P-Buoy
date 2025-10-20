@@ -1,0 +1,15 @@
+[Unit]
+Description=Run project.py in tmux at boot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/Desktop/project
+ExecStart=/usr/bin/tmux new-session -d -s project -n main /home/pi/Desktop/python/bin/python3 "/home/pi/Desktop/project>
+RemainAfterExit=yes
+
+
+[Install]
+WantedBy=multi-user.target
